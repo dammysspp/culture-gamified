@@ -1,220 +1,174 @@
 // ============================================
-// STATE
+// STATE & NAVIGATION
 // ============================================
-let currentScreenId = 'screen-studio-intro';
-let isTransitioning = false;
-let currentHeroObj = null;
+let curScr = 'boot';
+let isTrns = false;
 
-// ============================================
-// PARTICLES SYSTEM
-// ============================================
-function spawnParticles() {
-    const canvas = document.getElementById('particles-canvas');
-    if (!canvas) return;
-    const count = 25;
-    for (let i = 0; i < count; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        p.style.left = Math.random() * 100 + 'vw';
-        p.style.setProperty('--dur', (6 + Math.random() * 10) + 's');
-        p.style.setProperty('--delay', (Math.random() * 10) + 's');
-        p.style.width = (2 + Math.random() * 3) + 'px';
-        p.style.height = p.style.width;
-        if (Math.random() > 0.6) {
-            p.style.background = '#e87040';
-            p.style.boxShadow = '0 0 6px #e87040, 0 0 12px rgba(232,112,64,0.3)';
-        }
-        canvas.appendChild(p);
-    }
-}
+function go(toScr) {
+    if (isTrns || curScr === toScr) return;
+    isTrns = true;
 
-// ============================================
-// TRANSITIONS
-// ============================================
-function triggerFadeTransition(targetScreenId) {
-    if (isTransitioning || currentScreenId === targetScreenId) return;
-    isTransitioning = true;
+    // Play button specific logic for the lobby bottom nav active states
+    document.querySelectorAll('.bot-btn').forEach(b => b.classList.remove('active'));
+    if (toScr === 'lobby') document.querySelectorAll('.bot-btn')[0].classList.add('active');
+    if (toScr === 'heroes') document.querySelectorAll('.bot-btn')[1].classList.add('active');
+    if (toScr === 'games') document.querySelectorAll('.bot-btn')[2].classList.add('active');
+    if (toScr === 'leaderboard') document.querySelectorAll('.bot-btn')[3].classList.add('active');
+    if (toScr === 'settings') document.querySelectorAll('.bot-btn')[4].classList.add('active');
 
-    const overlay = document.getElementById('fade-transition');
-    const currScreen = document.getElementById(currentScreenId);
-    const nextScreen = document.getElementById(targetScreenId);
-
-    overlay.classList.add('play-fade');
+    const curtain = document.getElementById('curtain');
+    curtain.classList.add('go');
 
     setTimeout(() => {
-        if (currScreen) currScreen.classList.remove('active');
-        if (nextScreen) nextScreen.classList.add('active');
-        currentScreenId = targetScreenId;
+        document.getElementById(curScr).classList.remove('on');
+        document.getElementById(toScr).classList.add('on');
+        curScr = toScr;
 
-        if (targetScreenId === 'screen-mission-select' && currentHeroObj) {
-            populateMissionData();
+        if (toScr === 'heroes') {
+            setTimeout(initHeroes, 50);
         }
-        if (targetScreenId === 'screen-character-select') {
-            setTimeout(initHeroScroll, 100);
-        }
-    }, 500);
+    }, 450);
 
     setTimeout(() => {
-        overlay.classList.remove('play-fade');
-        isTransitioning = false;
+        curtain.classList.remove('go');
+        isTrns = false;
     }, 900);
 }
+// Attach to window so onclick works in HTML
+window.go = go;
 
-function triggerCinematicDive() {
-    if (isTransitioning) return;
-    isTransitioning = true;
-    const flash = document.getElementById('flash-bang');
-    flash.classList.add('boom');
-    setTimeout(() => {
-        document.getElementById(currentScreenId).classList.remove('active');
-        document.getElementById('screen-hud').classList.add('active');
-        currentScreenId = 'screen-hud';
-        setTimeout(() => {
-            flash.classList.remove('boom');
-            isTransitioning = false;
-        }, 500);
-    }, 300);
-}
+// ============================================
+// BOOT SEQUENCE (Call of Duty / Blood Strike style)
+// ============================================
+function initBoot() {
+    const fill = document.getElementById('boot-fill');
+    const pct = document.getElementById('boot-pct');
+    let p = 0;
 
-function triggerCinematicAchievement() {
-    const ach = document.getElementById('cinematic-achievement');
-    ach.classList.remove('pop');
-    void ach.offsetWidth;
-    ach.classList.add('pop');
-    setTimeout(() => ach.classList.remove('pop'), 4000);
+    const interval = setInterval(() => {
+        // Randomize loading speed chunks to make it look real
+        p += Math.floor(Math.random() * 8) + 1;
+        if (p > 100) p = 100;
+
+        fill.style.width = p + '%';
+        pct.innerText = p + '%';
+
+        if (p === 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                go('title');
+            }, 500);
+        }
+    }, 80); // Speed of loading bar
 }
 
 // ============================================
-// CAROUSEL
+// HERO CAROUSEL LOGIC
 // ============================================
-function scrollCarousel(direction) {
-    const list = document.querySelector('.arcane-carousel-container');
-    if (!list) return;
-    const cardWidth = window.innerWidth * 0.225;
-    list.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+function scrollHeroes(dir) {
+    const scroll = document.getElementById('heroScroll');
+    if (!scroll) return;
+    const cw = window.innerWidth * 0.205; // card width + gap approx
+    scroll.scrollBy({ left: dir * cw, behavior: 'smooth' });
 }
+window.scrollHeroes = scrollHeroes;
 
-let scrollListenerAttached = false;
+let heroScrollBound = false;
+function initHeroes() {
+    const scroll = document.getElementById('heroScroll');
+    const cards = document.querySelectorAll('.hero-card');
+    if (!scroll || cards.length === 0) return;
 
-function initHeroScroll() {
-    const list = document.querySelector('.arcane-carousel-container');
-    const cards = document.querySelectorAll('.arcane-card');
-    if (!list || cards.length === 0) return;
+    function update() {
+        const center = scroll.getBoundingClientRect().left + scroll.offsetWidth / 2;
+        cards.forEach(c => {
+            const r = c.getBoundingClientRect();
+            const cCenter = r.left + r.width / 2;
+            const dist = Math.abs(cCenter - center);
+            const thresh = window.innerWidth * 0.1;
 
-    function updateCardStates() {
-        const center = list.getBoundingClientRect().left + list.offsetWidth / 2;
-
-        cards.forEach(card => {
-            const rect = card.getBoundingClientRect();
-            const cardCenter = rect.left + rect.width / 2;
-            const dist = cardCenter - center;
-            const threshold = window.innerWidth * 0.11;
-
-            if (Math.abs(dist) < threshold) {
-                if (!card.classList.contains('pos-center')) {
-                    card.className = 'arcane-card pos-center';
-                    currentHeroObj = card;
-                }
-            } else if (dist < 0) {
-                if (!card.classList.contains('pos-left')) card.className = 'arcane-card pos-left';
+            if (dist < thresh) {
+                if (!c.classList.contains('center')) c.classList.add('center');
             } else {
-                if (!card.classList.contains('pos-right')) card.className = 'arcane-card pos-right';
+                c.classList.remove('center');
             }
         });
     }
 
-    if (!scrollListenerAttached) {
-        list.addEventListener('scroll', updateCardStates, { passive: true });
-
-        cards.forEach(card => {
-            card.addEventListener('click', (e) => {
-                if (e.target.closest('.ac-play-btn')) return;
-                if (!card.classList.contains('pos-center')) {
-                    card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-                }
-            });
-        });
-        scrollListenerAttached = true;
+    if (!heroScrollBound) {
+        scroll.addEventListener('scroll', update, { passive: true });
+        cards.forEach(c => c.addEventListener('click', (e) => {
+            if (e.target.closest('.hc-select')) return; // handled by selectHero
+            if (!c.classList.contains('center')) {
+                c.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+            }
+        }));
+        heroScrollBound = true;
     }
-
-    updateCardStates();
+    update();
 }
 
-// Also allow arrow key navigation
-document.addEventListener('keydown', (e) => {
-    if (currentScreenId === 'screen-character-select') {
-        if (e.key === 'ArrowRight') scrollCarousel(1);
-        if (e.key === 'ArrowLeft') scrollCarousel(-1);
+function selectHero(card) {
+    const name = card.getAttribute('data-name');
+    const hClass = card.getAttribute('data-class');
+    const img = card.getAttribute('data-img');
+
+    // Update the Lobby display with the selected hero
+    document.getElementById('lobby-hero-name').innerText = name;
+    document.getElementById('lobby-hero-class').innerText = hClass;
+    document.getElementById('lobby-hero-img').src = img;
+
+    go('lobby');
+}
+window.selectHero = selectHero;
+
+// ============================================
+// PARTICLES & UI INIT
+// ============================================
+function spawnEmbers() {
+    const c = document.getElementById('embers');
+    if (!c) return;
+    const cnt = 40;
+    for (let i = 0; i < cnt; i++) {
+        const p = document.createElement('div');
+        p.className = 'ember';
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.setProperty('--d', (4 + Math.random() * 8) + 's');
+        p.style.setProperty('--del', (Math.random() * 5) + 's');
+        const s = (1 + Math.random() * 3) + 'px';
+        p.style.width = s; p.style.height = s;
+        if (Math.random() > 0.5) p.style.background = '#ff3e5e'; // Adding some red embers
+        c.appendChild(p);
     }
-    // Press any key on splash
-    if (currentScreenId === 'screen-splash') {
-        triggerFadeTransition('screen-main-menu');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    spawnEmbers();
+    if (curScr === 'boot') {
+        setTimeout(initBoot, 1000);
     }
+
+    // Leaderboard Tabs
+    document.querySelectorAll('.lb-tab').forEach(t => {
+        t.addEventListener('click', () => {
+            document.querySelectorAll('.lb-tab').forEach(x => x.classList.remove('on'));
+            t.classList.add('on');
+        });
+    });
+
+    // Settings Toggles
+    document.querySelectorAll('.tog').forEach(t => {
+        t.addEventListener('click', () => t.classList.toggle('on'));
+    });
 });
 
-// ============================================
-// MISSION DATA
-// ============================================
-function populateMissionData() {
-    if (!currentHeroObj) return;
-    const title = currentHeroObj.getAttribute('data-m-title');
-    const desc = currentHeroObj.getAttribute('data-m-desc');
-    const loc = currentHeroObj.getAttribute('data-m-loc');
-    const img = currentHeroObj.getAttribute('data-img');
-
-    document.getElementById('dynamic-mission-title').innerText = title;
-    document.getElementById('dynamic-mission-desc').innerText = desc;
-    document.getElementById('dynamic-mission-loc').innerText = loc;
-    document.getElementById('dynamic-mission-map').style.backgroundImage = `url('${img}')`;
-}
-
-// ============================================
-// STUDIO INTRO SEQUENCE
-// ============================================
-function playIntro() {
-    const card1 = document.getElementById('intro-card-1');
-    const card2 = document.getElementById('intro-card-2');
-
-    setTimeout(() => { if (card1) card1.classList.add('show'); }, 600);
-    setTimeout(() => { if (card1) card1.classList.remove('show'); }, 3200);
-    setTimeout(() => { if (card2) card2.classList.add('show'); }, 4500);
-    setTimeout(() => { if (card2) card2.classList.remove('show'); }, 7000);
-    setTimeout(() => { triggerFadeTransition('screen-splash'); }, 8200);
-}
-
-// ============================================
-// INIT
-// ============================================
-document.addEventListener('DOMContentLoaded', () => {
-    spawnParticles();
-    if (currentScreenId === 'screen-studio-intro') {
-        playIntro();
+// Keyboard
+document.addEventListener('keydown', (e) => {
+    if (curScr === 'title') {
+        go('lobby');
     }
-
-    // Settings toggles
-    document.querySelectorAll('.toggle').forEach(toggle => {
-        toggle.addEventListener('click', () => toggle.classList.toggle('on'));
-    });
-
-    // Leaderboard tabs
-    document.querySelectorAll('.lb-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-        });
-    });
-
-    // Side nav active states
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        });
-    });
-
-    // Profile avatar click
-    const profileImg = document.querySelector('.nav-profile img');
-    if (profileImg) {
-        profileImg.addEventListener('click', () => triggerFadeTransition('screen-profile'));
+    if (curScr === 'heroes') {
+        if (e.key === 'ArrowRight') scrollHeroes(1);
+        if (e.key === 'ArrowLeft') scrollHeroes(-1);
     }
 });

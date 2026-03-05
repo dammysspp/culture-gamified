@@ -4,688 +4,498 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Echoes of Elders — Cultural Simulation</title>
-    <meta name="description" content="Reconnect with global cultures through immersive storytelling and exploration.">
+    <title>Echoes of Elders</title>
     <link rel="stylesheet" href="style.css">
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 
 <body>
-    <div id="fade-transition"></div>
-    <div id="flash-bang"></div>
+    <div id="curtain"></div>
+    <div id="app">
+        <div class="bg-hero" style="background-image:url('assets/bg.png')"></div>
+        <div class="bg-vignette"></div>
+        <div class="bg-grain"></div>
+        <div id="embers"></div>
 
-    <div id="game-container">
-        <div id="global-bg" style="background-image: url('assets/bg.png')"></div>
-        <div class="vignette-overlay"></div>
-        <div class="grain-overlay"></div>
-        <div id="particles-canvas"></div>
-
-        <!-- ======= SCREEN 0: STUDIO INTRO ======= -->
-        <div id="screen-studio-intro" class="screen active">
-            <div id="intro-card-1" class="intro-card">
-                <p class="intro-label">Designed & Coded by</p>
-                <h2 class="intro-name">SAMSCO</h2>
-                <div class="intro-divider"></div>
+        <!-- ═══ BOOT/LOADING ═══ -->
+        <div id="boot" class="scr on">
+            <div class="boot-top"><span class="boot-studio">CUCSA Studios</span></div>
+            <div class="boot-mid">
+                <div class="boot-logo">Echoes of<br>Elders</div>
+                <p class="boot-sub">Play the World. Preserve Culture.</p>
             </div>
-            <div id="intro-card-2" class="intro-card">
-                <p class="intro-label">Created by</p>
-                <h2 class="intro-name">CUCSA</h2>
-                <div class="intro-divider"></div>
+            <div class="boot-bar-wrap">
+                <div class="boot-label"><span>Loading Assets</span><span id="boot-pct">0%</span></div>
+                <div class="boot-bar">
+                    <div class="boot-fill" id="boot-fill"></div>
+                </div>
             </div>
+            <p class="boot-tip" id="boot-tip">Did you know? Mancala is one of the oldest board games, dating back over
+                7,000 years.</p>
+            <div class="boot-bottom-r">Designed by Samsco // v0.1</div>
         </div>
 
-        <!-- ======= SCREEN 1: SPLASH / TITLE ======= -->
-        <div id="screen-splash" class="screen">
-            <div class="splash-container">
-                <div class="emblem"><ion-icon name="leaf"></ion-icon></div>
-                <h1 class="game-title">Echoes of Elders</h1>
-                <div class="title-ornament">
-                    <div class="ornament-line"></div>
-                    <div class="ornament-diamond"></div>
-                    <div class="ornament-line"></div>
-                </div>
-                <p class="game-tagline">Play the World. Preserve Culture.</p>
-                <button class="start-prompt" onclick="triggerFadeTransition('screen-main-menu')">Press Any Key</button>
+        <!-- ═══ TITLE ═══ -->
+        <div id="title" class="scr">
+            <div class="title-wrap">
+                <h1 class="t-logo">Echoes of<br>Elders</h1>
+                <p class="t-tag">Play the World</p>
+                <button class="t-prompt" onclick="go('lobby')">Press Start</button>
             </div>
-            <div class="splash-footer">
-                <span>© 2026 CUCSA</span>
-                <span>v0.1 // prototype build</span>
-            </div>
+            <div class="t-footer"><span>© 2026 CUCSA</span><span>Prototype Build v0.1</span></div>
         </div>
 
-        <!-- ======= SCREEN 2: MAIN MENU HUB ======= -->
-        <div id="screen-main-menu" class="screen">
-            <nav class="side-nav">
-                <div class="nav-logo"><ion-icon name="leaf"></ion-icon></div>
-                <div class="nav-links">
-                    <button class="nav-btn active"><ion-icon name="home"></ion-icon></button>
-                    <button class="nav-btn" onclick="triggerFadeTransition('screen-character-select')"><ion-icon
-                            name="people"></ion-icon></button>
-                    <button class="nav-btn" onclick="triggerFadeTransition('screen-leaderboard')"><ion-icon
-                            name="trophy"></ion-icon></button>
-                    <button class="nav-btn" onclick="triggerFadeTransition('screen-community')"><ion-icon
-                            name="chatbubbles"></ion-icon></button>
-                    <button class="nav-btn" onclick="triggerFadeTransition('screen-settings')"><ion-icon
-                            name="settings"></ion-icon></button>
+        <!-- ═══ LOBBY (Main Hub) ═══ -->
+        <div id="lobby" class="scr">
+            <div class="lobby-top">
+                <div class="lt-brand"><ion-icon name="leaf"></ion-icon> Echoes of Elders</div>
+                <div class="lt-right">
+                    <div class="lt-currency"><ion-icon name="diamond"></ion-icon> 18,750</div>
+                    <img src="https://i.pravatar.cc/150?img=68" class="lt-avatar" onclick="go('profile')">
                 </div>
-                <div class="nav-profile"><img src="https://i.pravatar.cc/150?img=68" alt="Profile"></div>
-            </nav>
+            </div>
 
-            <div class="hub-content">
-                <header class="hub-header">
-                    <h2>Good evening, <span>Initiate</span></h2>
-                    <div class="header-tools">
-                        <div class="search-bar"><ion-icon name="search"></ion-icon> Search Archives...</div>
-                        <div class="action-icons"><ion-icon name="notifications"></ion-icon></div>
+            <div class="lobby-center">
+                <!-- Left side cards -->
+                <div class="lobby-left">
+                    <div class="side-card" onclick="go('games')">
+                        <div class="sc-icon"><ion-icon name="dice"></ion-icon></div>
+                        <h5>Game Modes</h5>
+                        <p>Cultural board games from around the world</p>
                     </div>
-                </header>
+                    <div class="side-card" onclick="go('heroes')">
+                        <div class="sc-icon"><ion-icon name="people"></ion-icon></div>
+                        <h5>Heroes</h5>
+                        <p>Select your cultural champion</p>
+                    </div>
+                </div>
 
-                <div class="hub-grid">
-                    <div class="hub-card featured-mission" onclick="triggerFadeTransition('screen-character-select')">
-                        <div class="card-image bg-orisa"></div>
-                        <div class="card-overlay">
-                            <div class="badge">Recommended</div>
-                            <h3>The Royal Archives</h3>
-                            <p>Dive headfirst into an era of fierce warriors, brilliant strategists, and cunning
-                                diplomats.</p>
-                            <button class="play-btn-large"><ion-icon name="play-circle"></ion-icon> Enter the Ancestral
-                                Realm</button>
-                        </div>
+                <!-- Center hero display -->
+                <div class="hero-display">
+                    <img src="assets/amina.png" class="hero-img" id="lobby-hero-img">
+                    <div class="hero-name-tag">
+                        <h3 id="lobby-hero-name">Amina</h3>
+                        <span id="lobby-hero-class">Cavalry Commander // Warrior</span>
                     </div>
-                    <div class="hub-col">
-                        <div class="hub-card stats-card">
-                            <h4>Your Horizon</h4>
-                            <div class="stat-circle">
-                                <div class="sc-val">120<span>hrs</span></div>
-                            </div>
-                            <div class="stat-icons">
-                                <div class="si-item"><ion-icon name="footsteps"></ion-icon> Explored</div>
-                                <div class="si-item"><ion-icon name="ribbon"></ion-icon> Mastery</div>
-                            </div>
-                        </div>
-                        <div class="hub-card recent-card">
-                            <h4>Recent Lore</h4>
-                            <div class="lore-item">
-                                <div class="l-icon"><ion-icon name="book"></ion-icon></div>
-                                <div>
-                                    <h5>Ashanti Empire</h5><span>History unlocked</span>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+
+                <!-- Right side cards -->
+                <div class="lobby-right">
+                    <div class="side-card" onclick="go('leaderboard')">
+                        <div class="sc-icon"><ion-icon name="trophy"></ion-icon></div>
+                        <h5>Leaderboard</h5>
+                        <p>Global rankings</p>
+                    </div>
+                    <div class="side-card hot" onclick="go('community')">
+                        <div class="sc-icon"><ion-icon name="chatbubbles"></ion-icon></div>
+                        <h5>Community</h5>
+                        <p>Clans & activity</p>
                     </div>
                 </div>
             </div>
+
+            <!-- Bottom nav (Fortnite-style) -->
+            <div class="lobby-bottom">
+                <button class="bot-btn active"><ion-icon name="home"></ion-icon><span>Lobby</span></button>
+                <button class="bot-btn" onclick="go('heroes')"><ion-icon
+                        name="people"></ion-icon><span>Heroes</span></button>
+                <button class="bot-btn play-btn" onclick="go('games')"><ion-icon
+                        name="play"></ion-icon><span>Play</span></button>
+                <button class="bot-btn" onclick="go('leaderboard')"><ion-icon
+                        name="trophy"></ion-icon><span>Ranks</span></button>
+                <button class="bot-btn" onclick="go('settings')"><ion-icon
+                        name="settings"></ion-icon><span>Settings</span></button>
+            </div>
         </div>
 
-        <!-- ======= SCREEN 3: CHARACTER SELECT ======= -->
-        <div id="screen-character-select" class="screen">
-            <div class="roster-top-nav">
-                <div class="roster-brand"><ion-icon name="leaf"></ion-icon> ECHOES OF ELDERS <span>// ROSTER</span>
-                </div>
-                <button class="back-btn-text" onclick="triggerFadeTransition('screen-main-menu')"><ion-icon
-                        name="chevron-back"></ion-icon> Hub</button>
+        <!-- ═══ HEROES ═══ -->
+        <div id="heroes" class="scr">
+            <div class="scr-top">
+                <div class="scr-title"><ion-icon name="people"></ion-icon> Select Hero</div>
+                <button class="back-btn" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Back</button>
             </div>
-
-            <div class="carousel-section">
-                <button class="nav-arrow left-arrow" onclick="scrollCarousel(-1)"><ion-icon
-                        name="chevron-back"></ion-icon></button>
-                <button class="nav-arrow right-arrow" onclick="scrollCarousel(1)"><ion-icon
+            <div class="carousel-zone">
+                <button class="arr arr-l" onclick="scrollHeroes(-1)"><ion-icon name="chevron-back"></ion-icon></button>
+                <button class="arr arr-r" onclick="scrollHeroes(1)"><ion-icon
                         name="chevron-forward"></ion-icon></button>
-
-                <div class="arcane-carousel-container">
-                    <!-- 01: Moremi -->
-                    <div class="arcane-card pos-center" data-hero="moremi" data-m-title="The Edi Festival"
-                        data-m-desc="The Igbo forces are threatening Ile-Ife. Infiltrate their ranks, discover the secret to their strength, and save the Yoruba people."
-                        data-m-loc="Ile-Ife" data-img="assets/moremi.png">
-                        <div class="ac-bg" style="background-image: url('assets/moremi.png');"></div>
-                        <div class="ac-gradient"
-                            style="background: linear-gradient(0deg, rgba(140,42,50,0.9) 0%, rgba(140,42,50,0.2) 50%, transparent 100%);">
+                <div class="carousel-scroll" id="heroScroll">
+                    <div class="hero-card center" data-hero="moremi" data-name="Moremi"
+                        data-class="Infiltrator // Protector" data-img="assets/moremi.png">
+                        <div class="hc-bg" style="background-image:url('assets/moremi.png')"></div>
+                        <div class="hc-grad"
+                            style="background:linear-gradient(0deg,rgba(140,42,50,.9) 0%,transparent 60%)"></div>
+                        <div class="hc-number">01</div>
+                        <div class="hc-info">
+                            <div class="hc-era">12th Century</div>
+                            <h3 class="hc-name">Moremi</h3>
+                            <div class="hc-class">Infiltrator // Protector</div>
                         </div>
-                        <div class="ac-border" style="border-color: rgba(255,75,92,0.4);"></div>
-                        <div class="ac-side-text"><span class="ac-number">01</span><span class="ac-class-label">CARD
-                                NAME</span><span class="ac-actual-class">PROTECTOR</span></div>
-                        <div class="ac-content">
-                            <div class="ac-tiny-dates">CIRCA 12TH CENTURY</div>
-                            <h2 class="ac-name">Moremi</h2>
-                            <div class="ac-subtitle"><span>Class: Infiltrator</span>
-                                <p>The legendary Yoruba queen who sacrificed everything to save her people.</p>
-                            </div>
-                        </div>
-                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                            LORE</button>
+                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
                     </div>
-
-                    <!-- 02: Amina -->
-                    <div class="arcane-card" data-hero="amina" data-m-title="Conquest of Zazzau"
-                        data-m-desc="Lead the cavalry of Zazzau to secure safe passage for Hausa merchants. Fortify the newly conquered lands by building the legendary walls."
-                        data-m-loc="Northern Zazzau" data-img="assets/amina.png">
-                        <div class="ac-bg" style="background-image: url('assets/amina.png');"></div>
-                        <div class="ac-gradient"
-                            style="background: linear-gradient(0deg, rgba(8,112,184,0.9) 0%, rgba(8,112,184,0.2) 50%, transparent 100%);">
+                    <div class="hero-card" data-hero="amina" data-name="Amina" data-class="Cavalry Commander // Warrior"
+                        data-img="assets/amina.png">
+                        <div class="hc-bg" style="background-image:url('assets/amina.png')"></div>
+                        <div class="hc-grad"
+                            style="background:linear-gradient(0deg,rgba(8,112,184,.9) 0%,transparent 60%)"></div>
+                        <div class="hc-number">02</div>
+                        <div class="hc-info">
+                            <div class="hc-era">16th Century</div>
+                            <h3 class="hc-name">Amina</h3>
+                            <div class="hc-class">Cavalry Commander // Warrior</div>
                         </div>
-                        <div class="ac-border" style="border-color: rgba(0,243,255,0.4);"></div>
-                        <div class="ac-side-text"><span class="ac-number">02</span><span class="ac-class-label">CARD
-                                NAME</span><span class="ac-actual-class">WARRIOR</span></div>
-                        <div class="ac-content">
-                            <div class="ac-tiny-dates">LATE 16TH CENTURY</div>
-                            <h2 class="ac-name">Amina</h2>
-                            <div class="ac-subtitle"><span>Class: Cavalry Commander</span>
-                                <p>Queen of Zazzau, fierce military strategist and builder of the great walls.</p>
-                            </div>
-                        </div>
-                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                            LORE</button>
+                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
                     </div>
-
-                    <!-- 03: Jaja -->
-                    <div class="arcane-card" data-hero="jaja" data-m-title="The Palm Oil Monopoly"
-                        data-m-desc="Navigate the complex trade routes of the Niger Delta. Outsmart European merchants and establish Opobo as the supreme trading powerhouse."
-                        data-m-loc="Opobo Delta" data-img="assets/jaja.png">
-                        <div class="ac-bg" style="background-image: url('assets/jaja.png');"></div>
-                        <div class="ac-gradient"
-                            style="background: linear-gradient(0deg, rgba(209,122,34,0.9) 0%, rgba(209,122,34,0.2) 50%, transparent 100%);">
+                    <div class="hero-card" data-hero="jaja" data-name="Jaja" data-class="Merchant Prince // Diplomat"
+                        data-img="assets/jaja.png">
+                        <div class="hc-bg" style="background-image:url('assets/jaja.png')"></div>
+                        <div class="hc-grad"
+                            style="background:linear-gradient(0deg,rgba(209,122,34,.9) 0%,transparent 60%)"></div>
+                        <div class="hc-number">03</div>
+                        <div class="hc-info">
+                            <div class="hc-era">19th Century</div>
+                            <h3 class="hc-name">Jaja</h3>
+                            <div class="hc-class">Merchant Prince // Diplomat</div>
                         </div>
-                        <div class="ac-border" style="border-color: rgba(255,215,0,0.4);"></div>
-                        <div class="ac-side-text"><span class="ac-number">03</span><span class="ac-class-label">CARD
-                                NAME</span><span class="ac-actual-class">DIPLOMAT</span></div>
-                        <div class="ac-content">
-                            <div class="ac-tiny-dates">1821 — 1891</div>
-                            <h2 class="ac-name">Jaja</h2>
-                            <div class="ac-subtitle"><span>Class: Merchant Prince</span>
-                                <p>From an enslaved boy to the undisputed trading king of the Niger Delta.</p>
-                            </div>
-                        </div>
-                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                            LORE</button>
+                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
                     </div>
-
-                    <!-- 04: Shaka -->
-                    <div class="arcane-card" data-hero="shaka" data-m-title="Rise of the Zulu"
-                        data-m-desc="Reorganize the military forces with the short stabbing spear 'iklwa' and the bull-horn formation to conquer the surrounding regions."
-                        data-m-loc="KwaZulu" data-img="assets/shaka.png">
-                        <div class="ac-bg" style="background-image: url('assets/shaka.png');"></div>
-                        <div class="ac-gradient"
-                            style="background: linear-gradient(0deg, rgba(8,112,184,0.9) 0%, rgba(8,112,184,0.2) 50%, transparent 100%);">
+                    <div class="hero-card" data-hero="shaka" data-name="Shaka" data-class="General // Warrior"
+                        data-img="assets/shaka.png">
+                        <div class="hc-bg" style="background-image:url('assets/shaka.png')"></div>
+                        <div class="hc-grad"
+                            style="background:linear-gradient(0deg,rgba(8,112,184,.9) 0%,transparent 60%)"></div>
+                        <div class="hc-number">04</div>
+                        <div class="hc-info">
+                            <div class="hc-era">19th Century</div>
+                            <h3 class="hc-name">Shaka</h3>
+                            <div class="hc-class">General // Warrior</div>
                         </div>
-                        <div class="ac-border" style="border-color: rgba(0,243,255,0.4);"></div>
-                        <div class="ac-side-text"><span class="ac-number">04</span><span class="ac-class-label">CARD
-                                NAME</span><span class="ac-actual-class">WARRIOR</span></div>
-                        <div class="ac-content">
-                            <div class="ac-tiny-dates">EARLY 19TH CENTURY</div>
-                            <h2 class="ac-name">Shaka</h2>
-                            <div class="ac-subtitle"><span>Class: General</span>
-                                <p>The legendary Zulu king who forged a powerful empire through military genius.</p>
-                            </div>
-                        </div>
-                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                            LORE</button>
+                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
                     </div>
-
-                    <!-- 05: Mansa Musa -->
-                    <div class="arcane-card" data-hero="mansa" data-m-title="Pilgrimage to Mecca"
-                        data-m-desc="Distribute unimaginable wealth along the trade routes and put the Mali Empire on the global map."
-                        data-m-loc="Niani to Cairo" data-img="assets/mansa.png">
-                        <div class="ac-bg" style="background-image: url('assets/mansa.png');"></div>
-                        <div class="ac-gradient"
-                            style="background: linear-gradient(0deg, rgba(209,122,34,0.9) 0%, rgba(209,122,34,0.2) 50%, transparent 100%);">
+                    <div class="hero-card" data-hero="mansa" data-name="Mansa Musa" data-class="Emperor // Economist"
+                        data-img="assets/mansa.png">
+                        <div class="hc-bg" style="background-image:url('assets/mansa.png')"></div>
+                        <div class="hc-grad"
+                            style="background:linear-gradient(0deg,rgba(209,122,34,.9) 0%,transparent 60%)"></div>
+                        <div class="hc-number">05</div>
+                        <div class="hc-info">
+                            <div class="hc-era">14th Century</div>
+                            <h3 class="hc-name">Mansa Musa</h3>
+                            <div class="hc-class">Emperor // Economist</div>
                         </div>
-                        <div class="ac-border" style="border-color: rgba(255,215,0,0.4);"></div>
-                        <div class="ac-side-text"><span class="ac-number">05</span><span class="ac-class-label">CARD
-                                NAME</span><span class="ac-actual-class">ECONOMIST</span></div>
-                        <div class="ac-content">
-                            <div class="ac-tiny-dates">14TH CENTURY</div>
-                            <h2 class="ac-name">Mansa Musa</h2>
-                            <div class="ac-subtitle"><span>Class: Emperor</span>
-                                <p>The wealthiest ruler in all of recorded history.</p>
-                            </div>
-                        </div>
-                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                            LORE</button>
+                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
                     </div>
-
-                    <!-- 06: Yaa Asantewaa -->
-                    <div class="arcane-card" data-hero="yaa" data-m-title="War of the Golden Stool"
-                        data-m-desc="Rally the Ashanti forces to protect their sacred symbol against colonial encroachment."
-                        data-m-loc="Kumasi" data-img="assets/yaa.png">
-                        <div class="ac-bg" style="background-image: url('assets/yaa.png');"></div>
-                        <div class="ac-gradient"
-                            style="background: linear-gradient(0deg, rgba(140,42,50,0.9) 0%, rgba(140,42,50,0.2) 50%, transparent 100%);">
+                    <div class="hero-card" data-hero="yaa" data-name="Yaa" data-class="Queen Mother // Commander"
+                        data-img="assets/yaa.png">
+                        <div class="hc-bg" style="background-image:url('assets/yaa.png')"></div>
+                        <div class="hc-grad"
+                            style="background:linear-gradient(0deg,rgba(140,42,50,.9) 0%,transparent 60%)"></div>
+                        <div class="hc-number">06</div>
+                        <div class="hc-info">
+                            <div class="hc-era">20th Century</div>
+                            <h3 class="hc-name">Yaa</h3>
+                            <div class="hc-class">Queen Mother // Commander</div>
                         </div>
-                        <div class="ac-border" style="border-color: rgba(255,75,92,0.4);"></div>
-                        <div class="ac-side-text"><span class="ac-number">06</span><span class="ac-class-label">CARD
-                                NAME</span><span class="ac-actual-class">COMMANDER</span></div>
-                        <div class="ac-content">
-                            <div class="ac-tiny-dates">EARLY 20TH CENTURY</div>
-                            <h2 class="ac-name">Yaa</h2>
-                            <div class="ac-subtitle"><span>Class: Queen Mother</span>
-                                <p>The fearless leader who commanded the ultimate resistance.</p>
-                            </div>
-                        </div>
-                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                            LORE</button>
+                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
                     </div>
-
-                    <!-- 07: Sundiata -->
-                    <div class="arcane-card" data-hero="sundiata" data-m-title="Battle of Kirina"
-                        data-m-desc="Overthrow the tyrannical Sosso king and establish the mighty Mali Empire."
-                        data-m-loc="Kangaba" data-img="assets/sundiata.png">
-                        <div class="ac-bg" style="background-image: url('assets/sundiata.png');"></div>
-                        <div class="ac-gradient"
-                            style="background: linear-gradient(0deg, rgba(8,112,184,0.9) 0%, rgba(8,112,184,0.2) 50%, transparent 100%);">
+                    <div class="hero-card" data-hero="sundiata" data-name="Sundiata"
+                        data-class="Lion Prince // Conqueror" data-img="assets/sundiata.png">
+                        <div class="hc-bg" style="background-image:url('assets/sundiata.png')"></div>
+                        <div class="hc-grad"
+                            style="background:linear-gradient(0deg,rgba(8,112,184,.9) 0%,transparent 60%)"></div>
+                        <div class="hc-number">07</div>
+                        <div class="hc-info">
+                            <div class="hc-era">13th Century</div>
+                            <h3 class="hc-name">Sundiata</h3>
+                            <div class="hc-class">Lion Prince // Conqueror</div>
                         </div>
-                        <div class="ac-border" style="border-color: rgba(0,243,255,0.4);"></div>
-                        <div class="ac-side-text"><span class="ac-number">07</span><span class="ac-class-label">CARD
-                                NAME</span><span class="ac-actual-class">CONQUEROR</span></div>
-                        <div class="ac-content">
-                            <div class="ac-tiny-dates">13TH CENTURY</div>
-                            <h2 class="ac-name">Sundiata</h2>
-                            <div class="ac-subtitle"><span>Class: Lion Prince</span>
-                                <p>The destined warrior founder who overcame exile.</p>
-                            </div>
-                        </div>
-                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                            LORE</button>
-                    </div>
-
-                    <!-- 08: Nzinga -->
-                    <div class="arcane-card" data-hero="nzinga" data-m-title="Defense of Ndongo"
-                        data-m-desc="Form brilliant alliances and outmaneuver foreign forces to protect your kingdom."
-                        data-m-loc="Kabasa" data-img="assets/moremi.png">
-                        <div class="ac-bg"
-                            style="background-image: url('assets/moremi.png'); filter: hue-rotate(200deg) brightness(0.5);">
-                        </div>
-                        <div class="ac-gradient"
-                            style="background: linear-gradient(0deg, rgba(100,20,150,0.9) 0%, rgba(100,20,150,0.2) 50%, transparent 100%);">
-                        </div>
-                        <div class="ac-border" style="border-color: rgba(157,0,255,0.4);"></div>
-                        <div class="ac-side-text"><span class="ac-number">08</span><span class="ac-class-label">CARD
-                                NAME</span><span class="ac-actual-class">TACTICIAN</span></div>
-                        <div class="ac-content">
-                            <div class="ac-tiny-dates">17TH CENTURY</div>
-                            <h2 class="ac-name">Nzinga</h2>
-                            <div class="ac-subtitle"><span>Class: Queen Regent</span>
-                                <p>A brilliant diplomat and unyielding military strategist.</p>
-                            </div>
-                        </div>
-                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                            LORE</button>
-                    </div>
-
-                    <!-- 09: Osei Tutu -->
-                    <div class="arcane-card" data-hero="osei" data-m-title="Forging the Alliance"
-                        data-m-desc="Unite the divided Akan clans under the mystical Golden Stool to forge the ultimate empire."
-                        data-m-loc="Ashanti Region" data-img="assets/jaja.png">
-                        <div class="ac-bg"
-                            style="background-image: url('assets/jaja.png'); filter: sepia(0.5) brightness(0.5);"></div>
-                        <div class="ac-gradient"
-                            style="background: linear-gradient(0deg, rgba(209,122,34,0.9) 0%, rgba(209,122,34,0.2) 50%, transparent 100%);">
-                        </div>
-                        <div class="ac-border" style="border-color: rgba(255,215,0,0.4);"></div>
-                        <div class="ac-side-text"><span class="ac-number">09</span><span class="ac-class-label">CARD
-                                NAME</span><span class="ac-actual-class">UNIFIER</span></div>
-                        <div class="ac-content">
-                            <div class="ac-tiny-dates">LATE 17TH CENTURY</div>
-                            <h2 class="ac-name">Osei Tutu</h2>
-                            <div class="ac-subtitle"><span>Class: King Creator</span>
-                                <p>The unifier of the Ashanti Empire.</p>
-                            </div>
-                        </div>
-                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                            LORE</button>
-                    </div>
-
-                    <!-- 10: Ezana -->
-                    <div class="arcane-card" data-hero="ezana" data-m-title="The Stelae Project"
-                        data-m-desc="Commemorate your great victories by raising the massive monolithic obelisks of Aksum."
-                        data-m-loc="Aksum" data-img="assets/shaka.png">
-                        <div class="ac-bg"
-                            style="background-image: url('assets/shaka.png'); filter: hue-rotate(30deg) brightness(0.5);">
-                        </div>
-                        <div class="ac-gradient"
-                            style="background: linear-gradient(0deg, rgba(8,112,184,0.9) 0%, rgba(8,112,184,0.2) 50%, transparent 100%);">
-                        </div>
-                        <div class="ac-border" style="border-color: rgba(0,243,255,0.4);"></div>
-                        <div class="ac-side-text"><span class="ac-number">10</span><span class="ac-class-label">CARD
-                                NAME</span><span class="ac-actual-class">VISIONARY</span></div>
-                        <div class="ac-content">
-                            <div class="ac-tiny-dates">4TH CENTURY</div>
-                            <h2 class="ac-name">Ezana</h2>
-                            <div class="ac-subtitle"><span>Class: Monarch</span>
-                                <p>A transformative leader who brought spiritual revolution.</p>
-                            </div>
-                        </div>
-                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                            LORE</button>
+                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ======= SCREEN 4: MISSION DEPLOY ======= -->
-        <div id="screen-mission-select" class="screen">
-            <div class="roster-top-nav">
-                <div class="roster-brand"><ion-icon name="leaf"></ion-icon> MISSION BRIEFING</div>
-                <button class="back-btn-text" onclick="triggerFadeTransition('screen-character-select')"><ion-icon
-                        name="chevron-back"></ion-icon> Cancel</button>
+        <!-- ═══ GAME MODES ═══ -->
+        <div id="games" class="scr">
+            <div class="scr-top">
+                <div class="scr-title"><ion-icon name="dice"></ion-icon> Game Modes</div>
+                <button class="back-btn" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Back</button>
             </div>
-            <div class="mission-view">
-                <div class="map-area" id="dynamic-mission-map" style="background-image: url('assets/amina.png');">
-                    <div class="clean-map-bg"></div>
-                    <div class="map-marker" style="top:50%; left:50%;">
-                        <div class="marker-dot"></div><span id="dynamic-mission-loc">Zazzau Empire</span>
+            <div class="games-body">
+                <div class="section-label"><ion-icon name="star"></ion-icon> Featured Board Games</div>
+                <div class="games-grid">
+                    <div class="game-tile">
+                        <div class="gt-bg" style="background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)"></div>
+                        <div class="gt-overlay"></div>
+                        <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
+                        <div class="gt-content">
+                            <div class="gt-badge pop">Most Played</div>
+                            <div class="gt-name">Oware</div>
+                            <div class="gt-origin">Ghana / West Africa</div>
+                            <div class="gt-desc">The royal seed-sowing game. Capture the most seeds to win.</div>
+                        </div>
+                    </div>
+                    <div class="game-tile">
+                        <div class="gt-bg" style="background:linear-gradient(135deg,#2d1b00,#5c3d1a,#8b6914)"></div>
+                        <div class="gt-overlay"></div>
+                        <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
+                        <div class="gt-content">
+                            <div class="gt-badge">Strategy</div>
+                            <div class="gt-name">Senet</div>
+                            <div class="gt-origin">Ancient Egypt</div>
+                            <div class="gt-desc">One of humanity's oldest board games. Race your pieces to the
+                                afterlife.</div>
+                        </div>
+                    </div>
+                    <div class="game-tile">
+                        <div class="gt-bg" style="background:linear-gradient(135deg,#1b2a1b,#2d4a2d,#3d6b3d)"></div>
+                        <div class="gt-overlay"></div>
+                        <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
+                        <div class="gt-content">
+                            <div class="gt-badge new">New</div>
+                            <div class="gt-name">Morabaraba</div>
+                            <div class="gt-origin">South Africa</div>
+                            <div class="gt-desc">Strategic mill game. Trap your opponent by forming lines of three.
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="mission-details-panel">
-                    <div class="mdp-header" id="dynamic-mission-title">Conquest of Zazzau</div>
-                    <div class="mdp-body">
-                        <p class="mdp-desc" id="dynamic-mission-desc">Lead the cavalry to secure safe passage for Hausa
-                            merchants. Fortify the newly conquered lands by building the legendary walls.</p>
-                        <div class="mdp-stats">
-                            <div class="m-stat"><ion-icon name="timer"></ion-icon> 20 Mins</div>
-                            <div class="m-stat"><ion-icon name="skull"></ion-icon> Challenging</div>
-                        </div>
-                        <div class="mdp-rewards">
-                            <h4>Potential Discoveries</h4>
-                            <div class="m-loot"><ion-icon name="star"></ion-icon> 500 Ancestral Aura</div>
-                            <div class="m-loot"><ion-icon name="book"></ion-icon> Exclusive Historical Lore</div>
+
+                <div class="section-label"><ion-icon name="earth"></ion-icon> Cultural Classics</div>
+                <div class="games-grid">
+                    <div class="game-tile">
+                        <div class="gt-bg" style="background:linear-gradient(135deg,#2a1a2a,#4a2a4a,#6b3d6b)"></div>
+                        <div class="gt-overlay"></div>
+                        <div class="gt-players"><ion-icon name="people"></ion-icon> 2-4</div>
+                        <div class="gt-content">
+                            <div class="gt-badge">Classic</div>
+                            <div class="gt-name">Ayo</div>
+                            <div class="gt-origin">Nigeria / Yoruba</div>
+                            <div class="gt-desc">The Yoruba variant of Mancala. Outsmart your opponent one seed at a
+                                time.</div>
                         </div>
                     </div>
-                    <button class="deploy-btn" onclick="triggerCinematicDive()">Begin Journey</button>
+                    <div class="game-tile">
+                        <div class="gt-bg" style="background:linear-gradient(135deg,#1a1a1a,#2a2a3a,#3a3a5a)"></div>
+                        <div class="gt-overlay"></div>
+                        <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
+                        <div class="gt-content">
+                            <div class="gt-badge">Tactical</div>
+                            <div class="gt-name">Dara</div>
+                            <div class="gt-origin">Nigeria</div>
+                            <div class="gt-desc">Drop phase then move phase. Align three in a row to capture enemy
+                                pieces.</div>
+                        </div>
+                    </div>
+                    <div class="game-tile">
+                        <div class="gt-bg" style="background:linear-gradient(135deg,#2a2210,#4a3a1a,#6b5a2a)"></div>
+                        <div class="gt-overlay"></div>
+                        <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
+                        <div class="gt-content">
+                            <div class="gt-badge new">New</div>
+                            <div class="gt-name">Fanorona</div>
+                            <div class="gt-origin">Madagascar</div>
+                            <div class="gt-desc">Capture by approach or withdrawal. The national game of Madagascar.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- ======= SCREEN 5: HUD ======= -->
-        <div id="screen-hud" class="screen">
-            <div class="hud-frame"></div>
-            <div class="minimal-compass"><span>W</span><span>NW</span><span
-                    class="c-active">N</span><span>NE</span><span>E</span>
-                <div class="c-pointer"></div>
+        <!-- ═══ LEADERBOARD ═══ -->
+        <div id="leaderboard" class="scr overlay-scr">
+            <div class="scr-top">
+                <div class="scr-title"><ion-icon name="trophy"></ion-icon> Leaderboard</div><button class="back-btn"
+                    onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Back</button>
             </div>
-            <div class="hud-top-left">
-                <div class="objective-toast">
-                    <ion-icon name="alert-circle"></ion-icon>
-                    <div><span class="ot-title">Current Objective</span><span class="ot-desc">Secure the perimeter and
-                            advance — 142m</span></div>
-                </div>
-            </div>
-            <div class="hud-bottom-left">
-                <div class="minimal-bar-container"><span class="mb-label">HP</span>
-                    <div class="m-bar">
-                        <div class="m-fill hp-fill" style="width:85%"></div>
-                    </div>
-                </div>
-                <div class="minimal-bar-container"><span class="mb-label">ST</span>
-                    <div class="m-bar">
-                        <div class="m-fill st-fill" style="width:60%"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="hud-crosshair">
-                <div class="ch-dot"></div>
-                <div class="ch-left">(</div>
-                <div class="ch-right">)</div>
-            </div>
-            <div class="hud-bottom-right">
-                <div class="editor-tools">
-                    <button class="dev-btn" onclick="triggerCinematicAchievement()">[F1] Trigger Unlock</button>
-                    <button class="dev-btn" onclick="triggerFadeTransition('screen-main-menu')">[ESC] Exit</button>
-                </div>
-            </div>
-            <div id="cinematic-achievement">
-                <div class="ach-icon"><ion-icon name="ribbon"></ion-icon></div>
-                <div class="ach-text">
-                    <h4>Culture Explorer</h4>
-                    <p>New knowledge unlocked.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ======= SCREEN: LEADERBOARD ======= -->
-        <div id="screen-leaderboard" class="screen overlay-screen">
-            <div class="roster-top-nav">
-                <div class="roster-brand"><ion-icon name="trophy"></ion-icon> LEADERBOARDS <span>// GLOBAL</span></div>
-                <button class="back-btn-text" onclick="triggerFadeTransition('screen-main-menu')"><ion-icon
-                        name="chevron-back"></ion-icon> Hub</button>
-            </div>
-            <div class="overlay-body">
-                <div class="lb-container">
-                    <div class="lb-tabs">
-                        <button class="lb-tab active">All Time</button>
-                        <button class="lb-tab">This Season</button>
-                        <button class="lb-tab">Weekly</button>
-                    </div>
-                    <!-- Podium -->
+            <div class="ov-body">
+                <div class="lb-wrap">
+                    <div class="lb-tabs"><button class="lb-tab on">All Time</button><button
+                            class="lb-tab">Season</button><button class="lb-tab">Weekly</button></div>
                     <div class="podium">
-                        <div class="podium-slot silver">
-                            <img src="https://i.pravatar.cc/150?img=12" alt="2nd">
-                            <div class="p-rank">2</div>
-                            <h5>Kwame</h5>
-                            <span>14,200 AP</span>
-                            <div class="p-bar">
-                                <div class="p-fill"
-                                    style="width:82%;background:linear-gradient(90deg,#9ca3af,#d1d5db);"></div>
-                            </div>
+                        <div class="pod s"><img src="https://i.pravatar.cc/150?img=12">
+                            <div class="pod-rank">2</div>
+                            <h5>Kwame</h5><span>14,200 AP</span>
                         </div>
-                        <div class="podium-slot gold">
-                            <div class="crown-icon"><ion-icon name="diamond"></ion-icon></div>
-                            <img src="https://i.pravatar.cc/150?img=68" alt="1st">
-                            <div class="p-rank gold-rank">1</div>
-                            <h5>You</h5>
-                            <span>18,750 AP</span>
-                            <div class="p-bar">
-                                <div class="p-fill"
-                                    style="width:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold-light));">
-                                </div>
-                            </div>
+                        <div class="pod g">
+                            <div class="pod-crown"><ion-icon name="diamond"></ion-icon></div><img
+                                src="https://i.pravatar.cc/150?img=68">
+                            <div class="pod-rank">1</div>
+                            <h5>You</h5><span>18,750 AP</span>
                         </div>
-                        <div class="podium-slot bronze">
-                            <img src="https://i.pravatar.cc/150?img=33" alt="3rd">
-                            <div class="p-rank">3</div>
-                            <h5>Nneka</h5>
-                            <span>12,430 AP</span>
-                            <div class="p-bar">
-                                <div class="p-fill"
-                                    style="width:66%;background:linear-gradient(90deg,#b45309,#d97706);"></div>
-                            </div>
+                        <div class="pod b"><img src="https://i.pravatar.cc/150?img=33">
+                            <div class="pod-rank">3</div>
+                            <h5>Nneka</h5><span>12,430 AP</span>
                         </div>
                     </div>
-                    <!-- Rank list -->
                     <div class="lb-list">
-                        <div class="lb-row"><span class="lb-pos">4</span><img src="https://i.pravatar.cc/150?img=45"
-                                alt=""><span class="lb-name">Adaeze</span><span class="lb-score">11,020 AP</span><span
-                                class="lb-change up"><ion-icon name="arrow-up"></ion-icon> 2</span></div>
-                        <div class="lb-row"><span class="lb-pos">5</span><img src="https://i.pravatar.cc/150?img=22"
-                                alt=""><span class="lb-name">Ibrahim</span><span class="lb-score">10,800 AP</span><span
-                                class="lb-change down"><ion-icon name="arrow-down"></ion-icon> 1</span></div>
-                        <div class="lb-row"><span class="lb-pos">6</span><img src="https://i.pravatar.cc/150?img=51"
-                                alt=""><span class="lb-name">Fatima</span><span class="lb-score">9,650 AP</span><span
-                                class="lb-change up"><ion-icon name="arrow-up"></ion-icon> 5</span></div>
-                        <div class="lb-row"><span class="lb-pos">7</span><img src="https://i.pravatar.cc/150?img=60"
-                                alt=""><span class="lb-name">Emeka</span><span class="lb-score">8,940 AP</span><span
-                                class="lb-change same">—</span></div>
-                        <div class="lb-row"><span class="lb-pos">8</span><img src="https://i.pravatar.cc/150?img=15"
-                                alt=""><span class="lb-name">Aisha</span><span class="lb-score">7,200 AP</span><span
-                                class="lb-change up"><ion-icon name="arrow-up"></ion-icon> 3</span></div>
+                        <div class="lb-row"><span class="lb-pos">4</span><img
+                                src="https://i.pravatar.cc/150?img=45"><span class="lb-nm">Adaeze</span><span
+                                class="lb-sc">11,020</span><span class="lb-ch up"><ion-icon
+                                    name="arrow-up"></ion-icon>2</span></div>
+                        <div class="lb-row"><span class="lb-pos">5</span><img
+                                src="https://i.pravatar.cc/150?img=22"><span class="lb-nm">Ibrahim</span><span
+                                class="lb-sc">10,800</span><span class="lb-ch dn"><ion-icon
+                                    name="arrow-down"></ion-icon>1</span></div>
+                        <div class="lb-row"><span class="lb-pos">6</span><img
+                                src="https://i.pravatar.cc/150?img=51"><span class="lb-nm">Fatima</span><span
+                                class="lb-sc">9,650</span><span class="lb-ch up"><ion-icon
+                                    name="arrow-up"></ion-icon>5</span></div>
+                        <div class="lb-row"><span class="lb-pos">7</span><img
+                                src="https://i.pravatar.cc/150?img=60"><span class="lb-nm">Emeka</span><span
+                                class="lb-sc">8,940</span><span class="lb-ch eq">—</span></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ======= SCREEN: COMMUNITY ======= -->
-        <div id="screen-community" class="screen overlay-screen">
-            <div class="roster-top-nav">
-                <div class="roster-brand"><ion-icon name="chatbubbles"></ion-icon> COMMUNITY <span>// HUB</span></div>
-                <button class="back-btn-text" onclick="triggerFadeTransition('screen-main-menu')"><ion-icon
-                        name="chevron-back"></ion-icon> Hub</button>
+        <!-- ═══ COMMUNITY ═══ -->
+        <div id="community" class="scr overlay-scr">
+            <div class="scr-top">
+                <div class="scr-title"><ion-icon name="chatbubbles"></ion-icon> Community</div><button class="back-btn"
+                    onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Back</button>
             </div>
-            <div class="overlay-body">
-                <div class="community-grid">
-                    <!-- Activity Feed -->
-                    <div class="comm-section feed-section">
-                        <h4 class="comm-heading"><ion-icon name="pulse"></ion-icon> Activity Feed</h4>
-                        <div class="feed-list">
-                            <div class="feed-item"><img src="https://i.pravatar.cc/150?img=12" alt="">
-                                <div class="fi-body"><strong>Kwame</strong> completed <em>Rise of the Zulu</em> mission
-                                </div><span class="fi-time">2h ago</span>
+            <div class="ov-body">
+                <div class="comm-grid">
+                    <div class="comm-col">
+                        <div class="ch-label"><ion-icon name="pulse"></ion-icon> Activity</div>
+                        <div class="feed">
+                            <div class="fi"><img src="https://i.pravatar.cc/150?img=12">
+                                <div class="fi-b"><strong>Kwame</strong> won <em>Oware</em> match</div><span
+                                    class="fi-t">2h</span>
                             </div>
-                            <div class="feed-item"><img src="https://i.pravatar.cc/150?img=33" alt="">
-                                <div class="fi-body"><strong>Nneka</strong> unlocked new lore in <em>Ashanti Empire</em>
-                                </div><span class="fi-time">4h ago</span>
+                            <div class="fi"><img src="https://i.pravatar.cc/150?img=33">
+                                <div class="fi-b"><strong>Nneka</strong> unlocked <em>Senet Master</em></div><span
+                                    class="fi-t">4h</span>
                             </div>
-                            <div class="feed-item"><img src="https://i.pravatar.cc/150?img=45" alt="">
-                                <div class="fi-body"><strong>Adaeze</strong> reached <em>Master Explorer</em> rank</div>
-                                <span class="fi-time">6h ago</span>
+                            <div class="fi"><img src="https://i.pravatar.cc/150?img=45">
+                                <div class="fi-b"><strong>Adaeze</strong> reached <em>Diamond Rank</em></div><span
+                                    class="fi-t">6h</span>
                             </div>
-                            <div class="feed-item"><img src="https://i.pravatar.cc/150?img=22" alt="">
-                                <div class="fi-body"><strong>Ibrahim</strong> completed <em>Battle of Kirina</em></div>
-                                <span class="fi-time">12h ago</span>
-                            </div>
-                            <div class="feed-item"><img src="https://i.pravatar.cc/150?img=51" alt="">
-                                <div class="fi-body"><strong>Fatima</strong> joined <em>Clan of the Golden Stool</em>
-                                </div><span class="fi-time">1d ago</span>
+                            <div class="fi"><img src="https://i.pravatar.cc/150?img=22">
+                                <div class="fi-b"><strong>Ibrahim</strong> completed <em>Dara</em> challenge</div><span
+                                    class="fi-t">12h</span>
                             </div>
                         </div>
                     </div>
-                    <!-- Clans -->
-                    <div class="comm-section clans-section">
-                        <h4 class="comm-heading"><ion-icon name="shield-half"></ion-icon> Active Clans</h4>
-                        <div class="clan-item">
-                            <div class="clan-badge" style="background:rgba(201,168,76,0.15);color:var(--gold);">
-                                <ion-icon name="shield"></ion-icon></div>
-                            <div>
-                                <h5>Clan of the Golden Stool</h5><span>128 Members • Rank #1</span>
-                            </div><button class="clan-join">Joined</button>
-                        </div>
-                        <div class="clan-item">
-                            <div class="clan-badge" style="background:rgba(0,243,255,0.1);color:#00f3ff;"><ion-icon
+                    <div class="comm-col">
+                        <div class="ch-label"><ion-icon name="shield-half"></ion-icon> Clans</div>
+                        <div class="clan">
+                            <div class="clan-ic" style="background:rgba(240,200,80,.12);color:var(--gold)"><ion-icon
                                     name="shield"></ion-icon></div>
                             <div>
-                                <h5>Zulu Warriors United</h5><span>96 Members • Rank #3</span>
-                            </div><button class="clan-join outline">Join</button>
+                                <h5>Golden Stool</h5><span>128 • Rank #1</span>
+                            </div><button class="clan-btn">Joined</button>
                         </div>
-                        <div class="clan-item">
-                            <div class="clan-badge" style="background:rgba(255,75,92,0.1);color:#ff4b5c;"><ion-icon
+                        <div class="clan">
+                            <div class="clan-ic" style="background:rgba(0,229,255,.1);color:var(--cyan)"><ion-icon
                                     name="shield"></ion-icon></div>
                             <div>
-                                <h5>Defenders of Ndongo</h5><span>72 Members • Rank #7</span>
-                            </div><button class="clan-join outline">Join</button>
+                                <h5>Zulu Warriors</h5><span>96 • Rank #3</span>
+                            </div><button class="clan-btn o">Join</button>
                         </div>
-
-                        <h4 class="comm-heading" style="margin-top:3vh"><ion-icon name="megaphone"></ion-icon>
-                            Announcements</h4>
-                        <div class="announcement">
-                            <div class="a-dot"></div>
-                            <div><strong>Season 2 Launches March 20</strong>
-                                <p>New heroes, missions, and the legendary Timbuktu expansion.</p>
-                            </div>
-                        </div>
-                        <div class="announcement">
-                            <div class="a-dot"></div>
-                            <div><strong>Cultural Festival Event</strong>
-                                <p>Earn double AP by completing lore challenges this week.</p>
-                            </div>
+                        <div class="clan">
+                            <div class="clan-ic" style="background:rgba(255,62,94,.1);color:var(--hot)"><ion-icon
+                                    name="shield"></ion-icon></div>
+                            <div>
+                                <h5>Ndongo Defenders</h5><span>72 • Rank #7</span>
+                            </div><button class="clan-btn o">Join</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ======= SCREEN: PROFILE ======= -->
-        <div id="screen-profile" class="screen overlay-screen">
-            <div class="roster-top-nav">
-                <div class="roster-brand"><ion-icon name="person"></ion-icon> PLAYER PROFILE</div>
-                <button class="back-btn-text" onclick="triggerFadeTransition('screen-main-menu')"><ion-icon
-                        name="chevron-back"></ion-icon> Hub</button>
+        <!-- ═══ PROFILE ═══ -->
+        <div id="profile" class="scr overlay-scr">
+            <div class="scr-top">
+                <div class="scr-title"><ion-icon name="person"></ion-icon> Profile</div><button class="back-btn"
+                    onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Back</button>
             </div>
-            <div class="overlay-body">
-                <div class="profile-layout">
-                    <div class="profile-header">
-                        <img src="https://i.pravatar.cc/150?img=68" alt="Avatar" class="profile-avatar">
-                        <div class="profile-info">
-                            <h3>Initiate</h3>
-                            <span class="profile-title">Culture Explorer // Level 24</span>
+            <div class="ov-body">
+                <div class="prof-wrap">
+                    <div class="prof-head"><img src="https://i.pravatar.cc/150?img=68" class="prof-av">
+                        <div class="prof-info">
+                            <h3>Initiate</h3><span class="p-title">Culture Explorer // Lv. 24</span>
                             <div class="xp-bar">
                                 <div class="xp-fill" style="width:68%"></div>
-                            </div>
-                            <span class="xp-label">6,800 / 10,000 XP</span>
+                            </div><span class="xp-lbl">6,800 / 10,000 XP</span>
                         </div>
                     </div>
-                    <div class="profile-stats-grid">
-                        <div class="ps-card"><ion-icon name="footsteps"></ion-icon>
-                            <div class="ps-val">42</div>
-                            <div class="ps-label">Missions Done</div>
+                    <div class="prof-grid">
+                        <div class="pg-card"><ion-icon name="dice"></ion-icon>
+                            <div class="pg-v">86</div>
+                            <div class="pg-l">Games Won</div>
                         </div>
-                        <div class="ps-card"><ion-icon name="book"></ion-icon>
-                            <div class="ps-val">18</div>
-                            <div class="ps-label">Lore Unlocked</div>
+                        <div class="pg-card"><ion-icon name="book"></ion-icon>
+                            <div class="pg-v">18</div>
+                            <div class="pg-l">Lore</div>
                         </div>
-                        <div class="ps-card"><ion-icon name="people"></ion-icon>
-                            <div class="ps-val">7</div>
-                            <div class="ps-label">Heroes Played</div>
+                        <div class="pg-card"><ion-icon name="people"></ion-icon>
+                            <div class="pg-v">7</div>
+                            <div class="pg-l">Heroes</div>
                         </div>
-                        <div class="ps-card"><ion-icon name="time"></ion-icon>
-                            <div class="ps-val">120h</div>
-                            <div class="ps-label">Play Time</div>
+                        <div class="pg-card"><ion-icon name="time"></ion-icon>
+                            <div class="pg-v">120h</div>
+                            <div class="pg-l">Time</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ======= SCREEN: SETTINGS ======= -->
-        <div id="screen-settings" class="screen overlay-screen">
-            <div class="roster-top-nav">
-                <div class="roster-brand"><ion-icon name="settings"></ion-icon> SETTINGS</div>
-                <button class="back-btn-text" onclick="triggerFadeTransition('screen-main-menu')"><ion-icon
-                        name="chevron-back"></ion-icon> Hub</button>
+        <!-- ═══ SETTINGS ═══ -->
+        <div id="settings" class="scr overlay-scr">
+            <div class="scr-top">
+                <div class="scr-title"><ion-icon name="settings"></ion-icon> Settings</div><button class="back-btn"
+                    onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Back</button>
             </div>
-            <div class="overlay-body">
-                <div class="settings-panel">
-                    <div class="settings-group">
-                        <h4 class="sg-title">Audio</h4>
-                        <div class="setting-row"><span>Master Volume</span>
-                            <div class="slider-track">
-                                <div class="slider-fill" style="width:75%"></div>
-                                <div class="slider-thumb" style="left:75%"></div>
+            <div class="ov-body">
+                <div class="set-panel">
+                    <div class="set-grp">
+                        <div class="sg-t">Audio</div>
+                        <div class="s-row"><span>Master Volume</span>
+                            <div class="slider">
+                                <div class="sl-fill" style="width:75%"></div>
+                                <div class="sl-thumb" style="left:75%"></div>
                             </div>
                         </div>
-                        <div class="setting-row"><span>Music</span>
-                            <div class="slider-track">
-                                <div class="slider-fill" style="width:60%"></div>
-                                <div class="slider-thumb" style="left:60%"></div>
+                        <div class="s-row"><span>Music</span>
+                            <div class="slider">
+                                <div class="sl-fill" style="width:60%"></div>
+                                <div class="sl-thumb" style="left:60%"></div>
                             </div>
                         </div>
-                        <div class="setting-row"><span>Sound Effects</span>
-                            <div class="slider-track">
-                                <div class="slider-fill" style="width:90%"></div>
-                                <div class="slider-thumb" style="left:90%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="settings-group">
-                        <h4 class="sg-title">Display</h4>
-                        <div class="setting-row"><span>Particles</span>
-                            <div class="toggle on">
-                                <div class="toggle-knob"></div>
-                            </div>
-                        </div>
-                        <div class="setting-row"><span>Film Grain</span>
-                            <div class="toggle on">
-                                <div class="toggle-knob"></div>
-                            </div>
-                        </div>
-                        <div class="setting-row"><span>Subtitles</span>
-                            <div class="toggle">
-                                <div class="toggle-knob"></div>
+                        <div class="s-row"><span>SFX</span>
+                            <div class="slider">
+                                <div class="sl-fill" style="width:90%"></div>
+                                <div class="sl-thumb" style="left:90%"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="settings-group">
-                        <h4 class="sg-title">Account</h4>
-                        <div class="setting-row"><span>Language</span><span class="setting-val">English</span></div>
-                        <div class="setting-row"><span>Region</span><span class="setting-val">West Africa</span></div>
+                    <div class="set-grp">
+                        <div class="sg-t">Display</div>
+                        <div class="s-row"><span>Particles</span>
+                            <div class="tog on">
+                                <div class="tog-k"></div>
+                            </div>
+                        </div>
+                        <div class="s-row"><span>Film Grain</span>
+                            <div class="tog on">
+                                <div class="tog-k"></div>
+                            </div>
+                        </div>
+                        <div class="s-row"><span>Subtitles</span>
+                            <div class="tog">
+                                <div class="tog-k"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="set-grp">
+                        <div class="sg-t">Account</div>
+                        <div class="s-row"><span>Language</span><span class="s-val">English</span></div>
+                        <div class="s-row"><span>Region</span><span class="s-val">West Africa</span></div>
                     </div>
                 </div>
             </div>
