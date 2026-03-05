@@ -8,27 +8,29 @@ function go(toScr) {
     if (isTrns || curScr === toScr) return;
     isTrns = true;
 
-    // Play button specific logic for the lobby bottom nav active states
+    // Update navigation active states
     const tabs = document.querySelectorAll('.nav-tab');
     if (tabs.length > 0) {
         tabs.forEach(b => b.classList.remove('active'));
-        if (toScr === 'lobby' && tabs[0]) tabs[0].classList.add('active');
-        if (toScr === 'heroes' && tabs[1]) tabs[1].classList.add('active');
-        if (toScr === 'games' && tabs[2]) tabs[2].classList.add('active');
-        if (toScr === 'leaderboard' && tabs[3]) tabs[3].classList.add('active');
-        if (toScr === 'settings' && tabs[4]) tabs[4].classList.add('active');
+        if (toScr === 'lobby') tabs[0]?.classList.add('active');
+        if (toScr === 'heroes') tabs[1]?.classList.add('active');
+        if (toScr === 'games') tabs[2]?.classList.add('active');
+        if (toScr === 'community') tabs[3]?.classList.add('active');
     }
 
     const curtain = document.getElementById('curtain');
     curtain.classList.add('go');
 
     setTimeout(() => {
-        document.getElementById(curScr).classList.remove('on');
-        document.getElementById(toScr).classList.add('on');
+        document.getElementById(curScr)?.classList.remove('on');
+        document.getElementById(toScr)?.classList.add('on');
         curScr = toScr;
 
         if (toScr === 'heroes') {
             setTimeout(initHeroes, 50);
+        }
+        if (toScr === 'community') {
+            startChatSim();
         }
     }, 450);
 
@@ -37,32 +39,27 @@ function go(toScr) {
         isTrns = false;
     }, 900);
 }
-// Attach to window so onclick works in HTML
 window.go = go;
 
 // ============================================
-// BOOT SEQUENCE (Call of Duty / Blood Strike style)
+// BOOT SEQUENCE
 // ============================================
 function initBoot() {
     const fill = document.getElementById('boot-fill');
     const pct = document.getElementById('boot-pct');
+    if (!fill || !pct) return;
     let p = 0;
 
     const interval = setInterval(() => {
-        // Randomize loading speed chunks to make it look real
         p += Math.floor(Math.random() * 8) + 1;
         if (p > 100) p = 100;
-
         fill.style.width = p + '%';
         pct.innerText = p + '%';
-
         if (p === 100) {
             clearInterval(interval);
-            setTimeout(() => {
-                go('title');
-            }, 500);
+            setTimeout(() => go('title'), 500);
         }
-    }, 80); // Speed of loading bar
+    }, 80);
 }
 
 // ============================================
@@ -71,44 +68,38 @@ function initBoot() {
 function scrollHeroes(dir) {
     const scroll = document.getElementById('heroScroll');
     if (!scroll) return;
-    const cw = window.innerWidth * 0.205; // card width + gap approx
-    scroll.scrollBy({ left: dir * cw, behavior: 'smooth' });
+    // Fluid movement based on card width
+    const card = scroll.querySelector('.rc-card');
+    const step = card ? card.offsetWidth + 32 : window.innerWidth * 0.3;
+    scroll.scrollBy({ left: dir * step, behavior: 'smooth' });
 }
 window.scrollHeroes = scrollHeroes;
 
-let heroScrollBound = false;
-function initHeroes() {
+function checkHeroScroll() {
     const scroll = document.getElementById('heroScroll');
-    const cards = document.querySelectorAll('.hero-card');
+    const cards = document.querySelectorAll('.rc-card');
     if (!scroll || cards.length === 0) return;
 
-    function update() {
-        const center = scroll.getBoundingClientRect().left + scroll.offsetWidth / 2;
-        cards.forEach(c => {
-            const r = c.getBoundingClientRect();
-            const cCenter = r.left + r.width / 2;
-            const dist = Math.abs(cCenter - center);
-            const thresh = window.innerWidth * 0.1;
+    const center = scroll.getBoundingClientRect().left + scroll.offsetWidth / 2;
+    cards.forEach(c => {
+        const r = c.getBoundingClientRect();
+        const cCenter = r.left + r.width / 2;
+        const dist = Math.abs(cCenter - center);
 
-            if (dist < thresh) {
-                if (!c.classList.contains('center')) c.classList.add('center');
-            } else {
-                c.classList.remove('center');
-            }
-        });
-    }
+        // Thresh for "centering"
+        if (dist < r.width * 0.5) {
+            c.classList.add('center');
+        } else {
+            c.classList.remove('center');
+        }
+    });
 
-    if (!heroScrollBound) {
-        scroll.addEventListener('scroll', update, { passive: true });
-        cards.forEach(c => c.addEventListener('click', (e) => {
-            if (e.target.closest('.hc-select')) return; // handled by selectHero
-            if (!c.classList.contains('center')) {
-                c.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-            }
-        }));
-        heroScrollBound = true;
-    }
-    update();
+    // Handle arrows visibility (optional polish)
+}
+window.checkHeroScroll = checkHeroScroll;
+
+function initHeroes() {
+    checkHeroScroll();
 }
 
 function selectHero(card) {
@@ -116,7 +107,6 @@ function selectHero(card) {
     const hClass = card.getAttribute('data-class');
     const img = card.getAttribute('data-img');
 
-    // Update the Lobby display with the selected hero
     document.getElementById('lobby-hero-name').innerText = name;
     document.getElementById('lobby-hero-class').innerText = hClass;
     document.getElementById('lobby-hero-img').src = img;
@@ -126,89 +116,40 @@ function selectHero(card) {
 window.selectHero = selectHero;
 
 // ============================================
-// PARTICLES & UI INIT
-// ============================================
-function spawnEmbers() {
-    const c = document.getElementById('embers');
-    if (!c) return;
-    const cnt = 40;
-    for (let i = 0; i < cnt; i++) {
-        const p = document.createElement('div');
-        p.className = 'ember';
-        p.style.left = Math.random() * 100 + 'vw';
-        p.style.setProperty('--d', (4 + Math.random() * 8) + 's');
-        p.style.setProperty('--del', (Math.random() * 5) + 's');
-        const s = (1 + Math.random() * 3) + 'px';
-        p.style.width = s; p.style.height = s;
-        if (Math.random() > 0.5) p.style.background = '#ff3e5e'; // Adding some red embers
-        c.appendChild(p);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    spawnEmbers();
-    if (curScr === 'boot') {
-        setTimeout(initBoot, 1000);
-    }
-
-    // Leaderboard Tabs
-    document.querySelectorAll('.lb-tab').forEach(t => {
-        t.addEventListener('click', () => {
-            document.querySelectorAll('.lb-tab').forEach(x => x.classList.remove('on'));
-            t.classList.add('on');
-        });
-    });
-
-    // Settings Toggles
-    document.querySelectorAll('.tog').forEach(t => {
-        t.addEventListener('click', () => t.classList.toggle('on'));
-    });
-});
-
-// Keyboard
-document.addEventListener('keydown', (e) => {
-    if (curScr === 'title') {
-        go('lobby');
-    }
-    if (curScr === 'heroes') {
-        if (e.key === 'ArrowRight') scrollHeroes(1);
-        if (e.key === 'ArrowLeft') scrollHeroes(-1);
-    }
-});
-
-// ============================================
-// MANCALA LOGIC
+// MANCALA GAME ENGINE (Oware / Ayo)
 // ============================================
 let mState = [];
 let mTurn = 0; // 0 for P1 (bottom), 1 for P2 (top)
 
-function openMancala() {
+function openMancala(variant) {
+    document.getElementById('mancala-header-title').innerText = "Playing: " + variant;
     go('play-mancala');
     initMancala();
 }
 window.openMancala = openMancala;
 
 function initMancala() {
-    mState = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]; // 0-5 P1 pits, 6 P1 store, 7-12 P2 pits, 13 P2 store
+    // 0-5 P1 pits, 6 P1 store, 7-12 P2 pits, 13 P2 store
+    mState = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
     mTurn = 0;
     renderMancala();
 }
 window.initMancala = initMancala;
 
 function renderMancala() {
-    document.getElementById('m-store-0').innerHTML = mState[6]; // P1 store
-    document.getElementById('m-store-1').innerHTML = mState[13]; // P2 store
-    document.getElementById('m-score-0').innerText = mState[6];
-    document.getElementById('m-score-1').innerText = mState[13];
+    document.getElementById('m-store-0').innerText = mState[6];
+    document.getElementById('m-store-1').innerText = mState[13];
 
-    for (let i = 0; i < 6; i++) {
-        renderPit(i, mState[i]); // P1
-        renderPit(7 + i, mState[7 + i]); // P2
+    for (let i = 0; i < 14; i++) {
+        if (i === 6 || i === 13) continue;
+        renderPit(i, mState[i]);
     }
 
     const mStat = document.getElementById('mancala-status');
-    mStat.innerText = `Player ${mTurn + 1} Turn`;
-    mStat.style.color = mTurn === 0 ? 'var(--cyan)' : 'var(--hot)';
+    if (mStat) {
+        mStat.innerText = mTurn === 0 ? "Your Turn" : "Opponent Turn";
+        mStat.style.color = mTurn === 0 ? "var(--cyan)" : "var(--hot)";
+    }
 }
 
 function renderPit(idx, count) {
@@ -218,11 +159,15 @@ function renderPit(idx, count) {
     for (let i = 0; i < count; i++) {
         const s = document.createElement('div');
         s.className = 'm-seed';
+        // Randomly scatter seeds slightly for realistic feel
+        s.style.transform = `translate(${Math.random() * 10 - 5}px, ${Math.random() * 10 - 5}px)`;
         p.appendChild(s);
     }
 }
 
 function mancalaClick(idx) {
+    if (isTrns) return;
+    // Restrict turns
     if (mTurn === 0 && (idx < 0 || idx > 5)) return;
     if (mTurn === 1 && (idx < 7 || idx > 12)) return;
 
@@ -234,7 +179,7 @@ function mancalaClick(idx) {
 
     while (seeds > 0) {
         curr = (curr + 1) % 14;
-
+        // Skip opponent's store
         if (mTurn === 0 && curr === 13) continue;
         if (mTurn === 1 && curr === 6) continue;
 
@@ -242,6 +187,7 @@ function mancalaClick(idx) {
         seeds--;
     }
 
+    // Capture logic
     if (mState[curr] === 1) {
         if (mTurn === 0 && curr >= 0 && curr <= 5) {
             let opp = 12 - curr;
@@ -260,21 +206,128 @@ function mancalaClick(idx) {
         }
     }
 
+    // Extra turn if ending in your store
     if ((mTurn === 0 && curr !== 6) || (mTurn === 1 && curr !== 13)) {
         mTurn = 1 - mTurn;
     }
 
-    let p1Empty = true; for (let i = 0; i < 6; i++) { if (mState[i] > 0) p1Empty = false; }
-    let p2Empty = true; for (let i = 7; i < 13; i++) { if (mState[i] > 0) p2Empty = false; }
+    // Check game end
+    let p1Empty = mState.slice(0, 6).every(s => s === 0);
+    let p2Empty = mState.slice(7, 13).every(s => s === 0);
 
     if (p1Empty || p2Empty) {
+        // Collect remaining
         for (let i = 0; i < 6; i++) { mState[6] += mState[i]; mState[i] = 0; }
         for (let i = 7; i < 13; i++) { mState[13] += mState[i]; mState[i] = 0; }
         renderMancala();
-        document.getElementById('mancala-status').innerText = mState[6] > mState[13] ? "Player 1 Wins!" : (mState[13] > mState[6] ? "Player 2 Wins!" : "Draw!");
+        const winText = mState[6] > mState[13] ? "You Won!" : (mState[13] > mState[6] ? "Opponent Won!" : "It's a Draw!");
+        document.getElementById('mancala-status').innerText = winText;
         return;
     }
 
     renderMancala();
 }
 window.mancalaClick = mancalaClick;
+
+// ============================================
+// LUDO MOCK Logic
+// ============================================
+function openLudo() {
+    go('play-ludo');
+    const stat = document.getElementById('ludo-status');
+    if (stat) stat.innerText = "Match in Progress...";
+}
+window.openLudo = openLudo;
+
+// ============================================
+// COMMUNITY CHAT Logic
+// ============================================
+const botNames = ["Kwame", "Prya", "Mateo", "Sita", "Ali", "Yara"];
+const botMessages = [
+    "Just finished a round of Oware. It's truly a test of patience!",
+    "Ludo always brings back childhood memories.",
+    "Did you know Senet was played in ancient Egypt to represent the journey of the soul?",
+    "I'm looking for a clan to join for cultural research.",
+    "Anyone want to trade some cultural insights?",
+    "The new hero designs are absolutely stunning!",
+    "I just learned about the Yoruba origin of Ayo. Fascinating!"
+];
+
+function startChatSim() {
+    // Prevent multiple intervals
+    if (window.chatInterval) clearInterval(window.chatInterval);
+    window.chatInterval = setInterval(() => {
+        if (curScr === 'community') {
+            const name = botNames[Math.floor(Math.random() * botNames.length)];
+            const msg = botMessages[Math.floor(Math.random() * botMessages.length)];
+            addChatPost(name, msg, true);
+        }
+    }, 8000);
+}
+
+function addChatPost(name, text, isBot) {
+    const feed = document.getElementById('chat-feed');
+    if (!feed) return;
+
+    const post = document.createElement('div');
+    post.className = 'chat-post';
+    const avQuery = name === "You" ? "young explorer" : name.toLowerCase();
+
+    post.innerHTML = `
+        <img src="https://image.pollinations.ai/prompt/avatar%20portrait%20${avQuery}?width=100" class="cp-av">
+        <div class="cp-body">
+            <div class="cp-head"><span class="cp-name">${name}</span> <span class="cp-time">Just now</span></div>
+            <div class="cp-text">${text}</div>
+        </div>
+    `;
+    feed.prepend(post);
+    // Limit posts
+    if (feed.children.length > 20) feed.removeChild(feed.lastChild);
+}
+
+function sendChat() {
+    const input = document.getElementById('chat-input');
+    if (!input || !input.value.trim()) return;
+    addChatPost("You", input.value, false);
+    input.value = '';
+}
+window.sendChat = sendChat;
+
+// ============================================
+// PARTICLES & INITIALIZATION
+// ============================================
+function spawnEmbers() {
+    const c = document.getElementById('embers');
+    if (!c) return;
+    c.innerHTML = '';
+    for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'ember';
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.setProperty('--d', (4 + Math.random() * 6) + 's');
+        p.style.setProperty('--del', (Math.random() * 5) + 's');
+        c.appendChild(p);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    spawnEmbers();
+    setTimeout(initBoot, 500);
+
+    // Initial check for hero cards
+    setTimeout(checkHeroScroll, 1000);
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+        if (curScr === 'title') go('lobby');
+        if (curScr === 'heroes') {
+            if (e.key === 'ArrowRight') scrollHeroes(1);
+            if (e.key === 'ArrowLeft') scrollHeroes(-1);
+        }
+    });
+
+    // Chat enter key
+    document.getElementById('chat-input')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendChat();
+    });
+});

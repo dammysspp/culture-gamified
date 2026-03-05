@@ -57,6 +57,57 @@ button:active {
   transform: scale(0.97);
 }
 
+/* ── SCREEN ORIENTATION LOCK ── */
+#landscape-prompt {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 9999;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--gold);
+  text-align: center;
+  padding: 10vw;
+  font-family: var(--font-display);
+}
+
+#landscape-prompt ion-icon {
+  font-size: 80px;
+  margin-bottom: 2vh;
+  animation: rotatePhone 2s infinite ease-in-out;
+}
+
+@keyframes rotatePhone {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(-90deg);
+  }
+}
+
+@media screen and (orientation: portrait) {
+  #app {
+    display: none !important;
+  }
+
+  #landscape-prompt {
+    display: flex;
+  }
+
+  #landscape-prompt p {
+    font-size: clamp(24px, 5vw, 32px);
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+}
+
 /* ── GAME ENGINE ATMOSPHERE ── */
 #app {
   position: relative;
@@ -309,6 +360,7 @@ button:active {
   letter-spacing: 0.05em;
   background: linear-gradient(180deg, #fff 0%, #aaa 50%, var(--gold) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   opacity: 0;
   transform: translateY(20px);
@@ -1511,4 +1563,152 @@ button:active {
   background: #fff;
   box-shadow: 0 0 20px var(--gold-glow);
   transform: translateY(-3px);
+}
+
+/* ── COMMUNITY CHAT ── */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 50vh;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.chat-feed {
+  flex: 1;
+  padding: 2vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  scrollbar-width: none;
+}
+
+.chat-feed::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-post {
+  display: flex;
+  gap: 1.5vw;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.cp-av {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+}
+
+.cp-body {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.5vh 1.5vw;
+  border-radius: 0 15px 15px 15px;
+  flex: 1;
+}
+
+.cp-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5vh;
+}
+
+.cp-name {
+  font-weight: 700;
+  color: var(--gold);
+  font-size: 14px;
+}
+
+.cp-time {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.cp-text {
+  font-size: 14px;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.chat-input-area {
+  display: flex;
+  padding: 1.5vh;
+  gap: 1vw;
+  background: rgba(0, 0, 0, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.chat-input-area input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1vh 1.5vw;
+  border-radius: 10px;
+  color: #fff;
+  font-family: var(--font-ui);
+}
+
+.btn-send {
+  width: 45px;
+  height: 45px;
+  background: var(--gold);
+  color: #000;
+  border-radius: 10px;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ── LUDO STYLES ── */
+.ludo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2vh;
+}
+
+/* ── HERO ROSTER FLUIDITY FIX ── */
+.roster-view {
+  position: relative;
+  width: 100vw;
+  height: 75vh;
+  overflow: hidden;
+}
+
+.roster-track {
+  display: flex;
+  gap: 4vw;
+  padding: 0 40vw;
+  width: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  align-items: center;
+  height: 100%;
+  scroll-behavior: smooth;
+}
+
+.rc-card {
+  transition: transform 0.6s var(--ease-spring), filter 0.4s, opacity 0.4s;
+}
+
+.rc-card:not(.center) {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
