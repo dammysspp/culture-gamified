@@ -245,12 +245,16 @@ window.openLudo = openLudo;
 const botNames = ["Kwame", "Prya", "Mateo", "Sita", "Ali", "Yara"];
 const botMessages = [
     "Just finished a round of Oware. It's truly a test of patience!",
-    "Ludo always brings back childhood memories.",
+    "Ludo always brings back childhood memories. Anyone up for a match?",
     "Did you know Senet was played in ancient Egypt to represent the journey of the soul?",
-    "I'm looking for a clan to join for cultural research.",
-    "Anyone want to trade some cultural insights?",
-    "The new hero designs are absolutely stunning!",
-    "I just learned about the Yoruba origin of Ayo. Fascinating!"
+    "I'm looking for a clan to join for cultural research. Any recommendations?",
+    "Anyone want to trade some cultural insights? I'm researching the Ife heads today. So cool!",
+    "The new hero designs are absolutely stunning! Moremi is my favorite. ❤️",
+    "I just learned about the Yoruba origin of Ayo. Fascinating how it connects us across centuries!",
+    "Ludo's layout is actually based on the ancient Indian game of Pachisi. History is wild!",
+    "Finally reached Hero Level 25! The journey through the Elders' stories is amazing.",
+    "Does anyone else think the lobby music is super relaxing? It's like a warm hug.",
+    "Just read the 'Origins of Oware' blog. I didn't know it was that old! Africa has so much history."
 ];
 
 function startChatSim() {
@@ -273,11 +277,25 @@ function addChatPost(name, text, isBot) {
     post.className = 'chat-post';
     const avQuery = name === "You" ? "young explorer" : name.toLowerCase();
 
+    // Random like count for flavor
+    const likes = isBot ? Math.floor(Math.random() * 12) + 1 : 0;
+
     post.innerHTML = `
         <img src="https://image.pollinations.ai/prompt/avatar%20portrait%20${avQuery}?width=100" class="cp-av">
         <div class="cp-body">
-            <div class="cp-head"><span class="cp-name">${name}</span> <span class="cp-time">Just now</span></div>
+            <div class="cp-head">
+                <span class="cp-name">${name}</span> 
+                <span class="cp-time">Just now</span>
+            </div>
             <div class="cp-text">${text}</div>
+            <div class="cp-actions" style="margin-top: 1vh; display: flex; gap: 15px; font-size: 11px; color: var(--muted); font-weight: 700;">
+                <span style="cursor:pointer; display:flex; align-items:center; gap:4px; transition: color 0.3s;" onmouseover="this.style.color='#f5c842'" onmouseout="this.style.color=''">
+                    <ion-icon name="heart-outline"></ion-icon> ${likes}
+                </span>
+                <span style="cursor:pointer; display:flex; align-items:center; gap:4px; transition: color 0.3s;" onmouseover="this.style.color='#f5c842'" onmouseout="this.style.color=''">
+                    <ion-icon name="chatbubble-outline"></ion-icon> REPLY
+                </span>
+            </div>
         </div>
     `;
     feed.prepend(post);

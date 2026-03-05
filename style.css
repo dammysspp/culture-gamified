@@ -1565,11 +1565,119 @@ button:active {
   transform: translateY(-3px);
 }
 
+/* ── COMMUNITY HUB (Bigger Layout) ── */
+.comm-layout {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 3vw;
+  padding: 14vh 5vw 4vh !important;
+  align-items: start;
+}
+
+.comm-section-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 2vh;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comm-section-title::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: var(--gold);
+}
+
+.stories-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5vh;
+}
+
+.story-card {
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  overflow: hidden;
+  height: 180px;
+  transition: all 0.3s;
+}
+
+.story-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-3px);
+  background: rgba(245, 200, 66, 0.05);
+}
+
+.sc-img {
+  width: 35%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.sc-content {
+  flex: 1;
+  padding: 2vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sc-tag {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5vh;
+}
+
+.sc-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  margin-bottom: 0.5vh;
+  color: #fff;
+}
+
+.sc-excerpt {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.sc-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1vh;
+}
+
+.sc-author {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.sc-btn {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--gold);
+  border-bottom: 1px solid var(--gold);
+  padding: 2px 0;
+}
+
 /* ── COMMUNITY CHAT ── */
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 50vh;
+  height: 60vh;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 15px;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -1581,7 +1689,7 @@ button:active {
   padding: 2vh;
   overflow-y: auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   gap: 2vh;
   scrollbar-width: none;
 }
@@ -1593,14 +1701,28 @@ button:active {
 .chat-post {
   display: flex;
   gap: 1.5vw;
-  animation: fadeIn 0.4s ease forwards;
+  animation: postIn 0.4s var(--ease-out) forwards;
+}
+
+@keyframes postIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .cp-av {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  border: 2px solid var(--gold);
+  border: 2px solid var(--gold-dim);
+  padding: 2px;
+  background: #000;
 }
 
 .cp-body {
@@ -1608,6 +1730,7 @@ button:active {
   padding: 1.5vh 1.5vw;
   border-radius: 0 15px 15px 15px;
   flex: 1;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .cp-head {
@@ -1617,9 +1740,10 @@ button:active {
 }
 
 .cp-name {
-  font-weight: 700;
-  color: var(--gold);
+  font-weight: 800;
+  color: #fff;
   font-size: 14px;
+  letter-spacing: 0.05em;
 }
 
 .cp-time {
@@ -1629,8 +1753,8 @@ button:active {
 
 .cp-text {
   font-size: 14px;
-  color: #fff;
-  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
 }
 
 .chat-input-area {
@@ -1643,24 +1767,36 @@ button:active {
 
 .chat-input-area input {
   flex: 1;
-  background: rgba(255, 255, 255, 0.05);
+  background: #111;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 1vh 1.5vw;
+  padding: 1.2vh 1.5vw;
   border-radius: 10px;
   color: #fff;
   font-family: var(--font-ui);
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.chat-input-area input:focus {
+  border-color: var(--gold);
 }
 
 .btn-send {
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   background: var(--gold);
   color: #000;
   border-radius: 10px;
-  font-size: 20px;
+  font-size: 22px;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.3s;
+}
+
+.btn-send:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px var(--gold-glow);
 }
 
 /* ── LUDO STYLES ── */
@@ -1710,5 +1846,23 @@ button:active {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Mobile Adjustments for Community */
+@media (max-width: 900px) {
+  .comm-layout {
+    grid-template-columns: 1fr;
+    gap: 4vh;
+  }
+
+  .story-card {
+    height: auto;
+    flex-direction: column;
+  }
+
+  .sc-img {
+    width: 100%;
+    height: 120px;
   }
 }

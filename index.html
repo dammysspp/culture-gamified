@@ -372,37 +372,60 @@
         <!-- ═══ COMMUNITY ═══ -->
         <div id="community" class="scr overlay-scr">
             <header class="scr-header">
-                <h1 class="sh-title"><ion-icon name="chatbubbles"></ion-icon> Community Hub</h1>
+                <h1 class="sh-title"><ion-icon name="planet"></ion-icon> Cultural Hub</h1>
                 <button class="btn-back" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Go
                     Back</button>
             </header>
-            <div class="os-layout" style="display:flex; justify-content:center; align-items:flex-start;">
-                <div class="tac-panel" style="width: 100%; max-width: 800px;">
-                    <div class="tac-tabs">
-                        <button class="tac-tab active">Live Discussion</button>
-                        <button class="tac-tab">Cultural Stories</button>
-                    </div>
-
-                    <div class="chat-container">
-                        <div class="chat-feed" id="chat-feed">
-                            <!-- Auto generated chat posts will go here -->
-                            <div class="chat-post">
-                                <img src="https://image.pollinations.ai/prompt/avatar%20portrait%20friendly%20african%20boy?width=150&height=150"
-                                    class="cp-av">
-                                <div class="cp-body">
-                                    <div class="cp-head"><span class="cp-name">Kwame</span> <span class="cp-time">2m
-                                            ago</span></div>
-                                    <div class="cp-text">Does anyone have tips for Oware? I keep losing when I try to
-                                        capture 3 seeds at once!</div>
+            <div class="os-layout comm-layout">
+                <!-- Left Side: Stories / Blog -->
+                <div class="comm-left">
+                    <h2 class="comm-section-title">Cultural Lore</h2>
+                    <div class="stories-grid">
+                        <div class="story-card">
+                            <div class="sc-img"
+                                style="background-image:url('https://image.pollinations.ai/prompt/ancient%20african%20map%20illustration%20sepia%20toned%20art%20high%20detail')">
+                            </div>
+                            <div class="sc-content">
+                                <span class="sc-tag">History</span>
+                                <h3 class="sc-title">The Origins of Oware</h3>
+                                <p class="sc-excerpt">Discover how this mathematical wonder spread from the Akan people
+                                    to the entire world...</p>
+                                <div class="sc-footer">
+                                    <span class="sc-author">By Elder Kwame</span>
+                                    <button class="sc-btn">Read More</button>
                                 </div>
                             </div>
                         </div>
+                        <div class="story-card">
+                            <div class="sc-img"
+                                style="background-image:url('https://image.pollinations.ai/prompt/indian%20traditional%20ludo%20ancient%20art%20royal%20court%20painting')">
+                            </div>
+                            <div class="sc-content">
+                                <span class="sc-tag">Global</span>
+                                <h3 class="sc-title">Ludo: A Royal Journey</h3>
+                                <p class="sc-excerpt">Trace the evolution of Ludo from the palaces of India to every
+                                    home on the planet...</p>
+                                <div class="sc-footer">
+                                    <span class="sc-author">By Sarah J.</span>
+                                    <button class="sc-btn">Read More</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Discussion -->
+                <div class="comm-right">
+                    <h2 class="comm-section-title">Live Discussion</h2>
+                    <div class="chat-container">
+                        <div class="chat-feed" id="chat-feed">
+                            <!-- Auto generated chat posts -->
+                        </div>
                         <div class="chat-input-area">
-                            <input type="text" id="chat-input" placeholder="Share your thoughts...">
+                            <input type="text" id="chat-input" placeholder="Say something to the world...">
                             <button class="btn-send" onclick="sendChat()"><ion-icon name="send"></ion-icon></button>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
