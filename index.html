@@ -18,8 +18,9 @@
     </div>
     <div id="curtain"></div>
     <div id="app">
+        <!-- Hero Background AI Generated -->
         <div class="bg-hero"
-            style="background-image:url('https://image.pollinations.ai/prompt/epic%20beautiful%20cultural%20african%20village%20sunset%20digital%20art%20landscape')">
+            style="background-image:url('https://image.pollinations.ai/prompt/epic%20beautiful%20cultural%20african%20village%20sunset%20digital%20art%20landscape?width=1280&height=720&nologo=true')">
         </div>
         <div class="bg-vignette"></div>
         <div class="bg-scanlines"></div>
@@ -58,12 +59,12 @@
                     <div class="lh-currency"><ion-icon name="hardware-chip-outline"></ion-icon> 24,500</div>
                 </div>
                 <div class="lh-right">
-                    <div class="lh-profile" onclick="go('profile')">
+                    <div class="lh-profile">
                         <div class="lhp-info">
                             <div class="lhp-name">Wanderer</div>
                             <div class="lhp-level">LVL. 24</div>
                         </div>
-                        <img src="https://image.pollinations.ai/prompt/avatar%20portrait%20of%20a%20young%20african%20explorer?width=150&height=150"
+                        <img src="https://image.pollinations.ai/prompt/avatar%20portrait%20of%20a%20young%20african%20explorer?width=150&height=150&nologo=true"
                             class="lhp-avatar">
                     </div>
                 </div>
@@ -72,8 +73,7 @@
             <div class="lobby-center">
                 <div class="hero-showcase">
                     <div class="hs-bg-effect"></div>
-                    <!-- Dynamic loaded from JS, using placeholders here -->
-                    <img src="https://image.pollinations.ai/prompt/beautiful%20african%20warrior%20queen%20amina%20riding%20horse%20digital%20painting"
+                    <img src="https://image.pollinations.ai/prompt/beautiful%20african%20warrior%20queen%20amina%20riding%20horse%20digital%20painting?width=800&height=1000&nologo=true"
                         class="hs-image" id="lobby-hero-img">
                     <div class="hs-overlay"></div>
                     <div class="hs-details">
@@ -87,14 +87,14 @@
                 <div class="hud-panel alert" onclick="go('games')">
                     <div class="hp-header">
                         <div class="hp-icon"><ion-icon name="star"></ion-icon></div>
-                        <h3 class="hp-title">Featured</h3>
+                        <h3 class="hp-title">Featured Match</h3>
                     </div>
-                    <p class="hp-desc">The Oware tournament is live! Play the ancient Ghanaian seed game and learn.</p>
+                    <p class="hp-desc">The Oware tournament is live! Play the Ghanaian seed game and learn.</p>
                 </div>
                 <div class="hud-panel" onclick="go('heroes')">
                     <div class="hp-header">
                         <div class="hp-icon"><ion-icon name="accessibility"></ion-icon></div>
-                        <h3 class="hp-title">Heroes</h3>
+                        <h3 class="hp-title">Hero Roster</h3>
                     </div>
                     <p class="hp-desc">Explore the stories of legendary cultural heroes and choose who you want to play
                         as.</p>
@@ -107,26 +107,24 @@
                         <div class="hp-icon"><ion-icon name="trophy"></ion-icon></div>
                         <h3 class="hp-title">Leaderboard</h3>
                     </div>
-                    <p class="hp-desc">Global rankings updated daily. See who has mastered the games.</p>
+                    <p class="hp-desc">Global rankings updated daily. Master the games and join the elite ranks.</p>
                 </div>
                 <div class="hud-panel" onclick="go('community')">
                     <div class="hp-header">
                         <div class="hp-icon"><ion-icon name="chatbubbles"></ion-icon></div>
-                        <h3 class="hp-title">Community</h3>
+                        <h3 class="hp-title">Cultural Hub</h3>
                     </div>
-                    <p class="hp-desc">Join the conversation, share knowledge, and meet other learners.</p>
+                    <p class="hp-desc">Join the community, read stories, and meet other cultural explorers.</p>
                 </div>
             </div>
 
             <footer class="lobby-footer">
                 <div class="nav-dock">
-                    <button class="nav-tab active"><ion-icon name="home"></ion-icon> Home</button>
+                    <button class="nav-tab active" onclick="go('lobby')"><ion-icon name="home"></ion-icon> Home</button>
                     <button class="nav-tab" onclick="go('heroes')"><ion-icon name="people"></ion-icon> Heroes</button>
                     <button class="nav-tab play-tab" onclick="go('games')">PLAY</button>
-                    <button class="nav-tab" onclick="go('community')"><ion-icon name="chatbubbles"></ion-icon>
-                        Comm</button>
-                    <button class="nav-tab" onclick="go('lobby')"><ion-icon name="settings"></ion-icon>
-                        Settings</button>
+                    <button class="nav-tab" onclick="go('community')"><ion-icon name="planet"></ion-icon> Hub</button>
+                    <button class="nav-tab" onclick="go('lobby')"><ion-icon name="settings"></ion-icon> Config</button>
                 </div>
             </footer>
         </div>
@@ -147,10 +145,10 @@
 
                 <div class="roster-track" id="heroScroll" onscroll="checkHeroScroll()">
                     <div class="rc-card center" data-name="Moremi" data-class="Protector & Leader"
-                        data-img="https://image.pollinations.ai/prompt/beautiful%20yoruba%20queen%20moremi%20courageous%20digital%20painting">
+                        data-img="https://image.pollinations.ai/prompt/beautiful%20yoruba%20queen%20moremi%20courageous%20digital%20painting?width=600&height=800&nologo=true">
                         <div class="rc-inner">
                             <div class="rc-bg"
-                                style="background-image:url('https://image.pollinations.ai/prompt/beautiful%20yoruba%20queen%20moremi%20courageous%20digital%20painting')">
+                                style="background-image:url('https://image.pollinations.ai/prompt/beautiful%20yoruba%20queen%20moremi%20courageous%20digital%20painting?width=600&height=800&nologo=true')">
                             </div>
                             <div class="rc-overlay"></div>
                             <div class="rc-num">01</div>
@@ -163,12 +161,11 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Adding more AI images for other heroes to avoid missing assets -->
                     <div class="rc-card" data-name="Amina" data-class="Warrior Queen"
-                        data-img="https://image.pollinations.ai/prompt/beautiful%20african%20warrior%20queen%20amina%20riding%20horse%20digital%20painting">
+                        data-img="https://image.pollinations.ai/prompt/beautiful%20african%20warrior%20queen%20amina%20riding%20horse%20digital%20painting?width=600&height=800&nologo=true">
                         <div class="rc-inner">
                             <div class="rc-bg"
-                                style="background-image:url('https://image.pollinations.ai/prompt/beautiful%20african%20warrior%20queen%20amina%20riding%20horse%20digital%20painting')">
+                                style="background-image:url('https://image.pollinations.ai/prompt/beautiful%20african%20warrior%20queen%20amina%20riding%20horse%20digital%20painting?width=600&height=800&nologo=true')">
                             </div>
                             <div class="rc-overlay"></div>
                             <div class="rc-num">02</div>
@@ -182,10 +179,10 @@
                         </div>
                     </div>
                     <div class="rc-card" data-name="Jaja" data-class="Merchant & Diplomat"
-                        data-img="https://image.pollinations.ai/prompt/king%20jaja%20of%20opobo%20merchant%20prince%20nigeria%20digital%20art">
+                        data-img="https://image.pollinations.ai/prompt/king%20jaja%20of%20opobo%20merchant%20prince%20nigeria%20digital%20art?width=600&height=800&nologo=true">
                         <div class="rc-inner">
                             <div class="rc-bg"
-                                style="background-image:url('https://image.pollinations.ai/prompt/king%20jaja%20of%20opobo%20merchant%20prince%20nigeria%20digital%20art')">
+                                style="background-image:url('https://image.pollinations.ai/prompt/king%20jaja%20of%20opobo%20merchant%20prince%20nigeria%20digital%20art?width=600&height=800&nologo=true')">
                             </div>
                             <div class="rc-overlay"></div>
                             <div class="rc-num">03</div>
@@ -199,10 +196,10 @@
                         </div>
                     </div>
                     <div class="rc-card" data-name="Shaka" data-class="Great General"
-                        data-img="https://image.pollinations.ai/prompt/shaka%20zulu%20warrior%20king%20digital%20painting%20epic">
+                        data-img="https://image.pollinations.ai/prompt/shaka%20zulu%20warrior%20king%20digital%20painting%20epic?width=600&height=800&nologo=true">
                         <div class="rc-inner">
                             <div class="rc-bg"
-                                style="background-image:url('https://image.pollinations.ai/prompt/shaka%20zulu%20warrior%20king%20digital%20painting%20epic')">
+                                style="background-image:url('https://image.pollinations.ai/prompt/shaka%20zulu%20warrior%20king%20digital%20painting%20epic?width=600&height=800&nologo=true')">
                             </div>
                             <div class="rc-overlay"></div>
                             <div class="rc-num">04</div>
@@ -216,10 +213,10 @@
                         </div>
                     </div>
                     <div class="rc-card" data-name="Mansa Musa" data-class="Emperor & Scholar"
-                        data-img="https://image.pollinations.ai/prompt/emperor%20mansa%20musa%20with%20gold%20wealth%20digital%20art">
+                        data-img="https://image.pollinations.ai/prompt/emperor%20mansa%20musa%20with%20gold%20wealth%20digital%20art?width=600&height=800&nologo=true">
                         <div class="rc-inner">
                             <div class="rc-bg"
-                                style="background-image:url('https://image.pollinations.ai/prompt/emperor%20mansa%20musa%20with%20gold%20wealth%20digital%20art')">
+                                style="background-image:url('https://image.pollinations.ai/prompt/emperor%20mansa%20musa%20with%20gold%20wealth%20digital%20art?width=600&height=800&nologo=true')">
                             </div>
                             <div class="rc-overlay"></div>
                             <div class="rc-num">05</div>
@@ -236,21 +233,21 @@
             </div>
         </div>
 
-        <!-- ═══ GAME MODES (Global Culture Games) ═══ -->
+        <!-- ═══ GAME MODES (Deployment) ═══ -->
         <div id="games" class="scr">
             <header class="scr-header">
-                <h1 class="sh-title"><ion-icon name="game-controller"></ion-icon> Play Games</h1>
+                <h1 class="sh-title"><ion-icon name="game-controller"></ion-icon> Game Grounds</h1>
                 <button class="btn-back" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Go
                     Back</button>
             </header>
 
             <div class="gm-layout">
                 <div class="gm-section">
-                    <h2 class="gm-stitle">Global Board Games</h2>
+                    <h2 class="gm-stitle">Active Board Games</h2>
                     <div class="gm-grid">
                         <div class="gm-card" onclick="openMancala('Oware')">
                             <div class="gm-bg"
-                                style="background-image:url('https://image.pollinations.ai/prompt/oware%20wooden%20mancala%20board%20game%20with%20seeds%20top%20down%20view')">
+                                style="background-image:url('https://image.pollinations.ai/prompt/oware%20wooden%20mancala%20board%20game%20with%20seeds%20top%20down%20view?width=600&height=400&nologo=true')">
                             </div>
                             <div class="gm-overlay"></div>
                             <div class="gm-badge-wrap"><span class="gm-badge pop">PLAY NOW</span></div>
@@ -258,41 +255,41 @@
                             <div class="gm-content">
                                 <h3 class="gm-name">Oware</h3>
                                 <span class="gm-origin">Ghana // West Africa</span>
-                                <p class="gm-desc">The royal seed-sowing game. Beautiful and strategic.</p>
+                                <p class="gm-desc">The royal seed-sowing game of ancient strategy.</p>
                             </div>
                         </div>
 
                         <div class="gm-card" onclick="openLudo()">
                             <div class="gm-bg"
-                                style="background-image:url('https://image.pollinations.ai/prompt/colorful%20ludo%20board%20game%20top%20down%20epic%20lighting')">
+                                style="background-image:url('https://image.pollinations.ai/prompt/colorful%20ludo%20board%20game%20top%20down%20epic%20lighting?width=600&height=400&nologo=true')">
                             </div>
                             <div class="gm-overlay"></div>
                             <div class="gm-badge-wrap"><span class="gm-badge pop">PLAY NOW</span></div>
                             <div class="gm-players"><ion-icon name="people"></ion-icon> 2-4</div>
                             <div class="gm-content">
                                 <h3 class="gm-name">Ludo</h3>
-                                <span class="gm-origin">India // Global</span>
-                                <p class="gm-desc">The classic global race game! Get all your tokens home safely.</p>
+                                <span class="gm-origin">India // Global Heritage</span>
+                                <p class="gm-desc">The race to the finish! A worldwide family favorite.</p>
                             </div>
                         </div>
 
                         <div class="gm-card" onclick="openMancala('Ayo')">
                             <div class="gm-bg"
-                                style="background-image:url('https://image.pollinations.ai/prompt/ayo%20mancala%20board%20game%20art')">
+                                style="background-image:url('https://image.pollinations.ai/prompt/ayo%20mancala%20board%20game%20art?width=600&height=400&nologo=true')">
                             </div>
                             <div class="gm-overlay"></div>
                             <div class="gm-badge-wrap"><span class="gm-badge pop">PLAY NOW</span></div>
                             <div class="gm-players"><ion-icon name="people"></ion-icon> 2</div>
                             <div class="gm-content">
                                 <h3 class="gm-name">Ayo</h3>
-                                <span class="gm-origin">Nigeria // Yoruba</span>
-                                <p class="gm-desc">A fun and competitive Mancala variant popular in Nigeria.</p>
+                                <span class="gm-origin">Nigeria // Cultural Classic</span>
+                                <p class="gm-desc">Fast-paced strategy from the heart of Nigeria.</p>
                             </div>
                         </div>
 
                         <div class="gm-card">
                             <div class="gm-bg"
-                                style="background-image:url('https://image.pollinations.ai/prompt/go%20board%20game%20asian%20aesthetic%20stones%20top%20down')">
+                                style="background-image:url('https://image.pollinations.ai/prompt/go%20board%20game%20asian%20aesthetic%20stones%20top%20down?width=600&height=400&nologo=true')">
                             </div>
                             <div class="gm-overlay"></div>
                             <div class="gm-badge-wrap"><span class="gm-badge">COMING SOON</span></div>
@@ -300,21 +297,7 @@
                             <div class="gm-content">
                                 <h3 class="gm-name">Go</h3>
                                 <span class="gm-origin">China // East Asia</span>
-                                <p class="gm-desc">The ancient abstract strategy game of surrounding territory.</p>
-                            </div>
-                        </div>
-
-                        <div class="gm-card">
-                            <div class="gm-bg"
-                                style="background-image:url('https://image.pollinations.ai/prompt/morabaraba%20south%20african%20board%20game%20with%20cows')">
-                            </div>
-                            <div class="gm-overlay"></div>
-                            <div class="gm-badge-wrap"><span class="gm-badge">COMING SOON</span></div>
-                            <div class="gm-players"><ion-icon name="people"></ion-icon> 2</div>
-                            <div class="gm-content">
-                                <h3 class="gm-name">Morabaraba</h3>
-                                <span class="gm-origin">South Africa</span>
-                                <p class="gm-desc">A traditional mill game focused on forming connected rows.</p>
+                                <p class="gm-desc">The ancient game of surrounding territory and stones.</p>
                             </div>
                         </div>
                     </div>
@@ -325,51 +308,31 @@
         <!-- ═══ LEADERBOARD ═══ -->
         <div id="leaderboard" class="scr overlay-scr">
             <header class="scr-header">
-                <h1 class="sh-title"><ion-icon name="trophy"></ion-icon> Global Rankings</h1>
+                <h1 class="sh-title"><ion-icon name="trophy"></ion-icon> Legends Table</h1>
                 <button class="btn-back" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Go
                     Back</button>
             </header>
             <div class="os-layout" style="display:flex; justify-content:center; align-items:flex-start;">
                 <div class="tac-panel" style="width: 100%; max-width: 800px;">
                     <div class="tac-tabs">
-                        <button class="tac-tab active">Top Players</button>
+                        <button class="tac-tab active">Top Explorers</button>
                         <button class="tac-tab">Recent Matches</button>
                     </div>
                     <div class="rank-list">
                         <div class="rank-row highlight">
                             <span class="rr-pos">01</span>
-                            <img src="https://image.pollinations.ai/prompt/avatar%20portrait%20of%20a%20young%20african%20explorer?width=150&height=150"
+                            <img src="https://image.pollinations.ai/prompt/avatar%20portrait%20of%20a%20young%20explorer?width=100&height=100&nologo=true"
                                 class="rr-av">
                             <span class="rr-name">You</span>
                             <span class="rr-score">24,500 Pts</span>
                         </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">02</span>
-                            <img src="https://image.pollinations.ai/prompt/avatar%20portrait%20friendly%20african%20boy?width=150&height=150"
-                                class="rr-av">
-                            <span class="rr-name">Kwame</span>
-                            <span class="rr-score">21,200 Pts</span>
-                        </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">03</span>
-                            <img src="https://image.pollinations.ai/prompt/avatar%20portrait%20smart%20indian%20girl?width=150&height=150"
-                                class="rr-av">
-                            <span class="rr-name">Prya</span>
-                            <span class="rr-score">18,430 Pts</span>
-                        </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">04</span>
-                            <img src="https://image.pollinations.ai/prompt/avatar%20portrait%20confident%20latin%20teenager?width=150&height=150"
-                                class="rr-av">
-                            <span class="rr-name">Mateo</span>
-                            <span class="rr-score">12,100 Pts</span>
-                        </div>
+                        <!-- Other Ranks -->
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ═══ COMMUNITY ═══ -->
+        <!-- ═══ CULTURAL HUB ═══ -->
         <div id="community" class="scr overlay-scr">
             <header class="scr-header">
                 <h1 class="sh-title"><ion-icon name="planet"></ion-icon> Cultural Hub</h1>
@@ -377,52 +340,43 @@
                     Back</button>
             </header>
             <div class="os-layout comm-layout">
-                <!-- Left Side: Stories / Blog -->
                 <div class="comm-left">
                     <h2 class="comm-section-title">Cultural Lore</h2>
                     <div class="stories-grid">
                         <div class="story-card">
                             <div class="sc-img"
-                                style="background-image:url('https://image.pollinations.ai/prompt/ancient%20african%20map%20illustration%20sepia%20toned%20art%20high%20detail')">
+                                style="background-image:url('https://image.pollinations.ai/prompt/ancient%20african%20map%20illustration%20sepia%20toned%20art%20high%20detail?width=400&height=400&nologo=true')">
                             </div>
                             <div class="sc-content">
                                 <span class="sc-tag">History</span>
-                                <h3 class="sc-title">The Origins of Oware</h3>
-                                <p class="sc-excerpt">Discover how this mathematical wonder spread from the Akan people
-                                    to the entire world...</p>
+                                <h3 class="sc-title">Origins of Oware</h3>
+                                <p class="sc-excerpt">Discover how this math wonder spread from the Akan people.</p>
                                 <div class="sc-footer">
-                                    <span class="sc-author">By Elder Kwame</span>
                                     <button class="sc-btn">Read More</button>
                                 </div>
                             </div>
                         </div>
                         <div class="story-card">
                             <div class="sc-img"
-                                style="background-image:url('https://image.pollinations.ai/prompt/indian%20traditional%20ludo%20ancient%20art%20royal%20court%20painting')">
+                                style="background-image:url('https://image.pollinations.ai/prompt/indian%20traditional%20ludo%20ancient%20art%20royal%20court%20painting?width=400&height=400&nologo=true')">
                             </div>
                             <div class="sc-content">
                                 <span class="sc-tag">Global</span>
-                                <h3 class="sc-title">Ludo: A Royal Journey</h3>
-                                <p class="sc-excerpt">Trace the evolution of Ludo from the palaces of India to every
-                                    home on the planet...</p>
+                                <h3 class="sc-title">Ludo: Royal Journey</h3>
+                                <p class="sc-excerpt">Evolution of Ludo from India to homes everywhere.</p>
                                 <div class="sc-footer">
-                                    <span class="sc-author">By Sarah J.</span>
                                     <button class="sc-btn">Read More</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Right Side: Discussion -->
                 <div class="comm-right">
-                    <h2 class="comm-section-title">Live Discussion</h2>
+                    <h2 class="comm-section-title">Live Chat</h2>
                     <div class="chat-container">
-                        <div class="chat-feed" id="chat-feed">
-                            <!-- Auto generated chat posts -->
-                        </div>
+                        <div class="chat-feed" id="chat-feed"></div>
                         <div class="chat-input-area">
-                            <input type="text" id="chat-input" placeholder="Say something to the world...">
+                            <input type="text" id="chat-input" placeholder="Talk to the world...">
                             <button class="btn-send" onclick="sendChat()"><ion-icon name="send"></ion-icon></button>
                         </div>
                     </div>
@@ -430,25 +384,18 @@
             </div>
         </div>
 
-
-        <!-- ═══ PLAYABLE MATCH: MANCALA ═══ -->
-        <div id="play-mancala" class="scr" style="background:#1a1c23;">
+        <!-- ═══ MATCH: MANCALA ═══ -->
+        <div id="play-mancala" class="scr" style="background:#0a0c12;">
             <header class="scr-header">
-                <h1 class="sh-title" id="mancala-header-title"><ion-icon name="game-controller"></ion-icon> Playing:
-                    Oware</h1>
-                <button class="btn-back" onclick="go('games')"><ion-icon name="exit"></ion-icon> Leave Game</button>
+                <h1 class="sh-title" id="mancala-header-title">Oware Match</h1>
+                <button class="btn-back" onclick="go('games')"><ion-icon name="exit"></ion-icon> Leave</button>
             </header>
-
             <div class="m-arena">
                 <div class="m-status-bar">
-                    <div class="m-player-tag" id="p1-tag">
-                        <div class="mpt-color p1-color"></div> You (Bottom)
-                    </div>
-                    <h2 id="mancala-status">Your Turn</h2>
-                    <div class="m-player-tag" id="p2-tag">Opponent (Top) <div class="mpt-color p2-color"></div>
-                    </div>
+                    <div class="m-player-tag">Player 1</div>
+                    <h2 id="mancala-status">Initializing...</h2>
+                    <div class="m-player-tag">Player 2</div>
                 </div>
-
                 <div class="m-board">
                     <div class="m-store" id="m-store-1">0</div>
                     <div class="m-pits-col">
@@ -471,43 +418,22 @@
                     </div>
                     <div class="m-store" id="m-store-0">0</div>
                 </div>
-
-                <div class="m-controls">
-                    <button class="btn-primary" onclick="initMancala()"><ion-icon name="refresh"></ion-icon> Restart
-                        Game</button>
-                </div>
             </div>
         </div>
 
-        <!-- ═══ PLAYABLE MATCH: LUDO (Mockup) ═══ -->
-        <div id="play-ludo" class="scr" style="background:#1a1c23;">
+        <!-- LUDO MODAL MOCK -->
+        <div id="play-ludo" class="scr" style="background:#111;">
             <header class="scr-header">
-                <h1 class="sh-title"><ion-icon name="game-controller"></ion-icon> Playing: Ludo</h1>
-                <button class="btn-back" onclick="go('games')"><ion-icon name="exit"></ion-icon> Leave Game</button>
+                <h1 class="sh-title">Ludo Match</h1>
+                <button class="btn-back" onclick="go('games')">Exit</button>
             </header>
-
-            <div class="m-arena">
-                <div class="m-status-bar" style="justify-content:center">
-                    <h2 id="ludo-status">Match Starting...</h2>
-                </div>
-
-                <div class="ludo-container">
-                    <img src="https://image.pollinations.ai/prompt/colorful%20flat%20ludo%20board%20vector%20graphics"
-                        alt="Ludo Board"
-                        style="width: 100%; max-width: 50vh; height: 100%; max-height: 50vh; border-radius: 10px; border: 2px solid var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                </div>
-
-                <p style="margin-top: 3vh; color: var(--gold); text-align: center;">Roll the dice and tap your token to
-                    move! <br><span style="color:var(--muted); font-size:12px;">(Ludo engine in development)</span></p>
-
-                <div class="m-controls">
-                    <button class="btn-primary" onclick="alert('Dice Rolling feature coming next update!')"><ion-icon
-                            name="dice"></ion-icon> Roll Dice</button>
-                </div>
+            <div class="m-arena" style="flex-direction:column">
+                <img src="https://image.pollinations.ai/prompt/vibrant%20ludo%20board%20isolated%20on%20black%20top%20view?width=600&height=600&nologo=true"
+                    style="width:70vw; max-width:500px; border-radius:20px;">
+                <h2 style="margin-top:2vh; color:var(--gold);">Ludo Engine Preparing...</h2>
             </div>
         </div>
     </div>
-
     <script src="app.js"></script>
 </body>
 

@@ -275,13 +275,13 @@ function addChatPost(name, text, isBot) {
 
     const post = document.createElement('div');
     post.className = 'chat-post';
-    const avQuery = name === "You" ? "young explorer" : name.toLowerCase();
+    const avQuery = encodeURIComponent(name === "You" ? "young explorer" : name.toLowerCase());
 
     // Random like count for flavor
     const likes = isBot ? Math.floor(Math.random() * 12) + 1 : 0;
 
     post.innerHTML = `
-        <img src="https://image.pollinations.ai/prompt/avatar%20portrait%20${avQuery}?width=100" class="cp-av">
+        <img src="https://image.pollinations.ai/prompt/avatar%20portrait%20${avQuery}?width=100&nologo=true" class="cp-av">
         <div class="cp-body">
             <div class="cp-head">
                 <span class="cp-name">${name}</span> 
