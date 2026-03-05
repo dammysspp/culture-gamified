@@ -224,19 +224,25 @@
             <div class="games-body">
                 <div class="section-label"><ion-icon name="star"></ion-icon> Featured Board Games</div>
                 <div class="games-grid">
-                    <div class="game-tile">
-                        <div class="gt-bg" style="background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)"></div>
+                    <div class="game-tile" onclick="openMancala()">
+                        <div class="gt-bg"
+                            style="background-image:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1553481187-be93c21490a9?q=80&w=600')">
+                        </div>
                         <div class="gt-overlay"></div>
                         <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
                         <div class="gt-content">
-                            <div class="gt-badge pop">Most Played</div>
+                            <div class="gt-badge pop"
+                                style="background:var(--gold);color:var(--bg);box-shadow:0 0 10px rgba(240,200,80,0.4)">
+                                Playable Demo</div>
                             <div class="gt-name">Oware</div>
                             <div class="gt-origin">Ghana / West Africa</div>
-                            <div class="gt-desc">The royal seed-sowing game. Capture the most seeds to win.</div>
+                            <div class="gt-desc">The royal seed-sowing game. SOW SEEDS NOW.</div>
                         </div>
                     </div>
                     <div class="game-tile">
-                        <div class="gt-bg" style="background:linear-gradient(135deg,#2d1b00,#5c3d1a,#8b6914)"></div>
+                        <div class="gt-bg"
+                            style="background-image:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=600')">
+                        </div>
                         <div class="gt-overlay"></div>
                         <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
                         <div class="gt-content">
@@ -248,7 +254,9 @@
                         </div>
                     </div>
                     <div class="game-tile">
-                        <div class="gt-bg" style="background:linear-gradient(135deg,#1b2a1b,#2d4a2d,#3d6b3d)"></div>
+                        <div class="gt-bg"
+                            style="background-image:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1610890716171-6b1bb98ffaed?q=80&w=600')">
+                        </div>
                         <div class="gt-overlay"></div>
                         <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
                         <div class="gt-content">
@@ -263,20 +271,25 @@
 
                 <div class="section-label"><ion-icon name="earth"></ion-icon> Cultural Classics</div>
                 <div class="games-grid">
-                    <div class="game-tile">
-                        <div class="gt-bg" style="background:linear-gradient(135deg,#2a1a2a,#4a2a4a,#6b3d6b)"></div>
+                    <div class="game-tile" onclick="openMancala()">
+                        <div class="gt-bg"
+                            style="background-image:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1593814681464-eef5af2b0628?q=80&w=600')">
+                        </div>
                         <div class="gt-overlay"></div>
                         <div class="gt-players"><ion-icon name="people"></ion-icon> 2-4</div>
                         <div class="gt-content">
-                            <div class="gt-badge">Classic</div>
+                            <div class="gt-badge pop"
+                                style="background:var(--gold);color:var(--bg);box-shadow:0 0 10px rgba(240,200,80,0.4)">
+                                Playable Demo</div>
                             <div class="gt-name">Ayo</div>
                             <div class="gt-origin">Nigeria / Yoruba</div>
-                            <div class="gt-desc">The Yoruba variant of Mancala. Outsmart your opponent one seed at a
-                                time.</div>
+                            <div class="gt-desc">The Yoruba variant of Mancala. LIVE MATCH.</div>
                         </div>
                     </div>
                     <div class="game-tile">
-                        <div class="gt-bg" style="background:linear-gradient(135deg,#1a1a1a,#2a2a3a,#3a3a5a)"></div>
+                        <div class="gt-bg"
+                            style="background-image:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1629518055458-eb573f08ac8d?q=80&w=600')">
+                        </div>
                         <div class="gt-overlay"></div>
                         <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
                         <div class="gt-content">
@@ -288,7 +301,9 @@
                         </div>
                     </div>
                     <div class="game-tile">
-                        <div class="gt-bg" style="background:linear-gradient(135deg,#2a2210,#4a3a1a,#6b5a2a)"></div>
+                        <div class="gt-bg"
+                            style="background-image:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1628155986927-b9a5db7f5115?q=80&w=600')">
+                        </div>
                         <div class="gt-overlay"></div>
                         <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
                         <div class="gt-content">
@@ -299,6 +314,54 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ PLAYABLE OWARE/MANCALA ═══ -->
+        <div id="play-mancala" class="scr" style="background:rgba(12,14,20,0.98)">
+            <div class="scr-top">
+                <div class="scr-title"><ion-icon name="dice"></ion-icon> Playing Oware (Mancala Variant)</div>
+                <button class="back-btn" onclick="go('games')"><ion-icon name="close"></ion-icon> Quit Match</button>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                <h2 id="mancala-status"
+                    style="font-family:var(--font-display);font-size:clamp(24px,3vw,42px);color:var(--gold);margin-bottom:4vh;letter-spacing:0.1em;text-transform:uppercase;">
+                    Player 1 Turn</h2>
+
+                <div class="m-board">
+                    <div class="m-store" id="m-store-1">0</div>
+                    <div class="m-pits-col">
+                        <!-- Player 2 (Top) -->
+                        <div class="m-row" id="m-row-1">
+                            <div class="m-pit" onclick="mancalaClick(12)"></div>
+                            <div class="m-pit" onclick="mancalaClick(11)"></div>
+                            <div class="m-pit" onclick="mancalaClick(10)"></div>
+                            <div class="m-pit" onclick="mancalaClick(9)"></div>
+                            <div class="m-pit" onclick="mancalaClick(8)"></div>
+                            <div class="m-pit" onclick="mancalaClick(7)"></div>
+                        </div>
+                        <!-- Player 1 (Bottom) -->
+                        <div class="m-row" id="m-row-0">
+                            <div class="m-pit" onclick="mancalaClick(0)"></div>
+                            <div class="m-pit" onclick="mancalaClick(1)"></div>
+                            <div class="m-pit" onclick="mancalaClick(2)"></div>
+                            <div class="m-pit" onclick="mancalaClick(3)"></div>
+                            <div class="m-pit" onclick="mancalaClick(4)"></div>
+                            <div class="m-pit" onclick="mancalaClick(5)"></div>
+                        </div>
+                    </div>
+                    <div class="m-store" id="m-store-0">0</div>
+                </div>
+
+                <div style="display:flex;gap:4vw;margin-top:6vh;align-items:center;">
+                    <div style="font-family:var(--font-display);color:var(--hot);font-size:clamp(20px,2vw,30px)">P2
+                        Score: <span id="m-score-1">0</span></div>
+                    <button class="bot-btn active" onclick="initMancala()"
+                        style="background:rgba(255,255,255,0.1);border-radius:10px;"><ion-icon
+                            name="refresh"></ion-icon><span>Restart</span></button>
+                    <div style="font-family:var(--font-display);color:var(--cyan);font-size:clamp(20px,2vw,30px)">P1
+                        Score: <span id="m-score-0">0</span></div>
                 </div>
             </div>
         </div>
