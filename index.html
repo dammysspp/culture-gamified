@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Echoes of Elders</title>
+    <title>Echoes of Elders v0.2</title>
     <link rel="stylesheet" href="style.css">
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
@@ -15,302 +15,287 @@
     <div id="app">
         <div class="bg-hero" style="background-image:url('assets/bg.png')"></div>
         <div class="bg-vignette"></div>
-        <div class="bg-grain"></div>
+        <div class="bg-scanlines"></div>
+        <div class="bg-flare"></div>
         <div id="embers"></div>
 
-        <!-- ═══ BOOT/LOADING ═══ -->
+        <!-- ═══ BOOT LOGOS ═══ -->
         <div id="boot" class="scr on">
-            <div class="boot-top"><span class="boot-studio">CUCSA Studios</span></div>
-            <div class="boot-mid">
-                <div class="boot-logo">Echoes of<br>Elders</div>
-                <p class="boot-sub">Play the World. Preserve Culture.</p>
-            </div>
-            <div class="boot-bar-wrap">
-                <div class="boot-label"><span>Loading Assets</span><span id="boot-pct">0%</span></div>
-                <div class="boot-bar">
+            <h1 class="boot-brand">CUCSA STUDIOS</h1>
+            <div class="boot-bar-container">
+                <div class="boot-metrics">
+                    <span>Initializing Assets</span>
+                    <span id="boot-pct">0%</span>
+                </div>
+                <div class="boot-track">
                     <div class="boot-fill" id="boot-fill"></div>
+                    <div class="boot-glitch"></div>
                 </div>
             </div>
-            <p class="boot-tip" id="boot-tip">Did you know? Mancala is one of the oldest board games, dating back over
-                7,000 years.</p>
-            <div class="boot-bottom-r">Designed by Samsco // v0.1</div>
         </div>
 
         <!-- ═══ TITLE ═══ -->
         <div id="title" class="scr">
             <div class="title-wrap">
-                <h1 class="t-logo">Echoes of<br>Elders</h1>
-                <p class="t-tag">Play the World</p>
-                <button class="t-prompt" onclick="go('lobby')">Press Start</button>
+                <ion-icon name="leaf" class="t-logo-mark"></ion-icon>
+                <h1 class="t-logo-text">Echoes of<br>Elders</h1>
+                <button class="t-press" onclick="go('lobby')">Press Start</button>
             </div>
-            <div class="t-footer"><span>© 2026 CUCSA</span><span>Prototype Build v0.1</span></div>
         </div>
 
-        <!-- ═══ LOBBY (Main Hub) ═══ -->
+        <!-- ═══ LOBBY (Tactical Hub) ═══ -->
         <div id="lobby" class="scr">
-            <div class="lobby-top">
-                <div class="lt-brand"><ion-icon name="leaf"></ion-icon> Echoes of Elders</div>
-                <div class="lt-right">
-                    <div class="lt-currency"><ion-icon name="diamond"></ion-icon> 18,750</div>
-                    <img src="https://i.pravatar.cc/150?img=68" class="lt-avatar" onclick="go('profile')">
+            <header class="lobby-header">
+                <div class="lh-left">
+                    <div class="lh-brand"><ion-icon name="earth"></ion-icon> Echoes of Elders</div>
+                    <div class="lh-currency"><ion-icon name="diamond"></ion-icon> 24,500</div>
                 </div>
-            </div>
+                <div class="lh-right">
+                    <div class="lh-profile" onclick="go('leaderboard')">
+                        <div class="lhp-info">
+                            <div class="lhp-name">Initate</div>
+                            <div class="lhp-level">LVL. 24</div>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?img=68" class="lhp-avatar">
+                    </div>
+                </div>
+            </header>
 
             <div class="lobby-center">
-                <!-- Left side cards -->
-                <div class="lobby-left">
-                    <div class="side-card" onclick="go('games')">
-                        <div class="sc-icon"><ion-icon name="dice"></ion-icon></div>
-                        <h5>Game Modes</h5>
-                        <p>Cultural board games from around the world</p>
-                    </div>
-                    <div class="side-card" onclick="go('heroes')">
-                        <div class="sc-icon"><ion-icon name="people"></ion-icon></div>
-                        <h5>Heroes</h5>
-                        <p>Select your cultural champion</p>
-                    </div>
-                </div>
-
-                <!-- Center hero display -->
-                <div class="hero-display">
-                    <img src="assets/amina.png" class="hero-img" id="lobby-hero-img">
-                    <div class="hero-name-tag">
-                        <h3 id="lobby-hero-name">Amina</h3>
-                        <span id="lobby-hero-class">Cavalry Commander // Warrior</span>
-                    </div>
-                </div>
-
-                <!-- Right side cards -->
-                <div class="lobby-right">
-                    <div class="side-card" onclick="go('leaderboard')">
-                        <div class="sc-icon"><ion-icon name="trophy"></ion-icon></div>
-                        <h5>Leaderboard</h5>
-                        <p>Global rankings</p>
-                    </div>
-                    <div class="side-card hot" onclick="go('community')">
-                        <div class="sc-icon"><ion-icon name="chatbubbles"></ion-icon></div>
-                        <h5>Community</h5>
-                        <p>Clans & activity</p>
+                <div class="hero-showcase">
+                    <div class="hs-bg-effect"></div>
+                    <img src="assets/amina.png" class="hs-image" id="lobby-hero-img">
+                    <div class="hs-overlay"></div>
+                    <div class="hs-details">
+                        <h2 class="hs-name" id="lobby-hero-name">Amina</h2>
+                        <span class="hs-class" id="lobby-hero-class">Cavalry Commander // Warrior</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Bottom nav (Fortnite-style) -->
-            <div class="lobby-bottom">
-                <button class="bot-btn active"><ion-icon name="home"></ion-icon><span>Lobby</span></button>
-                <button class="bot-btn" onclick="go('heroes')"><ion-icon
-                        name="people"></ion-icon><span>Heroes</span></button>
-                <button class="bot-btn play-btn" onclick="go('games')"><ion-icon
-                        name="play"></ion-icon><span>Play</span></button>
-                <button class="bot-btn" onclick="go('leaderboard')"><ion-icon
-                        name="trophy"></ion-icon><span>Ranks</span></button>
-                <button class="bot-btn" onclick="go('settings')"><ion-icon
-                        name="settings"></ion-icon><span>Settings</span></button>
+            <div class="lobby-left">
+                <div class="hud-panel alert" onclick="go('games')">
+                    <div class="hp-header">
+                        <div class="hp-icon"><ion-icon name="alert-circle"></ion-icon></div>
+                        <h3 class="hp-title">Featured</h3>
+                    </div>
+                    <p class="hp-desc">The Oware Championship is live. Play the ancient Ghanaian seed game and rise the
+                        ranks.</p>
+                </div>
+                <div class="hud-panel" onclick="go('heroes')">
+                    <div class="hp-header">
+                        <div class="hp-icon"><ion-icon name="people"></ion-icon></div>
+                        <h3 class="hp-title">Roster</h3>
+                    </div>
+                    <p class="hp-desc">View and select your cultural champion for the next match.</p>
+                </div>
             </div>
+
+            <div class="lobby-right">
+                <div class="hud-panel" onclick="go('leaderboard')">
+                    <div class="hp-header">
+                        <div class="hp-icon"><ion-icon name="trophy"></ion-icon></div>
+                        <h3 class="hp-title">Leaderboard</h3>
+                    </div>
+                    <p class="hp-desc">Global rankings updated daily. You are currently rank #1 in your region.</p>
+                </div>
+                <div class="hud-panel" onclick="go('leaderboard')">
+                    <div class="hp-header">
+                        <div class="hp-icon"><ion-icon name="chatbubbles"></ion-icon></div>
+                        <h3 class="hp-title">Comms</h3>
+                    </div>
+                    <p class="hp-desc">Your clan [ZULU] has issued a new challenge for the weekend.</p>
+                </div>
+            </div>
+
+            <footer class="lobby-footer">
+                <div class="nav-dock">
+                    <button class="nav-tab active"><ion-icon name="home"></ion-icon> Lobby</button>
+                    <button class="nav-tab" onclick="go('heroes')"><ion-icon name="people"></ion-icon> Heroes</button>
+                    <button class="nav-tab play-tab" onclick="go('games')">DEPLOY</button>
+                    <button class="nav-tab" onclick="go('leaderboard')"><ion-icon name="stats-chart"></ion-icon>
+                        Data</button>
+                    <button class="nav-tab" onclick="go('lobby')"><ion-icon name="settings"></ion-icon> Config</button>
+                </div>
+            </footer>
         </div>
 
-        <!-- ═══ HEROES ═══ -->
+        <!-- ═══ HERO ROSTER ═══ -->
         <div id="heroes" class="scr">
-            <div class="scr-top">
-                <div class="scr-title"><ion-icon name="people"></ion-icon> Select Hero</div>
-                <button class="back-btn" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Back</button>
-            </div>
-            <div class="carousel-zone">
-                <button class="arr arr-l" onclick="scrollHeroes(-1)"><ion-icon name="chevron-back"></ion-icon></button>
-                <button class="arr arr-r" onclick="scrollHeroes(1)"><ion-icon
+            <header class="scr-header">
+                <h1 class="sh-title"><ion-icon name="people"></ion-icon> Operator Select</h1>
+                <button class="btn-back" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Return to
+                    Base</button>
+            </header>
+
+            <div class="roster-view">
+                <button class="nav-arrow left" onclick="scrollHeroes(-1)"><ion-icon
+                        name="chevron-back"></ion-icon></button>
+                <button class="nav-arrow right" onclick="scrollHeroes(1)"><ion-icon
                         name="chevron-forward"></ion-icon></button>
-                <div class="carousel-scroll" id="heroScroll">
-                    <div class="hero-card center" data-hero="moremi" data-name="Moremi"
-                        data-class="Infiltrator // Protector" data-img="assets/moremi.png">
-                        <div class="hc-bg" style="background-image:url('assets/moremi.png')"></div>
-                        <div class="hc-grad"
-                            style="background:linear-gradient(0deg,rgba(140,42,50,.9) 0%,transparent 60%)"></div>
-                        <div class="hc-number">01</div>
-                        <div class="hc-info">
-                            <div class="hc-era">12th Century</div>
-                            <h3 class="hc-name">Moremi</h3>
-                            <div class="hc-class">Infiltrator // Protector</div>
+
+                <div class="roster-track" id="heroScroll">
+                    <div class="rc-card center" data-name="Moremi" data-class="Infiltrator // Protector"
+                        data-img="assets/moremi.png">
+                        <div class="rc-inner">
+                            <div class="rc-bg" style="background-image:url('assets/moremi.png')"></div>
+                            <div class="rc-overlay"></div>
+                            <div class="rc-num">01</div>
+                            <div class="rc-content">
+                                <div class="rc-era">12th Century</div>
+                                <h3 class="rc-name">Moremi</h3>
+                                <div class="rc-class">Infiltrator // Protector</div>
+                                <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Deploy
+                                    Operator</button>
+                            </div>
                         </div>
-                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
                     </div>
-                    <div class="hero-card" data-hero="amina" data-name="Amina" data-class="Cavalry Commander // Warrior"
+                    <div class="rc-card" data-name="Amina" data-class="Cavalry Commander // Warrior"
                         data-img="assets/amina.png">
-                        <div class="hc-bg" style="background-image:url('assets/amina.png')"></div>
-                        <div class="hc-grad"
-                            style="background:linear-gradient(0deg,rgba(8,112,184,.9) 0%,transparent 60%)"></div>
-                        <div class="hc-number">02</div>
-                        <div class="hc-info">
-                            <div class="hc-era">16th Century</div>
-                            <h3 class="hc-name">Amina</h3>
-                            <div class="hc-class">Cavalry Commander // Warrior</div>
+                        <div class="rc-inner">
+                            <div class="rc-bg" style="background-image:url('assets/amina.png')"></div>
+                            <div class="rc-overlay"></div>
+                            <div class="rc-num">02</div>
+                            <div class="rc-content">
+                                <div class="rc-era">16th Century</div>
+                                <h3 class="rc-name">Amina</h3>
+                                <div class="rc-class">Cavalry Commander // Warrior</div>
+                                <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Deploy
+                                    Operator</button>
+                            </div>
                         </div>
-                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
                     </div>
-                    <div class="hero-card" data-hero="jaja" data-name="Jaja" data-class="Merchant Prince // Diplomat"
+                    <div class="rc-card" data-name="Jaja" data-class="Merchant Prince // Diplomat"
                         data-img="assets/jaja.png">
-                        <div class="hc-bg" style="background-image:url('assets/jaja.png')"></div>
-                        <div class="hc-grad"
-                            style="background:linear-gradient(0deg,rgba(209,122,34,.9) 0%,transparent 60%)"></div>
-                        <div class="hc-number">03</div>
-                        <div class="hc-info">
-                            <div class="hc-era">19th Century</div>
-                            <h3 class="hc-name">Jaja</h3>
-                            <div class="hc-class">Merchant Prince // Diplomat</div>
+                        <div class="rc-inner">
+                            <div class="rc-bg" style="background-image:url('assets/jaja.png')"></div>
+                            <div class="rc-overlay"></div>
+                            <div class="rc-num">03</div>
+                            <div class="rc-content">
+                                <div class="rc-era">19th Century</div>
+                                <h3 class="rc-name">Jaja</h3>
+                                <div class="rc-class">Merchant Prince // Diplomat</div>
+                                <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Deploy
+                                    Operator</button>
+                            </div>
                         </div>
-                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
                     </div>
-                    <div class="hero-card" data-hero="shaka" data-name="Shaka" data-class="General // Warrior"
-                        data-img="assets/shaka.png">
-                        <div class="hc-bg" style="background-image:url('assets/shaka.png')"></div>
-                        <div class="hc-grad"
-                            style="background:linear-gradient(0deg,rgba(8,112,184,.9) 0%,transparent 60%)"></div>
-                        <div class="hc-number">04</div>
-                        <div class="hc-info">
-                            <div class="hc-era">19th Century</div>
-                            <h3 class="hc-name">Shaka</h3>
-                            <div class="hc-class">General // Warrior</div>
+                    <div class="rc-card" data-name="Shaka" data-class="General // Warrior" data-img="assets/shaka.png">
+                        <div class="rc-inner">
+                            <div class="rc-bg" style="background-image:url('assets/shaka.png')"></div>
+                            <div class="rc-overlay"></div>
+                            <div class="rc-num">04</div>
+                            <div class="rc-content">
+                                <div class="rc-era">19th Century</div>
+                                <h3 class="rc-name">Shaka</h3>
+                                <div class="rc-class">General // Warrior</div>
+                                <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Deploy
+                                    Operator</button>
+                            </div>
                         </div>
-                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
                     </div>
-                    <div class="hero-card" data-hero="mansa" data-name="Mansa Musa" data-class="Emperor // Economist"
+                    <div class="rc-card" data-name="Mansa Musa" data-class="Emperor // Economist"
                         data-img="assets/mansa.png">
-                        <div class="hc-bg" style="background-image:url('assets/mansa.png')"></div>
-                        <div class="hc-grad"
-                            style="background:linear-gradient(0deg,rgba(209,122,34,.9) 0%,transparent 60%)"></div>
-                        <div class="hc-number">05</div>
-                        <div class="hc-info">
-                            <div class="hc-era">14th Century</div>
-                            <h3 class="hc-name">Mansa Musa</h3>
-                            <div class="hc-class">Emperor // Economist</div>
+                        <div class="rc-inner">
+                            <div class="rc-bg" style="background-image:url('assets/mansa.png')"></div>
+                            <div class="rc-overlay"></div>
+                            <div class="rc-num">05</div>
+                            <div class="rc-content">
+                                <div class="rc-era">14th Century</div>
+                                <h3 class="rc-name">Mansa Musa</h3>
+                                <div class="rc-class">Emperor // Economist</div>
+                                <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Deploy
+                                    Operator</button>
+                            </div>
                         </div>
-                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
-                    </div>
-                    <div class="hero-card" data-hero="yaa" data-name="Yaa" data-class="Queen Mother // Commander"
-                        data-img="assets/yaa.png">
-                        <div class="hc-bg" style="background-image:url('assets/yaa.png')"></div>
-                        <div class="hc-grad"
-                            style="background:linear-gradient(0deg,rgba(140,42,50,.9) 0%,transparent 60%)"></div>
-                        <div class="hc-number">06</div>
-                        <div class="hc-info">
-                            <div class="hc-era">20th Century</div>
-                            <h3 class="hc-name">Yaa</h3>
-                            <div class="hc-class">Queen Mother // Commander</div>
-                        </div>
-                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
-                    </div>
-                    <div class="hero-card" data-hero="sundiata" data-name="Sundiata"
-                        data-class="Lion Prince // Conqueror" data-img="assets/sundiata.png">
-                        <div class="hc-bg" style="background-image:url('assets/sundiata.png')"></div>
-                        <div class="hc-grad"
-                            style="background:linear-gradient(0deg,rgba(8,112,184,.9) 0%,transparent 60%)"></div>
-                        <div class="hc-number">07</div>
-                        <div class="hc-info">
-                            <div class="hc-era">13th Century</div>
-                            <h3 class="hc-name">Sundiata</h3>
-                            <div class="hc-class">Lion Prince // Conqueror</div>
-                        </div>
-                        <button class="hc-select" onclick="selectHero(this.closest('.hero-card'))">Select Hero</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ═══ GAME MODES ═══ -->
+        <!-- ═══ GAME MODES (Deployment Map) ═══ -->
         <div id="games" class="scr">
-            <div class="scr-top">
-                <div class="scr-title"><ion-icon name="dice"></ion-icon> Game Modes</div>
-                <button class="back-btn" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Back</button>
-            </div>
-            <div class="games-body">
-                <div class="section-label"><ion-icon name="star"></ion-icon> Featured Board Games</div>
-                <div class="games-grid">
-                    <div class="game-tile" onclick="openMancala()">
-                        <div class="gt-bg"
-                            style="background-image:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1553481187-be93c21490a9?q=80&w=600')">
-                        </div>
-                        <div class="gt-overlay"></div>
-                        <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
-                        <div class="gt-content">
-                            <div class="gt-badge pop"
-                                style="background:var(--gold);color:var(--bg);box-shadow:0 0 10px rgba(240,200,80,0.4)">
-                                Playable Demo</div>
-                            <div class="gt-name">Oware</div>
-                            <div class="gt-origin">Ghana / West Africa</div>
-                            <div class="gt-desc">The royal seed-sowing game. SOW SEEDS NOW.</div>
-                        </div>
-                    </div>
-                    <div class="game-tile">
-                        <div class="gt-bg"
-                            style="background-image:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=600')">
-                        </div>
-                        <div class="gt-overlay"></div>
-                        <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
-                        <div class="gt-content">
-                            <div class="gt-badge">Strategy</div>
-                            <div class="gt-name">Senet</div>
-                            <div class="gt-origin">Ancient Egypt</div>
-                            <div class="gt-desc">One of humanity's oldest board games. Race your pieces to the
-                                afterlife.</div>
-                        </div>
-                    </div>
-                    <div class="game-tile">
-                        <div class="gt-bg"
-                            style="background-image:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1610890716171-6b1bb98ffaed?q=80&w=600')">
-                        </div>
-                        <div class="gt-overlay"></div>
-                        <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
-                        <div class="gt-content">
-                            <div class="gt-badge new">New</div>
-                            <div class="gt-name">Morabaraba</div>
-                            <div class="gt-origin">South Africa</div>
-                            <div class="gt-desc">Strategic mill game. Trap your opponent by forming lines of three.
+            <header class="scr-header">
+                <h1 class="sh-title"><ion-icon name="map"></ion-icon> Tactical Deployment</h1>
+                <button class="btn-back" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Return to
+                    Base</button>
+            </header>
+
+            <div class="gm-layout">
+                <div class="gm-section">
+                    <h2 class="gm-stitle">Active Campaigns</h2>
+                    <div class="gm-grid">
+                        <div class="gm-card" onclick="openMancala()">
+                            <div class="gm-bg"
+                                style="background-image:url('https://images.unsplash.com/photo-1553481187-be93c21490a9?q=80&w=600')">
+                            </div>
+                            <div class="gm-overlay"></div>
+                            <div class="gm-badge-wrap"><span class="gm-badge pop">LIVE DEMO</span></div>
+                            <div class="gm-players"><ion-icon name="people"></ion-icon> 2</div>
+                            <div class="gm-content">
+                                <h3 class="gm-name">Oware</h3>
+                                <span class="gm-origin">Ghana // West Africa</span>
+                                <p class="gm-desc">The royal seed-sowing game. Capture enemy resources to dominate the
+                                    board.</p>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="section-label"><ion-icon name="earth"></ion-icon> Cultural Classics</div>
-                <div class="games-grid">
-                    <div class="game-tile" onclick="openMancala()">
-                        <div class="gt-bg"
-                            style="background-image:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1593814681464-eef5af2b0628?q=80&w=600')">
+                        <div class="gm-card">
+                            <div class="gm-bg"
+                                style="background-image:url('https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=600')">
+                            </div>
+                            <div class="gm-overlay"></div>
+                            <div class="gm-badge-wrap"><span class="gm-badge">STRATEGY</span></div>
+                            <div class="gm-players"><ion-icon name="people"></ion-icon> 2</div>
+                            <div class="gm-content">
+                                <h3 class="gm-name">Senet</h3>
+                                <span class="gm-origin">Ancient Egypt</span>
+                                <p class="gm-desc">Race your artifacts to the afterlife. Ancient tactical movement rules
+                                    apply.</p>
+                            </div>
                         </div>
-                        <div class="gt-overlay"></div>
-                        <div class="gt-players"><ion-icon name="people"></ion-icon> 2-4</div>
-                        <div class="gt-content">
-                            <div class="gt-badge pop"
-                                style="background:var(--gold);color:var(--bg);box-shadow:0 0 10px rgba(240,200,80,0.4)">
-                                Playable Demo</div>
-                            <div class="gt-name">Ayo</div>
-                            <div class="gt-origin">Nigeria / Yoruba</div>
-                            <div class="gt-desc">The Yoruba variant of Mancala. LIVE MATCH.</div>
+
+                        <div class="gm-card">
+                            <div class="gm-bg"
+                                style="background-image:url('https://images.unsplash.com/photo-1610890716171-6b1bb98ffaed?q=80&w=600')">
+                            </div>
+                            <div class="gm-overlay"></div>
+                            <div class="gm-badge-wrap"><span class="gm-badge new">NEW MAP</span></div>
+                            <div class="gm-players"><ion-icon name="people"></ion-icon> 2</div>
+                            <div class="gm-content">
+                                <h3 class="gm-name">Morabaraba</h3>
+                                <span class="gm-origin">South Africa</span>
+                                <p class="gm-desc">Strategic mill game. Form lines of three to eliminate enemy units
+                                    from the grid.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="game-tile">
-                        <div class="gt-bg"
-                            style="background-image:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1629518055458-eb573f08ac8d?q=80&w=600')">
+
+                        <div class="gm-card" onclick="openMancala()">
+                            <div class="gm-bg"
+                                style="background-image:url('https://images.unsplash.com/photo-1593814681464-eef5af2b0628?q=80&w=600')">
+                            </div>
+                            <div class="gm-overlay"></div>
+                            <div class="gm-badge-wrap"><span class="gm-badge pop">LIVE DEMO</span></div>
+                            <div class="gm-players"><ion-icon name="people"></ion-icon> 2-4</div>
+                            <div class="gm-content">
+                                <h3 class="gm-name">Ayo</h3>
+                                <span class="gm-origin">Nigeria // Yoruba</span>
+                                <p class="gm-desc">The Nigerian variant of Mancala. Highly competitive territory
+                                    control.</p>
+                            </div>
                         </div>
-                        <div class="gt-overlay"></div>
-                        <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
-                        <div class="gt-content">
-                            <div class="gt-badge">Tactical</div>
-                            <div class="gt-name">Dara</div>
-                            <div class="gt-origin">Nigeria</div>
-                            <div class="gt-desc">Drop phase then move phase. Align three in a row to capture enemy
-                                pieces.</div>
-                        </div>
-                    </div>
-                    <div class="game-tile">
-                        <div class="gt-bg"
-                            style="background-image:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1628155986927-b9a5db7f5115?q=80&w=600')">
-                        </div>
-                        <div class="gt-overlay"></div>
-                        <div class="gt-players"><ion-icon name="people"></ion-icon> 2</div>
-                        <div class="gt-content">
-                            <div class="gt-badge new">New</div>
-                            <div class="gt-name">Fanorona</div>
-                            <div class="gt-origin">Madagascar</div>
-                            <div class="gt-desc">Capture by approach or withdrawal. The national game of Madagascar.
+
+                        <div class="gm-card">
+                            <div class="gm-bg"
+                                style="background-image:url('https://images.unsplash.com/photo-1629518055458-eb573f08ac8d?q=80&w=600')">
+                            </div>
+                            <div class="gm-overlay"></div>
+                            <div class="gm-badge-wrap"><span class="gm-badge">TACTICAL</span></div>
+                            <div class="gm-players"><ion-icon name="people"></ion-icon> 2</div>
+                            <div class="gm-content">
+                                <h3 class="gm-name">Dara</h3>
+                                <span class="gm-origin">Nigeria</span>
+                                <p class="gm-desc">Drop phase then move phase. Multi-stage battlefield mechanics.</p>
                             </div>
                         </div>
                     </div>
@@ -318,16 +303,67 @@
             </div>
         </div>
 
-        <!-- ═══ PLAYABLE OWARE/MANCALA ═══ -->
-        <div id="play-mancala" class="scr" style="background:rgba(12,14,20,0.98)">
-            <div class="scr-top">
-                <div class="scr-title"><ion-icon name="dice"></ion-icon> Playing Oware (Mancala Variant)</div>
-                <button class="back-btn" onclick="go('games')"><ion-icon name="close"></ion-icon> Quit Match</button>
+        <!-- ═══ LEADERBOARD / DATA ═══ -->
+        <div id="leaderboard" class="scr overlay-scr">
+            <header class="scr-header">
+                <h1 class="sh-title"><ion-icon name="stats-chart"></ion-icon> Global Database</h1>
+                <button class="btn-back" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Return</button>
+            </header>
+            <div class="os-layout" style="display:flex; justify-content:center; align-items:flex-start;">
+                <div class="tac-panel" style="width: 100%; max-width: 800px;">
+                    <div class="tac-tabs">
+                        <button class="tac-tab active">All Time Ranks</button>
+                        <button class="tac-tab">Season 1 Intel</button>
+                    </div>
+                    <div class="rank-list">
+                        <div class="rank-row highlight">
+                            <span class="rr-pos">01</span>
+                            <img src="https://i.pravatar.cc/150?img=68" class="rr-av">
+                            <span class="rr-name">You [Commander]</span>
+                            <span class="rr-score">24,500 AP</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">02</span>
+                            <img src="https://i.pravatar.cc/150?img=12" class="rr-av">
+                            <span class="rr-name">Kwame</span>
+                            <span class="rr-score">21,200 AP</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">03</span>
+                            <img src="https://i.pravatar.cc/150?img=33" class="rr-av">
+                            <span class="rr-name">Nneka</span>
+                            <span class="rr-score">18,430 AP</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">04</span>
+                            <img src="https://i.pravatar.cc/150?img=45" class="rr-av">
+                            <span class="rr-name">Adaeze</span>
+                            <span class="rr-score">12,100 AP</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-                <h2 id="mancala-status"
-                    style="font-family:var(--font-display);font-size:clamp(24px,3vw,42px);color:var(--gold);margin-bottom:4vh;letter-spacing:0.1em;text-transform:uppercase;">
-                    Player 1 Turn</h2>
+        </div>
+
+        <!-- ═══ PLAYABLE MATCH: MANCALA ═══ -->
+        <div id="play-mancala" class="scr" style="background:#0a0c10;">
+            <header class="scr-header">
+                <h1 class="sh-title"><ion-icon name="game-controller"></ion-icon> Live Match: Oware</h1>
+                <button class="btn-back" onclick="go('games')"><ion-icon name="warning"></ion-icon> Abort
+                    Mission</button>
+            </header>
+
+            <div class="m-arena">
+                <div class="m-status-bar">
+                    <div class="m-player-tag" id="p1-tag">
+                        <div class="mpt-color p1-color"></div> Player 1 (Bottom)
+                    </div>
+                    <h2 id="mancala-status"
+                        style="font-family:var(--font-display); font-size: 32px; color: #fff; text-transform: uppercase; letter-spacing: 0.2em;">
+                        Awaiting Order</h2>
+                    <div class="m-player-tag" id="p2-tag">Player 2 (Top) <div class="mpt-color p2-color"></div>
+                    </div>
+                </div>
 
                 <div class="m-board">
                     <div class="m-store" id="m-store-1">0</div>
@@ -354,212 +390,9 @@
                     <div class="m-store" id="m-store-0">0</div>
                 </div>
 
-                <div style="display:flex;gap:4vw;margin-top:6vh;align-items:center;">
-                    <div style="font-family:var(--font-display);color:var(--hot);font-size:clamp(20px,2vw,30px)">P2
-                        Score: <span id="m-score-1">0</span></div>
-                    <button class="bot-btn active" onclick="initMancala()"
-                        style="background:rgba(255,255,255,0.1);border-radius:10px;"><ion-icon
-                            name="refresh"></ion-icon><span>Restart</span></button>
-                    <div style="font-family:var(--font-display);color:var(--cyan);font-size:clamp(20px,2vw,30px)">P1
-                        Score: <span id="m-score-0">0</span></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══ LEADERBOARD ═══ -->
-        <div id="leaderboard" class="scr overlay-scr">
-            <div class="scr-top">
-                <div class="scr-title"><ion-icon name="trophy"></ion-icon> Leaderboard</div><button class="back-btn"
-                    onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Back</button>
-            </div>
-            <div class="ov-body">
-                <div class="lb-wrap">
-                    <div class="lb-tabs"><button class="lb-tab on">All Time</button><button
-                            class="lb-tab">Season</button><button class="lb-tab">Weekly</button></div>
-                    <div class="podium">
-                        <div class="pod s"><img src="https://i.pravatar.cc/150?img=12">
-                            <div class="pod-rank">2</div>
-                            <h5>Kwame</h5><span>14,200 AP</span>
-                        </div>
-                        <div class="pod g">
-                            <div class="pod-crown"><ion-icon name="diamond"></ion-icon></div><img
-                                src="https://i.pravatar.cc/150?img=68">
-                            <div class="pod-rank">1</div>
-                            <h5>You</h5><span>18,750 AP</span>
-                        </div>
-                        <div class="pod b"><img src="https://i.pravatar.cc/150?img=33">
-                            <div class="pod-rank">3</div>
-                            <h5>Nneka</h5><span>12,430 AP</span>
-                        </div>
-                    </div>
-                    <div class="lb-list">
-                        <div class="lb-row"><span class="lb-pos">4</span><img
-                                src="https://i.pravatar.cc/150?img=45"><span class="lb-nm">Adaeze</span><span
-                                class="lb-sc">11,020</span><span class="lb-ch up"><ion-icon
-                                    name="arrow-up"></ion-icon>2</span></div>
-                        <div class="lb-row"><span class="lb-pos">5</span><img
-                                src="https://i.pravatar.cc/150?img=22"><span class="lb-nm">Ibrahim</span><span
-                                class="lb-sc">10,800</span><span class="lb-ch dn"><ion-icon
-                                    name="arrow-down"></ion-icon>1</span></div>
-                        <div class="lb-row"><span class="lb-pos">6</span><img
-                                src="https://i.pravatar.cc/150?img=51"><span class="lb-nm">Fatima</span><span
-                                class="lb-sc">9,650</span><span class="lb-ch up"><ion-icon
-                                    name="arrow-up"></ion-icon>5</span></div>
-                        <div class="lb-row"><span class="lb-pos">7</span><img
-                                src="https://i.pravatar.cc/150?img=60"><span class="lb-nm">Emeka</span><span
-                                class="lb-sc">8,940</span><span class="lb-ch eq">—</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══ COMMUNITY ═══ -->
-        <div id="community" class="scr overlay-scr">
-            <div class="scr-top">
-                <div class="scr-title"><ion-icon name="chatbubbles"></ion-icon> Community</div><button class="back-btn"
-                    onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Back</button>
-            </div>
-            <div class="ov-body">
-                <div class="comm-grid">
-                    <div class="comm-col">
-                        <div class="ch-label"><ion-icon name="pulse"></ion-icon> Activity</div>
-                        <div class="feed">
-                            <div class="fi"><img src="https://i.pravatar.cc/150?img=12">
-                                <div class="fi-b"><strong>Kwame</strong> won <em>Oware</em> match</div><span
-                                    class="fi-t">2h</span>
-                            </div>
-                            <div class="fi"><img src="https://i.pravatar.cc/150?img=33">
-                                <div class="fi-b"><strong>Nneka</strong> unlocked <em>Senet Master</em></div><span
-                                    class="fi-t">4h</span>
-                            </div>
-                            <div class="fi"><img src="https://i.pravatar.cc/150?img=45">
-                                <div class="fi-b"><strong>Adaeze</strong> reached <em>Diamond Rank</em></div><span
-                                    class="fi-t">6h</span>
-                            </div>
-                            <div class="fi"><img src="https://i.pravatar.cc/150?img=22">
-                                <div class="fi-b"><strong>Ibrahim</strong> completed <em>Dara</em> challenge</div><span
-                                    class="fi-t">12h</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="comm-col">
-                        <div class="ch-label"><ion-icon name="shield-half"></ion-icon> Clans</div>
-                        <div class="clan">
-                            <div class="clan-ic" style="background:rgba(240,200,80,.12);color:var(--gold)"><ion-icon
-                                    name="shield"></ion-icon></div>
-                            <div>
-                                <h5>Golden Stool</h5><span>128 • Rank #1</span>
-                            </div><button class="clan-btn">Joined</button>
-                        </div>
-                        <div class="clan">
-                            <div class="clan-ic" style="background:rgba(0,229,255,.1);color:var(--cyan)"><ion-icon
-                                    name="shield"></ion-icon></div>
-                            <div>
-                                <h5>Zulu Warriors</h5><span>96 • Rank #3</span>
-                            </div><button class="clan-btn o">Join</button>
-                        </div>
-                        <div class="clan">
-                            <div class="clan-ic" style="background:rgba(255,62,94,.1);color:var(--hot)"><ion-icon
-                                    name="shield"></ion-icon></div>
-                            <div>
-                                <h5>Ndongo Defenders</h5><span>72 • Rank #7</span>
-                            </div><button class="clan-btn o">Join</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══ PROFILE ═══ -->
-        <div id="profile" class="scr overlay-scr">
-            <div class="scr-top">
-                <div class="scr-title"><ion-icon name="person"></ion-icon> Profile</div><button class="back-btn"
-                    onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Back</button>
-            </div>
-            <div class="ov-body">
-                <div class="prof-wrap">
-                    <div class="prof-head"><img src="https://i.pravatar.cc/150?img=68" class="prof-av">
-                        <div class="prof-info">
-                            <h3>Initiate</h3><span class="p-title">Culture Explorer // Lv. 24</span>
-                            <div class="xp-bar">
-                                <div class="xp-fill" style="width:68%"></div>
-                            </div><span class="xp-lbl">6,800 / 10,000 XP</span>
-                        </div>
-                    </div>
-                    <div class="prof-grid">
-                        <div class="pg-card"><ion-icon name="dice"></ion-icon>
-                            <div class="pg-v">86</div>
-                            <div class="pg-l">Games Won</div>
-                        </div>
-                        <div class="pg-card"><ion-icon name="book"></ion-icon>
-                            <div class="pg-v">18</div>
-                            <div class="pg-l">Lore</div>
-                        </div>
-                        <div class="pg-card"><ion-icon name="people"></ion-icon>
-                            <div class="pg-v">7</div>
-                            <div class="pg-l">Heroes</div>
-                        </div>
-                        <div class="pg-card"><ion-icon name="time"></ion-icon>
-                            <div class="pg-v">120h</div>
-                            <div class="pg-l">Time</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══ SETTINGS ═══ -->
-        <div id="settings" class="scr overlay-scr">
-            <div class="scr-top">
-                <div class="scr-title"><ion-icon name="settings"></ion-icon> Settings</div><button class="back-btn"
-                    onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Back</button>
-            </div>
-            <div class="ov-body">
-                <div class="set-panel">
-                    <div class="set-grp">
-                        <div class="sg-t">Audio</div>
-                        <div class="s-row"><span>Master Volume</span>
-                            <div class="slider">
-                                <div class="sl-fill" style="width:75%"></div>
-                                <div class="sl-thumb" style="left:75%"></div>
-                            </div>
-                        </div>
-                        <div class="s-row"><span>Music</span>
-                            <div class="slider">
-                                <div class="sl-fill" style="width:60%"></div>
-                                <div class="sl-thumb" style="left:60%"></div>
-                            </div>
-                        </div>
-                        <div class="s-row"><span>SFX</span>
-                            <div class="slider">
-                                <div class="sl-fill" style="width:90%"></div>
-                                <div class="sl-thumb" style="left:90%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="set-grp">
-                        <div class="sg-t">Display</div>
-                        <div class="s-row"><span>Particles</span>
-                            <div class="tog on">
-                                <div class="tog-k"></div>
-                            </div>
-                        </div>
-                        <div class="s-row"><span>Film Grain</span>
-                            <div class="tog on">
-                                <div class="tog-k"></div>
-                            </div>
-                        </div>
-                        <div class="s-row"><span>Subtitles</span>
-                            <div class="tog">
-                                <div class="tog-k"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="set-grp">
-                        <div class="sg-t">Account</div>
-                        <div class="s-row"><span>Language</span><span class="s-val">English</span></div>
-                        <div class="s-row"><span>Region</span><span class="s-val">West Africa</span></div>
-                    </div>
+                <div class="m-controls">
+                    <button class="btn-primary" onclick="initMancala()"><ion-icon name="refresh"></ion-icon> Reset
+                        Board</button>
                 </div>
             </div>
         </div>

@@ -9,12 +9,15 @@ function go(toScr) {
     isTrns = true;
 
     // Play button specific logic for the lobby bottom nav active states
-    document.querySelectorAll('.bot-btn').forEach(b => b.classList.remove('active'));
-    if (toScr === 'lobby') document.querySelectorAll('.bot-btn')[0].classList.add('active');
-    if (toScr === 'heroes') document.querySelectorAll('.bot-btn')[1].classList.add('active');
-    if (toScr === 'games') document.querySelectorAll('.bot-btn')[2].classList.add('active');
-    if (toScr === 'leaderboard') document.querySelectorAll('.bot-btn')[3].classList.add('active');
-    if (toScr === 'settings') document.querySelectorAll('.bot-btn')[4].classList.add('active');
+    const tabs = document.querySelectorAll('.nav-tab');
+    if (tabs.length > 0) {
+        tabs.forEach(b => b.classList.remove('active'));
+        if (toScr === 'lobby' && tabs[0]) tabs[0].classList.add('active');
+        if (toScr === 'heroes' && tabs[1]) tabs[1].classList.add('active');
+        if (toScr === 'games' && tabs[2]) tabs[2].classList.add('active');
+        if (toScr === 'leaderboard' && tabs[3]) tabs[3].classList.add('active');
+        if (toScr === 'settings' && tabs[4]) tabs[4].classList.add('active');
+    }
 
     const curtain = document.getElementById('curtain');
     curtain.classList.add('go');
