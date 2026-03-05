@@ -1,137 +1,162 @@
+// ============================================
+// STATE
+// ============================================
 let currentScreenId = 'screen-studio-intro';
 let isTransitioning = false;
 let currentHeroObj = null;
 
-// Unified Clean/Cinematic Fade Transition
+// ============================================
+// PARTICLES SYSTEM
+// ============================================
+function spawnParticles() {
+    const canvas = document.getElementById('particles-canvas');
+    if (!canvas) return;
+    const count = 25;
+    for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.setProperty('--dur', (6 + Math.random() * 10) + 's');
+        p.style.setProperty('--delay', (Math.random() * 10) + 's');
+        p.style.width = (2 + Math.random() * 3) + 'px';
+        p.style.height = p.style.width;
+        if (Math.random() > 0.6) {
+            p.style.background = '#e87040';
+            p.style.boxShadow = '0 0 6px #e87040, 0 0 12px rgba(232,112,64,0.3)';
+        }
+        canvas.appendChild(p);
+    }
+}
+
+// ============================================
+// TRANSITIONS
+// ============================================
 function triggerFadeTransition(targetScreenId) {
     if (isTransitioning || currentScreenId === targetScreenId) return;
     isTransitioning = true;
 
-    const transitionOverlay = document.getElementById('fade-transition');
-    const currentScreen = document.getElementById(currentScreenId);
-    const targetScreen = document.getElementById(targetScreenId);
+    const overlay = document.getElementById('fade-transition');
+    const currScreen = document.getElementById(currentScreenId);
+    const nextScreen = document.getElementById(targetScreenId);
 
-    transitionOverlay.classList.add('play-fade');
+    overlay.classList.add('play-fade');
 
     setTimeout(() => {
-        if (currentScreen) currentScreen.classList.remove('active');
-        if (targetScreen) targetScreen.classList.add('active');
+        if (currScreen) currScreen.classList.remove('active');
+        if (nextScreen) nextScreen.classList.add('active');
         currentScreenId = targetScreenId;
 
         if (targetScreenId === 'screen-mission-select' && currentHeroObj) {
             populateMissionData();
         }
-
-        // Initialize scroll listener when entering character-select
         if (targetScreenId === 'screen-character-select') {
-            // slight delay to let DOM render sizes
-            setTimeout(initHeroScroll, 50);
+            setTimeout(initHeroScroll, 100);
         }
-
-    }, 400);
+    }, 500);
 
     setTimeout(() => {
-        transitionOverlay.classList.remove('play-fade');
+        overlay.classList.remove('play-fade');
         isTransitioning = false;
-    }, 800);
+    }, 900);
 }
 
 function triggerCinematicDive() {
     if (isTransitioning) return;
     isTransitioning = true;
-
     const flash = document.getElementById('flash-bang');
     flash.classList.add('boom');
-
     setTimeout(() => {
         document.getElementById(currentScreenId).classList.remove('active');
         document.getElementById('screen-hud').classList.add('active');
         currentScreenId = 'screen-hud';
-
         setTimeout(() => {
             flash.classList.remove('boom');
             isTransitioning = false;
-        }, 400);
-
+        }, 500);
     }, 300);
 }
 
 function triggerCinematicAchievement() {
     const ach = document.getElementById('cinematic-achievement');
     ach.classList.remove('pop');
-    void ach.offsetWidth; // force reflow
+    void ach.offsetWidth;
     ach.classList.add('pop');
-
-    setTimeout(() => {
-        ach.classList.remove('pop');
-    }, 4000);
+    setTimeout(() => ach.classList.remove('pop'), 4000);
 }
 
+// ============================================
+// CAROUSEL
+// ============================================
 function scrollCarousel(direction) {
     const list = document.querySelector('.arcane-carousel-container');
     if (!list) return;
-
-    // Smooth scroll by approximately one card width (20vw card + 3vw gap)
-    const cardWidth = window.innerWidth * 0.23;
+    const cardWidth = window.innerWidth * 0.225;
     list.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
 }
 
-// ==========================================
-// SCROLLABLE CAROUSEL LOGIC
-// ==========================================
+let scrollListenerAttached = false;
 
 function initHeroScroll() {
     const list = document.querySelector('.arcane-carousel-container');
     const cards = document.querySelectorAll('.arcane-card');
-
     if (!list || cards.length === 0) return;
 
-    function updateCardTransforms() {
-        // Calculate center of the viewport
-        const centerPoint = list.getBoundingClientRect().left + (list.offsetWidth / 2);
+    function updateCardStates() {
+        const center = list.getBoundingClientRect().left + list.offsetWidth / 2;
 
-        cards.forEach((card) => {
-            const cardRect = card.getBoundingClientRect();
-            const cardCenter = cardRect.left + (cardRect.width / 2);
-            // Distance from card center to container center
-            const dist = cardCenter - centerPoint;
+        cards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const cardCenter = rect.left + rect.width / 2;
+            const dist = cardCenter - center;
+            const threshold = window.innerWidth * 0.11;
 
-            // Check threshold (10vw roughly translates to half a card width)
-            if (Math.abs(dist) < window.innerWidth * 0.1) {
+            if (Math.abs(dist) < threshold) {
                 if (!card.classList.contains('pos-center')) {
                     card.className = 'arcane-card pos-center';
                     currentHeroObj = card;
                 }
             } else if (dist < 0) {
-                card.className = 'arcane-card pos-left';
+                if (!card.classList.contains('pos-left')) card.className = 'arcane-card pos-left';
             } else {
-                card.className = 'arcane-card pos-right';
+                if (!card.classList.contains('pos-right')) card.className = 'arcane-card pos-right';
             }
         });
     }
 
-    list.addEventListener('scroll', updateCardTransforms);
+    if (!scrollListenerAttached) {
+        list.addEventListener('scroll', updateCardStates, { passive: true });
 
-    // Support clicking a card to snap exactly to it
-    cards.forEach(card => {
-        card.addEventListener('click', (e) => {
-            if (!card.classList.contains('pos-center')) {
-                // Ignore the button click which goes to mission select
-                if (e.target.classList.contains('ac-play-btn')) return;
-
-                // Snap card to center
-                card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            }
+        cards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('.ac-play-btn')) return;
+                if (!card.classList.contains('pos-center')) {
+                    card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                }
+            });
         });
-    });
+        scrollListenerAttached = true;
+    }
 
-    // Force an initial update
-    updateCardTransforms();
+    updateCardStates();
 }
 
+// Also allow arrow key navigation
+document.addEventListener('keydown', (e) => {
+    if (currentScreenId === 'screen-character-select') {
+        if (e.key === 'ArrowRight') scrollCarousel(1);
+        if (e.key === 'ArrowLeft') scrollCarousel(-1);
+    }
+    // Press any key on splash
+    if (currentScreenId === 'screen-splash') {
+        triggerFadeTransition('screen-main-menu');
+    }
+});
+
+// ============================================
+// MISSION DATA
+// ============================================
 function populateMissionData() {
     if (!currentHeroObj) return;
-
     const title = currentHeroObj.getAttribute('data-m-title');
     const desc = currentHeroObj.getAttribute('data-m-desc');
     const loc = currentHeroObj.getAttribute('data-m-loc');
@@ -140,44 +165,29 @@ function populateMissionData() {
     document.getElementById('dynamic-mission-title').innerText = title;
     document.getElementById('dynamic-mission-desc').innerText = desc;
     document.getElementById('dynamic-mission-loc').innerText = loc;
-
-    const mapArea = document.getElementById('dynamic-mission-map');
-    mapArea.style.backgroundImage = `url('${img}')`;
+    document.getElementById('dynamic-mission-map').style.backgroundImage = `url('${img}')`;
 }
 
-function playIntroSequence() {
-    const text1 = document.getElementById('intro-text-1');
-    const text2 = document.getElementById('intro-text-2');
+// ============================================
+// STUDIO INTRO SEQUENCE
+// ============================================
+function playIntro() {
+    const card1 = document.getElementById('intro-card-1');
+    const card2 = document.getElementById('intro-card-2');
 
-    // First company presentation
-    setTimeout(() => {
-        if (text1) text1.classList.add('show');
-    }, 500);
-
-    setTimeout(() => {
-        if (text1) text1.classList.remove('show');
-    }, 3000);
-
-    // Second company presentation
-    setTimeout(() => {
-        if (text2) text2.classList.add('show');
-    }, 4500);
-
-    setTimeout(() => {
-        if (text2) text2.classList.remove('show');
-    }, 7000);
-
-    // Transition to Splash Screen
-    setTimeout(() => {
-        triggerFadeTransition('screen-splash');
-    }, 8500);
+    setTimeout(() => { if (card1) card1.classList.add('show'); }, 600);
+    setTimeout(() => { if (card1) card1.classList.remove('show'); }, 3200);
+    setTimeout(() => { if (card2) card2.classList.add('show'); }, 4500);
+    setTimeout(() => { if (card2) card2.classList.remove('show'); }, 7000);
+    setTimeout(() => { triggerFadeTransition('screen-splash'); }, 8200);
 }
 
+// ============================================
+// INIT
+// ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    initHeroScroll();
-
-    // if starting on the intro screen (default behavior)
+    spawnParticles();
     if (currentScreenId === 'screen-studio-intro') {
-        playIntroSequence();
+        playIntro();
     }
 });

@@ -4,14 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cultural Simulation Prototype</title>
-    <!-- Elegant, grounded font suite -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
+    <title>Echoes of Elders — Cultural Simulation</title>
+    <meta name="description" content="Reconnect with global cultures through immersive storytelling and exploration.">
+    <link rel="stylesheet" href="style.css">
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -19,30 +16,45 @@
     <div id="flash-bang"></div>
 
     <div id="game-container">
-        <!-- Authentic global background -->
-        <div id="global-bg"
-            style="background-image: url('assets/bg.png')">
-        </div>
+        <div id="global-bg" style="background-image: url('assets/bg.png')"></div>
         <div class="vignette-overlay"></div>
+        <div class="grain-overlay"></div>
+        <div id="particles-canvas"></div>
 
-        <!-- SCREEN 0: STUDIO INTRO -->
-        <div id="screen-studio-intro" class="screen active"
-            style="background: #000; justify-content: center; align-items: center;">
-            <div id="intro-text-1" class="intro-text">Designed & Coded by <br><span>SAMSCO</span></div>
-            <div id="intro-text-2" class="intro-text">Created by <br><span>CUCSA</span></div>
-        </div>
-
-        <!-- SCREEN 1: SPLASH -->
-        <div id="screen-splash" class="screen">
-            <div class="splash-center">
-                <h1 class="elegant-logo">ECHOES OF ELDERS</h1>
-                <div class="logo-divider"></div>
-                <p class="tagline">Play the World. Preserve Culture.</p>
-                <button class="start-prompt" onclick="triggerFadeTransition('screen-main-menu')">PRESS ANY KEY</button>
+        <!-- ======= SCREEN 0: STUDIO INTRO ======= -->
+        <div id="screen-studio-intro" class="screen active">
+            <div id="intro-card-1" class="intro-card">
+                <p class="intro-label">Designed & Coded by</p>
+                <h2 class="intro-name">SAMSCO</h2>
+                <div class="intro-divider"></div>
+            </div>
+            <div id="intro-card-2" class="intro-card">
+                <p class="intro-label">Created by</p>
+                <h2 class="intro-name">CUCSA</h2>
+                <div class="intro-divider"></div>
             </div>
         </div>
 
-        <!-- SCREEN 2: MAIN MENU HUB -->
+        <!-- ======= SCREEN 1: SPLASH / TITLE ======= -->
+        <div id="screen-splash" class="screen">
+            <div class="splash-container">
+                <div class="emblem"><ion-icon name="leaf"></ion-icon></div>
+                <h1 class="game-title">Echoes of Elders</h1>
+                <div class="title-ornament">
+                    <div class="ornament-line"></div>
+                    <div class="ornament-diamond"></div>
+                    <div class="ornament-line"></div>
+                </div>
+                <p class="game-tagline">Play the World. Preserve Culture.</p>
+                <button class="start-prompt" onclick="triggerFadeTransition('screen-main-menu')">Press Any Key</button>
+            </div>
+            <div class="splash-footer">
+                <span>© 2026 CUCSA</span>
+                <span>v0.1 // prototype build</span>
+            </div>
+        </div>
+
+        <!-- ======= SCREEN 2: MAIN MENU HUB ======= -->
         <div id="screen-main-menu" class="screen">
             <nav class="side-nav">
                 <div class="nav-logo"><ion-icon name="leaf"></ion-icon></div>
@@ -106,9 +118,8 @@
             </div>
         </div>
 
-        <!-- SCREEN 3: CHARACTER SELECT (ARCANE CARD STYLE) -->
+        <!-- ======= SCREEN 3: CHARACTER SELECT ======= -->
         <div id="screen-character-select" class="screen">
-
             <div class="roster-top-nav">
                 <div class="roster-brand"><ion-icon name="leaf"></ion-icon> ECHOES OF ELDERS <span>// ROSTER</span>
                 </div>
@@ -116,309 +127,255 @@
                         name="chevron-back"></ion-icon> Hub</button>
             </div>
 
-            <button class="nav-arrow left-arrow" onclick="scrollCarousel(-1)"><ion-icon
-                    name="chevron-back"></ion-icon></button>
-            <button class="nav-arrow right-arrow" onclick="scrollCarousel(1)"><ion-icon
-                    name="chevron-forward"></ion-icon></button>
+            <div class="carousel-section">
+                <button class="nav-arrow left-arrow" onclick="scrollCarousel(-1)"><ion-icon
+                        name="chevron-back"></ion-icon></button>
+                <button class="nav-arrow right-arrow" onclick="scrollCarousel(1)"><ion-icon
+                        name="chevron-forward"></ion-icon></button>
 
-            <div class="arcane-carousel-container">
-                <!-- Card 01: Moremi -->
-                <div class="arcane-card pos-center" data-hero="moremi" data-m-title="The Edi Festival"
-                    data-m-desc="The Igbo forces are threatening Ile-Ife. Infiltrate their ranks, discover the secret to their strength, and save the Yoruba people."
-                    data-m-loc="Ile-Ife"
-                    data-img="assets/moremi.png">
-                    <div class="ac-bg"
-                        style="background-image: url('assets/moremi.png');">
-                    </div>
-                    <div class="ac-gradient"
-                        style="background: linear-gradient(0deg, rgba(140,42,50,0.9) 0%, rgba(140,42,50,0.2) 50%, transparent 100%);">
-                    </div>
-                    <div class="ac-border"
-                        style="border-color: #ff4b5c; box-shadow: 0 0 15px rgba(255,75,92,0.3) inset;"></div>
-                    <div class="ac-side-text">
-                        <span class="ac-number">01</span><span class="ac-class-label">CARD NAME</span><span
-                            class="ac-actual-class">PROTECTOR</span>
-                    </div>
-                    <div class="ac-content">
-                        <div class="ac-tiny-dates">CIRCA 12TH CENTURY</div>
-                        <h2 class="ac-name">MOREMI</h2>
-                        <div class="ac-subtitle"><span>CLASS: INFILTRATOR</span>
-                            <p>The legendary Yoruba queen who sacrificed everything to save her people.</p>
+                <div class="arcane-carousel-container">
+                    <!-- 01: Moremi -->
+                    <div class="arcane-card pos-center" data-hero="moremi" data-m-title="The Edi Festival"
+                        data-m-desc="The Igbo forces are threatening Ile-Ife. Infiltrate their ranks, discover the secret to their strength, and save the Yoruba people."
+                        data-m-loc="Ile-Ife" data-img="assets/moremi.png">
+                        <div class="ac-bg" style="background-image: url('assets/moremi.png');"></div>
+                        <div class="ac-gradient"
+                            style="background: linear-gradient(0deg, rgba(140,42,50,0.9) 0%, rgba(140,42,50,0.2) 50%, transparent 100%);">
                         </div>
-                    </div>
-                    <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                        LORE</button>
-                </div>
-
-                <!-- Card 02: Amina -->
-                <div class="arcane-card pos-right" data-hero="amina" data-m-title="Conquest of Zazzau"
-                    data-m-desc="Lead the cavalry of Zazzau to secure safe passage for Hausa merchants. Fortify the newly conquered lands by building the legendary walls."
-                    data-m-loc="Northern Zazzau"
-                    data-img="assets/amina.png">
-                    <div class="ac-bg"
-                        style="background-image: url('assets/amina.png');">
-                    </div>
-                    <div class="ac-gradient"
-                        style="background: linear-gradient(0deg, rgba(8,112,184,0.9) 0%, rgba(8,112,184,0.2) 50%, transparent 100%);">
-                    </div>
-                    <div class="ac-border"
-                        style="border-color: #00f3ff; box-shadow: 0 0 15px rgba(0,243,255,0.3) inset;"></div>
-                    <div class="ac-side-text">
-                        <span class="ac-number">02</span><span class="ac-class-label">CARD NAME</span><span
-                            class="ac-actual-class">WARRIOR</span>
-                    </div>
-                    <div class="ac-content">
-                        <div class="ac-tiny-dates">LATE 16TH CENTURY</div>
-                        <h2 class="ac-name">AMINA</h2>
-                        <div class="ac-subtitle"><span>CLASS: CAVALRY COMMANDER</span>
-                            <p>Queen of Zazzau, fierce military strategist and builder of the great walls.</p>
+                        <div class="ac-border" style="border-color: rgba(255,75,92,0.4);"></div>
+                        <div class="ac-side-text"><span class="ac-number">01</span><span class="ac-class-label">CARD
+                                NAME</span><span class="ac-actual-class">PROTECTOR</span></div>
+                        <div class="ac-content">
+                            <div class="ac-tiny-dates">CIRCA 12TH CENTURY</div>
+                            <h2 class="ac-name">Moremi</h2>
+                            <div class="ac-subtitle"><span>Class: Infiltrator</span>
+                                <p>The legendary Yoruba queen who sacrificed everything to save her people.</p>
+                            </div>
                         </div>
+                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
+                            LORE</button>
                     </div>
-                    <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                        LORE</button>
-                </div>
 
-                <!-- Card 03: Jaja -->
-                <div class="arcane-card pos-right" data-hero="jaja" data-m-title="The Palm Oil Monopoly"
-                    data-m-desc="Navigate the complex trade routes of the Niger Delta. Outsmart European merchants and establish Opobo as the supreme trading powerhouse."
-                    data-m-loc="Opobo Delta"
-                    data-img="assets/jaja.png">
-                    <div class="ac-bg"
-                        style="background-image: url('assets/jaja.png');">
-                    </div>
-                    <div class="ac-gradient"
-                        style="background: linear-gradient(0deg, rgba(209,122,34,0.9) 0%, rgba(209,122,34,0.2) 50%, transparent 100%);">
-                    </div>
-                    <div class="ac-border"
-                        style="border-color: #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.3) inset;"></div>
-                    <div class="ac-side-text">
-                        <span class="ac-number">03</span><span class="ac-class-label">CARD NAME</span><span
-                            class="ac-actual-class">DIPLOMAT</span>
-                    </div>
-                    <div class="ac-content">
-                        <div class="ac-tiny-dates">1821 - 1891</div>
-                        <h2 class="ac-name">JAJA</h2>
-                        <div class="ac-subtitle"><span>CLASS: MERCHANT PRINCE</span>
-                            <p>From an enslaved boy to the undisputed trading king of the Niger Delta.</p>
+                    <!-- 02: Amina -->
+                    <div class="arcane-card" data-hero="amina" data-m-title="Conquest of Zazzau"
+                        data-m-desc="Lead the cavalry of Zazzau to secure safe passage for Hausa merchants. Fortify the newly conquered lands by building the legendary walls."
+                        data-m-loc="Northern Zazzau" data-img="assets/amina.png">
+                        <div class="ac-bg" style="background-image: url('assets/amina.png');"></div>
+                        <div class="ac-gradient"
+                            style="background: linear-gradient(0deg, rgba(8,112,184,0.9) 0%, rgba(8,112,184,0.2) 50%, transparent 100%);">
                         </div>
-                    </div>
-                    <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                        LORE</button>
-                </div>
-
-                <!-- Card 04: Shaka -->
-                <div class="arcane-card pos-right" data-hero="shaka" data-m-title="Rise of the Zulu"
-                    data-m-desc="Reorganize the military forces with the short stabbing spear 'iklwa' and the bull-horn formation to conquer the surrounding regions."
-                    data-m-loc="KwaZulu"
-                    data-img="assets/shaka.png">
-                    <div class="ac-bg"
-                        style="background-image: url('assets/shaka.png');">
-                    </div>
-                    <div class="ac-gradient"
-                        style="background: linear-gradient(0deg, rgba(8,112,184,0.9) 0%, rgba(8,112,184,0.2) 50%, transparent 100%);">
-                    </div>
-                    <div class="ac-border"
-                        style="border-color: #00f3ff; box-shadow: 0 0 15px rgba(0,243,255,0.3) inset;"></div>
-                    <div class="ac-side-text">
-                        <span class="ac-number">04</span><span class="ac-class-label">CARD NAME</span><span
-                            class="ac-actual-class">WARRIOR</span>
-                    </div>
-                    <div class="ac-content">
-                        <div class="ac-tiny-dates">EARLY 19TH CENTURY</div>
-                        <h2 class="ac-name">SHAKA</h2>
-                        <div class="ac-subtitle"><span>CLASS: GENERAL</span>
-                            <p>The legendary Zulu king who forged a powerful empire through military genius.</p>
+                        <div class="ac-border" style="border-color: rgba(0,243,255,0.4);"></div>
+                        <div class="ac-side-text"><span class="ac-number">02</span><span class="ac-class-label">CARD
+                                NAME</span><span class="ac-actual-class">WARRIOR</span></div>
+                        <div class="ac-content">
+                            <div class="ac-tiny-dates">LATE 16TH CENTURY</div>
+                            <h2 class="ac-name">Amina</h2>
+                            <div class="ac-subtitle"><span>Class: Cavalry Commander</span>
+                                <p>Queen of Zazzau, fierce military strategist and builder of the great walls.</p>
+                            </div>
                         </div>
+                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
+                            LORE</button>
                     </div>
-                    <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                        LORE</button>
-                </div>
 
-                <!-- Card 05: Mansa -->
-                <div class="arcane-card pos-right" data-hero="mansa" data-m-title="Pilgrimage to Mecca"
-                    data-m-desc="Distribute unimaginable wealth along the trade routes and put the Mali Empire on the global map."
-                    data-m-loc="Niani to Cairo"
-                    data-img="assets/mansa.png">
-                    <div class="ac-bg"
-                        style="background-image: url('assets/mansa.png');">
-                    </div>
-                    <div class="ac-gradient"
-                        style="background: linear-gradient(0deg, rgba(209,122,34,0.9) 0%, rgba(209,122,34,0.2) 50%, transparent 100%);">
-                    </div>
-                    <div class="ac-border"
-                        style="border-color: #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.3) inset;"></div>
-                    <div class="ac-side-text">
-                        <span class="ac-number">05</span><span class="ac-class-label">CARD NAME</span><span
-                            class="ac-actual-class">ECONOMIST</span>
-                    </div>
-                    <div class="ac-content">
-                        <div class="ac-tiny-dates">14TH CENTURY</div>
-                        <h2 class="ac-name">MANSA MUSA</h2>
-                        <div class="ac-subtitle"><span>CLASS: EMPEROR</span>
-                            <p>The wealthiest ruler in recorded history.</p>
+                    <!-- 03: Jaja -->
+                    <div class="arcane-card" data-hero="jaja" data-m-title="The Palm Oil Monopoly"
+                        data-m-desc="Navigate the complex trade routes of the Niger Delta. Outsmart European merchants and establish Opobo as the supreme trading powerhouse."
+                        data-m-loc="Opobo Delta" data-img="assets/jaja.png">
+                        <div class="ac-bg" style="background-image: url('assets/jaja.png');"></div>
+                        <div class="ac-gradient"
+                            style="background: linear-gradient(0deg, rgba(209,122,34,0.9) 0%, rgba(209,122,34,0.2) 50%, transparent 100%);">
                         </div>
-                    </div>
-                    <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                        LORE</button>
-                </div>
-
-                <!-- Card 06: Yaa -->
-                <div class="arcane-card pos-right" data-hero="yaa" data-m-title="War of the Golden Stool"
-                    data-m-desc="Rally the Ashanti forces to protect their sacred symbol against colonial encroachment."
-                    data-m-loc="Kumasi"
-                    data-img="assets/yaa.png">
-                    <div class="ac-bg"
-                        style="background-image: url('assets/yaa.png');">
-                    </div>
-                    <div class="ac-gradient"
-                        style="background: linear-gradient(0deg, rgba(140,42,50,0.9) 0%, rgba(140,42,50,0.2) 50%, transparent 100%);">
-                    </div>
-                    <div class="ac-border"
-                        style="border-color: #ff4b5c; box-shadow: 0 0 15px rgba(255,75,92,0.3) inset;"></div>
-                    <div class="ac-side-text">
-                        <span class="ac-number">06</span><span class="ac-class-label">CARD NAME</span><span
-                            class="ac-actual-class">COMMANDER</span>
-                    </div>
-                    <div class="ac-content">
-                        <div class="ac-tiny-dates">EARLY 20TH CENTURY</div>
-                        <h2 class="ac-name">YAA</h2>
-                        <div class="ac-subtitle"><span>CLASS: QUEEN MOTHER</span>
-                            <p>The fearless leader who commanded the ultimate resistance.</p>
+                        <div class="ac-border" style="border-color: rgba(255,215,0,0.4);"></div>
+                        <div class="ac-side-text"><span class="ac-number">03</span><span class="ac-class-label">CARD
+                                NAME</span><span class="ac-actual-class">DIPLOMAT</span></div>
+                        <div class="ac-content">
+                            <div class="ac-tiny-dates">1821 — 1891</div>
+                            <h2 class="ac-name">Jaja</h2>
+                            <div class="ac-subtitle"><span>Class: Merchant Prince</span>
+                                <p>From an enslaved boy to the undisputed trading king of the Niger Delta.</p>
+                            </div>
                         </div>
+                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
+                            LORE</button>
                     </div>
-                    <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                        LORE</button>
-                </div>
 
-                <!-- Card 07: Sundiata -->
-                <div class="arcane-card pos-right" data-hero="sundiata" data-m-title="Battle of Kirina"
-                    data-m-desc="Overthrow the tyrannical Sosso king and establish the mighty Mali Empire."
-                    data-m-loc="Kangaba"
-                    data-img="assets/sundiata.png">
-                    <div class="ac-bg"
-                        style="background-image: url('assets/sundiata.png');">
-                    </div>
-                    <div class="ac-gradient"
-                        style="background: linear-gradient(0deg, rgba(8,112,184,0.9) 0%, rgba(8,112,184,0.2) 50%, transparent 100%);">
-                    </div>
-                    <div class="ac-border"
-                        style="border-color: #00f3ff; box-shadow: 0 0 15px rgba(0,243,255,0.3) inset;"></div>
-                    <div class="ac-side-text">
-                        <span class="ac-number">07</span><span class="ac-class-label">CARD NAME</span><span
-                            class="ac-actual-class">CONQUEROR</span>
-                    </div>
-                    <div class="ac-content">
-                        <div class="ac-tiny-dates">13TH CENTURY</div>
-                        <h2 class="ac-name">SUNDIATA</h2>
-                        <div class="ac-subtitle"><span>CLASS: LION PRINCE</span>
-                            <p>The destined warrior founder who overcame exile.</p>
+                    <!-- 04: Shaka -->
+                    <div class="arcane-card" data-hero="shaka" data-m-title="Rise of the Zulu"
+                        data-m-desc="Reorganize the military forces with the short stabbing spear 'iklwa' and the bull-horn formation to conquer the surrounding regions."
+                        data-m-loc="KwaZulu" data-img="assets/shaka.png">
+                        <div class="ac-bg" style="background-image: url('assets/shaka.png');"></div>
+                        <div class="ac-gradient"
+                            style="background: linear-gradient(0deg, rgba(8,112,184,0.9) 0%, rgba(8,112,184,0.2) 50%, transparent 100%);">
                         </div>
-                    </div>
-                    <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                        LORE</button>
-                </div>
-
-                <!-- Card 08: Nzinga -->
-                <div class="arcane-card pos-right" data-hero="nzinga" data-m-title="Defense of Ndongo"
-                    data-m-desc="Form brilliant alliances and outmaneuver foreign forces to protect your kingdom."
-                    data-m-loc="Kabasa"
-                    data-img="https://images.unsplash.com/photo-1542104033-66aa08121f20?q=80&w=1000&auto=format&fit=crop">
-                    <div class="ac-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1542104033-66aa08121f20?q=80&w=1000&auto=format&fit=crop'); filter: grayscale(1);">
-                    </div>
-                    <div class="ac-gradient"
-                        style="background: linear-gradient(0deg, rgba(100,20,150,0.9) 0%, rgba(100,20,150,0.2) 50%, transparent 100%);">
-                    </div>
-                    <div class="ac-border"
-                        style="border-color: #9D00FF; box-shadow: 0 0 15px rgba(157,0,255,0.3) inset;"></div>
-                    <div class="ac-side-text">
-                        <span class="ac-number">08</span><span class="ac-class-label">CARD NAME</span><span
-                            class="ac-actual-class">TACTICIAN</span>
-                    </div>
-                    <div class="ac-content">
-                        <div class="ac-tiny-dates">17TH CENTURY</div>
-                        <h2 class="ac-name">NZINGA</h2>
-                        <div class="ac-subtitle"><span>CLASS: QUEEN REGENT</span>
-                            <p>A brilliant diplomat and unyielding military strategist.</p>
+                        <div class="ac-border" style="border-color: rgba(0,243,255,0.4);"></div>
+                        <div class="ac-side-text"><span class="ac-number">04</span><span class="ac-class-label">CARD
+                                NAME</span><span class="ac-actual-class">WARRIOR</span></div>
+                        <div class="ac-content">
+                            <div class="ac-tiny-dates">EARLY 19TH CENTURY</div>
+                            <h2 class="ac-name">Shaka</h2>
+                            <div class="ac-subtitle"><span>Class: General</span>
+                                <p>The legendary Zulu king who forged a powerful empire through military genius.</p>
+                            </div>
                         </div>
+                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
+                            LORE</button>
                     </div>
-                    <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                        LORE</button>
-                </div>
 
-                <!-- Card 09: Osei Tutu -->
-                <div class="arcane-card pos-right" data-hero="osei" data-m-title="Forging the Alliance"
-                    data-m-desc="Unite the divided Akan clans under the mystical Golden Stool to forge the ultimate empire."
-                    data-m-loc="Ashanti Region"
-                    data-img="https://images.unsplash.com/photo-1530268729831-4b0b9e170218?q=80&w=1000&auto=format&fit=crop">
-                    <div class="ac-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1530268729831-4b0b9e170218?q=80&w=1000&auto=format&fit=crop'); filter: contrast(1.5);">
-                    </div>
-                    <div class="ac-gradient"
-                        style="background: linear-gradient(0deg, rgba(209,122,34,0.9) 0%, rgba(209,122,34,0.2) 50%, transparent 100%);">
-                    </div>
-                    <div class="ac-border"
-                        style="border-color: #FFD700; box-shadow: 0 0 15px rgba(255,215,0,0.3) inset;"></div>
-                    <div class="ac-side-text">
-                        <span class="ac-number">09</span><span class="ac-class-label">CARD NAME</span><span
-                            class="ac-actual-class">UNIFIER</span>
-                    </div>
-                    <div class="ac-content">
-                        <div class="ac-tiny-dates">LATE 17TH CENTURY</div>
-                        <h2 class="ac-name">OSEI TUTU</h2>
-                        <div class="ac-subtitle"><span>CLASS: KING CREATOR</span>
-                            <p>The unifier of the Ashanti Empire.</p>
+                    <!-- 05: Mansa Musa -->
+                    <div class="arcane-card" data-hero="mansa" data-m-title="Pilgrimage to Mecca"
+                        data-m-desc="Distribute unimaginable wealth along the trade routes and put the Mali Empire on the global map."
+                        data-m-loc="Niani to Cairo" data-img="assets/mansa.png">
+                        <div class="ac-bg" style="background-image: url('assets/mansa.png');"></div>
+                        <div class="ac-gradient"
+                            style="background: linear-gradient(0deg, rgba(209,122,34,0.9) 0%, rgba(209,122,34,0.2) 50%, transparent 100%);">
                         </div>
-                    </div>
-                    <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                        LORE</button>
-                </div>
-
-                <!-- Card 10: Ezana -->
-                <div class="arcane-card pos-right" data-hero="ezana" data-m-title="The Stelae Project"
-                    data-m-desc="Commemorate your great victories by raising the massive monolithic obelisks of Aksum."
-                    data-m-loc="Aksum"
-                    data-img="https://images.unsplash.com/photo-1506803682981-6e718a9dd3ee?q=80&w=1000&auto=format&fit=crop">
-                    <div class="ac-bg"
-                        style="background-image: url('https://images.unsplash.com/photo-1506803682981-6e718a9dd3ee?q=80&w=1000&auto=format&fit=crop'); filter: brightness(1.5);">
-                    </div>
-                    <div class="ac-gradient"
-                        style="background: linear-gradient(0deg, rgba(8,112,184,0.9) 0%, rgba(8,112,184,0.2) 50%, transparent 100%);">
-                    </div>
-                    <div class="ac-border"
-                        style="border-color: #00f3ff; box-shadow: 0 0 15px rgba(0,243,255,0.3) inset;"></div>
-                    <div class="ac-side-text">
-                        <span class="ac-number">10</span><span class="ac-class-label">CARD NAME</span><span
-                            class="ac-actual-class">VISIONARY</span>
-                    </div>
-                    <div class="ac-content">
-                        <div class="ac-tiny-dates">4TH CENTURY</div>
-                        <h2 class="ac-name">EZANA</h2>
-                        <div class="ac-subtitle"><span>CLASS: MONARCH</span>
-                            <p>A transformative leader who brought spiritual revolution.</p>
+                        <div class="ac-border" style="border-color: rgba(255,215,0,0.4);"></div>
+                        <div class="ac-side-text"><span class="ac-number">05</span><span class="ac-class-label">CARD
+                                NAME</span><span class="ac-actual-class">ECONOMIST</span></div>
+                        <div class="ac-content">
+                            <div class="ac-tiny-dates">14TH CENTURY</div>
+                            <h2 class="ac-name">Mansa Musa</h2>
+                            <div class="ac-subtitle"><span>Class: Emperor</span>
+                                <p>The wealthiest ruler in all of recorded history.</p>
+                            </div>
                         </div>
+                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
+                            LORE</button>
                     </div>
-                    <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
-                        LORE</button>
-                </div>
 
+                    <!-- 06: Yaa Asantewaa -->
+                    <div class="arcane-card" data-hero="yaa" data-m-title="War of the Golden Stool"
+                        data-m-desc="Rally the Ashanti forces to protect their sacred symbol against colonial encroachment."
+                        data-m-loc="Kumasi" data-img="assets/yaa.png">
+                        <div class="ac-bg" style="background-image: url('assets/yaa.png');"></div>
+                        <div class="ac-gradient"
+                            style="background: linear-gradient(0deg, rgba(140,42,50,0.9) 0%, rgba(140,42,50,0.2) 50%, transparent 100%);">
+                        </div>
+                        <div class="ac-border" style="border-color: rgba(255,75,92,0.4);"></div>
+                        <div class="ac-side-text"><span class="ac-number">06</span><span class="ac-class-label">CARD
+                                NAME</span><span class="ac-actual-class">COMMANDER</span></div>
+                        <div class="ac-content">
+                            <div class="ac-tiny-dates">EARLY 20TH CENTURY</div>
+                            <h2 class="ac-name">Yaa</h2>
+                            <div class="ac-subtitle"><span>Class: Queen Mother</span>
+                                <p>The fearless leader who commanded the ultimate resistance.</p>
+                            </div>
+                        </div>
+                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
+                            LORE</button>
+                    </div>
+
+                    <!-- 07: Sundiata -->
+                    <div class="arcane-card" data-hero="sundiata" data-m-title="Battle of Kirina"
+                        data-m-desc="Overthrow the tyrannical Sosso king and establish the mighty Mali Empire."
+                        data-m-loc="Kangaba" data-img="assets/sundiata.png">
+                        <div class="ac-bg" style="background-image: url('assets/sundiata.png');"></div>
+                        <div class="ac-gradient"
+                            style="background: linear-gradient(0deg, rgba(8,112,184,0.9) 0%, rgba(8,112,184,0.2) 50%, transparent 100%);">
+                        </div>
+                        <div class="ac-border" style="border-color: rgba(0,243,255,0.4);"></div>
+                        <div class="ac-side-text"><span class="ac-number">07</span><span class="ac-class-label">CARD
+                                NAME</span><span class="ac-actual-class">CONQUEROR</span></div>
+                        <div class="ac-content">
+                            <div class="ac-tiny-dates">13TH CENTURY</div>
+                            <h2 class="ac-name">Sundiata</h2>
+                            <div class="ac-subtitle"><span>Class: Lion Prince</span>
+                                <p>The destined warrior founder who overcame exile.</p>
+                            </div>
+                        </div>
+                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
+                            LORE</button>
+                    </div>
+
+                    <!-- 08: Nzinga -->
+                    <div class="arcane-card" data-hero="nzinga" data-m-title="Defense of Ndongo"
+                        data-m-desc="Form brilliant alliances and outmaneuver foreign forces to protect your kingdom."
+                        data-m-loc="Kabasa" data-img="assets/moremi.png">
+                        <div class="ac-bg"
+                            style="background-image: url('assets/moremi.png'); filter: hue-rotate(200deg) brightness(0.5);">
+                        </div>
+                        <div class="ac-gradient"
+                            style="background: linear-gradient(0deg, rgba(100,20,150,0.9) 0%, rgba(100,20,150,0.2) 50%, transparent 100%);">
+                        </div>
+                        <div class="ac-border" style="border-color: rgba(157,0,255,0.4);"></div>
+                        <div class="ac-side-text"><span class="ac-number">08</span><span class="ac-class-label">CARD
+                                NAME</span><span class="ac-actual-class">TACTICIAN</span></div>
+                        <div class="ac-content">
+                            <div class="ac-tiny-dates">17TH CENTURY</div>
+                            <h2 class="ac-name">Nzinga</h2>
+                            <div class="ac-subtitle"><span>Class: Queen Regent</span>
+                                <p>A brilliant diplomat and unyielding military strategist.</p>
+                            </div>
+                        </div>
+                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
+                            LORE</button>
+                    </div>
+
+                    <!-- 09: Osei Tutu -->
+                    <div class="arcane-card" data-hero="osei" data-m-title="Forging the Alliance"
+                        data-m-desc="Unite the divided Akan clans under the mystical Golden Stool to forge the ultimate empire."
+                        data-m-loc="Ashanti Region" data-img="assets/jaja.png">
+                        <div class="ac-bg"
+                            style="background-image: url('assets/jaja.png'); filter: sepia(0.5) brightness(0.5);"></div>
+                        <div class="ac-gradient"
+                            style="background: linear-gradient(0deg, rgba(209,122,34,0.9) 0%, rgba(209,122,34,0.2) 50%, transparent 100%);">
+                        </div>
+                        <div class="ac-border" style="border-color: rgba(255,215,0,0.4);"></div>
+                        <div class="ac-side-text"><span class="ac-number">09</span><span class="ac-class-label">CARD
+                                NAME</span><span class="ac-actual-class">UNIFIER</span></div>
+                        <div class="ac-content">
+                            <div class="ac-tiny-dates">LATE 17TH CENTURY</div>
+                            <h2 class="ac-name">Osei Tutu</h2>
+                            <div class="ac-subtitle"><span>Class: King Creator</span>
+                                <p>The unifier of the Ashanti Empire.</p>
+                            </div>
+                        </div>
+                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
+                            LORE</button>
+                    </div>
+
+                    <!-- 10: Ezana -->
+                    <div class="arcane-card" data-hero="ezana" data-m-title="The Stelae Project"
+                        data-m-desc="Commemorate your great victories by raising the massive monolithic obelisks of Aksum."
+                        data-m-loc="Aksum" data-img="assets/shaka.png">
+                        <div class="ac-bg"
+                            style="background-image: url('assets/shaka.png'); filter: hue-rotate(30deg) brightness(0.5);">
+                        </div>
+                        <div class="ac-gradient"
+                            style="background: linear-gradient(0deg, rgba(8,112,184,0.9) 0%, rgba(8,112,184,0.2) 50%, transparent 100%);">
+                        </div>
+                        <div class="ac-border" style="border-color: rgba(0,243,255,0.4);"></div>
+                        <div class="ac-side-text"><span class="ac-number">10</span><span class="ac-class-label">CARD
+                                NAME</span><span class="ac-actual-class">VISIONARY</span></div>
+                        <div class="ac-content">
+                            <div class="ac-tiny-dates">4TH CENTURY</div>
+                            <h2 class="ac-name">Ezana</h2>
+                            <div class="ac-subtitle"><span>Class: Monarch</span>
+                                <p>A transformative leader who brought spiritual revolution.</p>
+                            </div>
+                        </div>
+                        <button class="ac-play-btn" onclick="triggerFadeTransition('screen-mission-select');">ENTER
+                            LORE</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- SCREEN 4: MISSION DEPLOY (DYNAMIC) -->
+        <!-- ======= SCREEN 4: MISSION DEPLOY ======= -->
         <div id="screen-mission-select" class="screen">
-            <button class="back-btn-text" onclick="triggerFadeTransition('screen-character-select')"><ion-icon
-                    name="chevron-back"></ion-icon> Cancel Deployment</button>
+            <div class="roster-top-nav">
+                <div class="roster-brand"><ion-icon name="leaf"></ion-icon> MISSION BRIEFING</div>
+                <button class="back-btn-text" onclick="triggerFadeTransition('screen-character-select')"><ion-icon
+                        name="chevron-back"></ion-icon> Cancel</button>
+            </div>
             <div class="mission-view">
-
-                <!-- We dynamically set the map area background to the hero's portrait to fit the vibe -->
-                <div class="map-area" id="dynamic-mission-map">
+                <div class="map-area" id="dynamic-mission-map" style="background-image: url('assets/amina.png');">
                     <div class="clean-map-bg"></div>
-                    <div class="map-marker active-marker" style="top: 50%; left: 50%;">
+                    <div class="map-marker" style="top:50%; left:50%;">
                         <div class="marker-dot"></div><span id="dynamic-mission-loc">Zazzau Empire</span>
                     </div>
                 </div>
-
                 <div class="mission-details-panel">
                     <div class="mdp-header" id="dynamic-mission-title">Conquest of Zazzau</div>
                     <div class="mdp-body">
@@ -439,7 +396,7 @@
             </div>
         </div>
 
-        <!-- SCREEN 5: FPS HUD -->
+        <!-- ======= SCREEN 5: HUD ======= -->
         <div id="screen-hud" class="screen">
             <div class="hud-frame"></div>
             <div class="minimal-compass"><span>W</span><span>NW</span><span
@@ -447,20 +404,21 @@
                 <div class="c-pointer"></div>
             </div>
             <div class="hud-top-left">
-                <div class="objective-toast"><ion-icon name="alert-circle"></ion-icon>
+                <div class="objective-toast">
+                    <ion-icon name="alert-circle"></ion-icon>
                     <div><span class="ot-title">Current Objective</span><span class="ot-desc">Secure the perimeter and
-                            advance - 142m</span></div>
+                            advance — 142m</span></div>
                 </div>
             </div>
             <div class="hud-bottom-left">
                 <div class="minimal-bar-container"><span class="mb-label">HP</span>
                     <div class="m-bar">
-                        <div class="m-fill hp-fill" style="width: 85%;"></div>
+                        <div class="m-fill hp-fill" style="width:85%"></div>
                     </div>
                 </div>
                 <div class="minimal-bar-container"><span class="mb-label">ST</span>
                     <div class="m-bar">
-                        <div class="m-fill st-fill" style="width: 60%;"></div>
+                        <div class="m-fill st-fill" style="width:60%"></div>
                     </div>
                 </div>
             </div>
@@ -476,7 +434,6 @@
                 </div>
             </div>
             <div id="cinematic-achievement">
-                <div class="ach-bg"></div>
                 <div class="ach-icon"><ion-icon name="ribbon"></ion-icon></div>
                 <div class="ach-text">
                     <h4>Culture Explorer</h4>
@@ -485,8 +442,9 @@
             </div>
         </div>
 
-        <!-- OVERLAYS -->
+        <!-- ======= OVERLAYS ======= -->
         <div id="screen-profile" class="screen"><button class="back-btn-text"
+                style="position:absolute;top:3vh;left:4vw;z-index:50"
                 onclick="triggerFadeTransition('screen-main-menu')"><ion-icon name="chevron-back"></ion-icon>
                 Hub</button>
             <div class="glass-window">
@@ -494,6 +452,7 @@
             </div>
         </div>
         <div id="screen-community" class="screen"><button class="back-btn-text"
+                style="position:absolute;top:3vh;left:4vw;z-index:50"
                 onclick="triggerFadeTransition('screen-main-menu')"><ion-icon name="chevron-back"></ion-icon>
                 Hub</button>
             <div class="glass-window">
@@ -501,6 +460,7 @@
             </div>
         </div>
         <div id="screen-leaderboard" class="screen"><button class="back-btn-text"
+                style="position:absolute;top:3vh;left:4vw;z-index:50"
                 onclick="triggerFadeTransition('screen-main-menu')"><ion-icon name="chevron-back"></ion-icon>
                 Hub</button>
             <div class="glass-window">
@@ -508,6 +468,7 @@
             </div>
         </div>
         <div id="screen-settings" class="screen"><button class="back-btn-text"
+                style="position:absolute;top:3vh;left:4vw;z-index:50"
                 onclick="triggerFadeTransition('screen-main-menu')"><ion-icon name="chevron-back"></ion-icon>
                 Hub</button>
             <div class="glass-window">
