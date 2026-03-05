@@ -258,15 +258,13 @@ const botMessages = [
 ];
 
 function startChatSim() {
-    // Prevent multiple intervals
     if (window.chatInterval) clearInterval(window.chatInterval);
     window.chatInterval = setInterval(() => {
-        if (curScr === 'community') {
-            const name = botNames[Math.floor(Math.random() * botNames.length)];
-            const msg = botMessages[Math.floor(Math.random() * botMessages.length)];
-            addChatPost(name, msg, true);
-        }
-    }, 8000);
+        // Bots talk on their own
+        const name = botNames[Math.floor(Math.random() * botNames.length)];
+        const msg = botMessages[Math.floor(Math.random() * botMessages.length)];
+        addChatPost(name, msg, true);
+    }, 12000);
 }
 
 function addChatPost(name, text, isBot) {
@@ -276,8 +274,6 @@ function addChatPost(name, text, isBot) {
     const post = document.createElement('div');
     post.className = 'chat-post';
     const avQuery = encodeURIComponent(name === "You" ? "young explorer" : name.toLowerCase());
-
-    // Random like count for flavor
     const likes = isBot ? Math.floor(Math.random() * 12) + 1 : 0;
 
     post.innerHTML = `
@@ -299,15 +295,59 @@ function addChatPost(name, text, isBot) {
         </div>
     `;
     feed.prepend(post);
-    // Limit posts
-    if (feed.children.length > 20) feed.removeChild(feed.lastChild);
+    if (feed.children.length > 25) feed.removeChild(feed.lastChild);
+
+    // Notification Logic: Show if NOT in community section
+    if (isBot && curScr !== 'community') {
+        showToast(name, text);
+    }
 }
 
-function sendChat() {
+function showToast(user, msg) {
+    const toast = document.getElementById('notif-toast');
+    const tUser = document.getElementById('nt-user');
+    const tMsg = document.getElementById('nt-msg');
+    const tAv = document.getElementById('nt-av');
+
+    if (!toast || !tUser || !tMsg || !tAv) return;
+
+    tUser.innerText = user;
+    tMsg.innerText = msg;
+    tAv.src = `https://image.pollinations.ai/prompt/avatar%20portrait%20${encodeURIComponent(user.toLowerCase())}?width=100&nologo=true`;
+
+    toast.classList.add('show');
+
+    if (window.toastTimeout) clearTimeout(window.toastTimeout);
+    window.toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 5000);
+}
+
+async function sendChat() {
     const input = document.getElementById('chat-input');
     if (!input || !input.value.trim()) return;
-    addChatPost("You", input.value, false);
+
+    const userMsg = input.value;
+    addChatPost("You", userMsg, false);
     input.value = '';
+
+    // Trigger AI Reply
+    const responder = botNames[Math.floor(Math.random() * botNames.length)];
+    const prompt = `You are ${responder}, a player in a cultural game called Echoes of Elders. A fellow player says: "${userMsg}". Reply in character as a friendly, culturally aware gamer. Keep it short (max 20 words).`;
+
+    try {
+        const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
+        const text = await response.text();
+        // Simulation of "typing..." delay
+        setTimeout(() => {
+            addChatPost(responder, text.trim(), true);
+        }, 1500 + Math.random() * 2000);
+    } catch (e) {
+        // Fallback if AI fails
+        setTimeout(() => {
+            addChatPost(responder, "That's an interesting point! I never thought about it like that.", true);
+        }, 2000);
+    }
 }
 window.sendChat = sendChat;
 
@@ -331,6 +371,7 @@ function spawnEmbers() {
 document.addEventListener('DOMContentLoaded', () => {
     spawnEmbers();
     setTimeout(initBoot, 500);
+    startChatSim();
 
     // Initial check for hero cards
     setTimeout(checkHeroScroll, 1000);
