@@ -442,37 +442,252 @@
             </div>
         </div>
 
-        <!-- ======= OVERLAYS ======= -->
-        <div id="screen-profile" class="screen"><button class="back-btn-text"
-                style="position:absolute;top:3vh;left:4vw;z-index:50"
-                onclick="triggerFadeTransition('screen-main-menu')"><ion-icon name="chevron-back"></ion-icon>
-                Hub</button>
-            <div class="glass-window">
-                <h3 class="gw-title">Player Profile</h3>
+        <!-- ======= SCREEN: LEADERBOARD ======= -->
+        <div id="screen-leaderboard" class="screen overlay-screen">
+            <div class="roster-top-nav">
+                <div class="roster-brand"><ion-icon name="trophy"></ion-icon> LEADERBOARDS <span>// GLOBAL</span></div>
+                <button class="back-btn-text" onclick="triggerFadeTransition('screen-main-menu')"><ion-icon
+                        name="chevron-back"></ion-icon> Hub</button>
+            </div>
+            <div class="overlay-body">
+                <div class="lb-container">
+                    <div class="lb-tabs">
+                        <button class="lb-tab active">All Time</button>
+                        <button class="lb-tab">This Season</button>
+                        <button class="lb-tab">Weekly</button>
+                    </div>
+                    <!-- Podium -->
+                    <div class="podium">
+                        <div class="podium-slot silver">
+                            <img src="https://i.pravatar.cc/150?img=12" alt="2nd">
+                            <div class="p-rank">2</div>
+                            <h5>Kwame</h5>
+                            <span>14,200 AP</span>
+                            <div class="p-bar">
+                                <div class="p-fill"
+                                    style="width:82%;background:linear-gradient(90deg,#9ca3af,#d1d5db);"></div>
+                            </div>
+                        </div>
+                        <div class="podium-slot gold">
+                            <div class="crown-icon"><ion-icon name="diamond"></ion-icon></div>
+                            <img src="https://i.pravatar.cc/150?img=68" alt="1st">
+                            <div class="p-rank gold-rank">1</div>
+                            <h5>You</h5>
+                            <span>18,750 AP</span>
+                            <div class="p-bar">
+                                <div class="p-fill"
+                                    style="width:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold-light));">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="podium-slot bronze">
+                            <img src="https://i.pravatar.cc/150?img=33" alt="3rd">
+                            <div class="p-rank">3</div>
+                            <h5>Nneka</h5>
+                            <span>12,430 AP</span>
+                            <div class="p-bar">
+                                <div class="p-fill"
+                                    style="width:66%;background:linear-gradient(90deg,#b45309,#d97706);"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Rank list -->
+                    <div class="lb-list">
+                        <div class="lb-row"><span class="lb-pos">4</span><img src="https://i.pravatar.cc/150?img=45"
+                                alt=""><span class="lb-name">Adaeze</span><span class="lb-score">11,020 AP</span><span
+                                class="lb-change up"><ion-icon name="arrow-up"></ion-icon> 2</span></div>
+                        <div class="lb-row"><span class="lb-pos">5</span><img src="https://i.pravatar.cc/150?img=22"
+                                alt=""><span class="lb-name">Ibrahim</span><span class="lb-score">10,800 AP</span><span
+                                class="lb-change down"><ion-icon name="arrow-down"></ion-icon> 1</span></div>
+                        <div class="lb-row"><span class="lb-pos">6</span><img src="https://i.pravatar.cc/150?img=51"
+                                alt=""><span class="lb-name">Fatima</span><span class="lb-score">9,650 AP</span><span
+                                class="lb-change up"><ion-icon name="arrow-up"></ion-icon> 5</span></div>
+                        <div class="lb-row"><span class="lb-pos">7</span><img src="https://i.pravatar.cc/150?img=60"
+                                alt=""><span class="lb-name">Emeka</span><span class="lb-score">8,940 AP</span><span
+                                class="lb-change same">—</span></div>
+                        <div class="lb-row"><span class="lb-pos">8</span><img src="https://i.pravatar.cc/150?img=15"
+                                alt=""><span class="lb-name">Aisha</span><span class="lb-score">7,200 AP</span><span
+                                class="lb-change up"><ion-icon name="arrow-up"></ion-icon> 3</span></div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div id="screen-community" class="screen"><button class="back-btn-text"
-                style="position:absolute;top:3vh;left:4vw;z-index:50"
-                onclick="triggerFadeTransition('screen-main-menu')"><ion-icon name="chevron-back"></ion-icon>
-                Hub</button>
-            <div class="glass-window">
-                <h3 class="gw-title">Community</h3>
+
+        <!-- ======= SCREEN: COMMUNITY ======= -->
+        <div id="screen-community" class="screen overlay-screen">
+            <div class="roster-top-nav">
+                <div class="roster-brand"><ion-icon name="chatbubbles"></ion-icon> COMMUNITY <span>// HUB</span></div>
+                <button class="back-btn-text" onclick="triggerFadeTransition('screen-main-menu')"><ion-icon
+                        name="chevron-back"></ion-icon> Hub</button>
+            </div>
+            <div class="overlay-body">
+                <div class="community-grid">
+                    <!-- Activity Feed -->
+                    <div class="comm-section feed-section">
+                        <h4 class="comm-heading"><ion-icon name="pulse"></ion-icon> Activity Feed</h4>
+                        <div class="feed-list">
+                            <div class="feed-item"><img src="https://i.pravatar.cc/150?img=12" alt="">
+                                <div class="fi-body"><strong>Kwame</strong> completed <em>Rise of the Zulu</em> mission
+                                </div><span class="fi-time">2h ago</span>
+                            </div>
+                            <div class="feed-item"><img src="https://i.pravatar.cc/150?img=33" alt="">
+                                <div class="fi-body"><strong>Nneka</strong> unlocked new lore in <em>Ashanti Empire</em>
+                                </div><span class="fi-time">4h ago</span>
+                            </div>
+                            <div class="feed-item"><img src="https://i.pravatar.cc/150?img=45" alt="">
+                                <div class="fi-body"><strong>Adaeze</strong> reached <em>Master Explorer</em> rank</div>
+                                <span class="fi-time">6h ago</span>
+                            </div>
+                            <div class="feed-item"><img src="https://i.pravatar.cc/150?img=22" alt="">
+                                <div class="fi-body"><strong>Ibrahim</strong> completed <em>Battle of Kirina</em></div>
+                                <span class="fi-time">12h ago</span>
+                            </div>
+                            <div class="feed-item"><img src="https://i.pravatar.cc/150?img=51" alt="">
+                                <div class="fi-body"><strong>Fatima</strong> joined <em>Clan of the Golden Stool</em>
+                                </div><span class="fi-time">1d ago</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Clans -->
+                    <div class="comm-section clans-section">
+                        <h4 class="comm-heading"><ion-icon name="shield-half"></ion-icon> Active Clans</h4>
+                        <div class="clan-item">
+                            <div class="clan-badge" style="background:rgba(201,168,76,0.15);color:var(--gold);">
+                                <ion-icon name="shield"></ion-icon></div>
+                            <div>
+                                <h5>Clan of the Golden Stool</h5><span>128 Members • Rank #1</span>
+                            </div><button class="clan-join">Joined</button>
+                        </div>
+                        <div class="clan-item">
+                            <div class="clan-badge" style="background:rgba(0,243,255,0.1);color:#00f3ff;"><ion-icon
+                                    name="shield"></ion-icon></div>
+                            <div>
+                                <h5>Zulu Warriors United</h5><span>96 Members • Rank #3</span>
+                            </div><button class="clan-join outline">Join</button>
+                        </div>
+                        <div class="clan-item">
+                            <div class="clan-badge" style="background:rgba(255,75,92,0.1);color:#ff4b5c;"><ion-icon
+                                    name="shield"></ion-icon></div>
+                            <div>
+                                <h5>Defenders of Ndongo</h5><span>72 Members • Rank #7</span>
+                            </div><button class="clan-join outline">Join</button>
+                        </div>
+
+                        <h4 class="comm-heading" style="margin-top:3vh"><ion-icon name="megaphone"></ion-icon>
+                            Announcements</h4>
+                        <div class="announcement">
+                            <div class="a-dot"></div>
+                            <div><strong>Season 2 Launches March 20</strong>
+                                <p>New heroes, missions, and the legendary Timbuktu expansion.</p>
+                            </div>
+                        </div>
+                        <div class="announcement">
+                            <div class="a-dot"></div>
+                            <div><strong>Cultural Festival Event</strong>
+                                <p>Earn double AP by completing lore challenges this week.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div id="screen-leaderboard" class="screen"><button class="back-btn-text"
-                style="position:absolute;top:3vh;left:4vw;z-index:50"
-                onclick="triggerFadeTransition('screen-main-menu')"><ion-icon name="chevron-back"></ion-icon>
-                Hub</button>
-            <div class="glass-window">
-                <h3 class="gw-title">Leaderboards</h3>
+
+        <!-- ======= SCREEN: PROFILE ======= -->
+        <div id="screen-profile" class="screen overlay-screen">
+            <div class="roster-top-nav">
+                <div class="roster-brand"><ion-icon name="person"></ion-icon> PLAYER PROFILE</div>
+                <button class="back-btn-text" onclick="triggerFadeTransition('screen-main-menu')"><ion-icon
+                        name="chevron-back"></ion-icon> Hub</button>
+            </div>
+            <div class="overlay-body">
+                <div class="profile-layout">
+                    <div class="profile-header">
+                        <img src="https://i.pravatar.cc/150?img=68" alt="Avatar" class="profile-avatar">
+                        <div class="profile-info">
+                            <h3>Initiate</h3>
+                            <span class="profile-title">Culture Explorer // Level 24</span>
+                            <div class="xp-bar">
+                                <div class="xp-fill" style="width:68%"></div>
+                            </div>
+                            <span class="xp-label">6,800 / 10,000 XP</span>
+                        </div>
+                    </div>
+                    <div class="profile-stats-grid">
+                        <div class="ps-card"><ion-icon name="footsteps"></ion-icon>
+                            <div class="ps-val">42</div>
+                            <div class="ps-label">Missions Done</div>
+                        </div>
+                        <div class="ps-card"><ion-icon name="book"></ion-icon>
+                            <div class="ps-val">18</div>
+                            <div class="ps-label">Lore Unlocked</div>
+                        </div>
+                        <div class="ps-card"><ion-icon name="people"></ion-icon>
+                            <div class="ps-val">7</div>
+                            <div class="ps-label">Heroes Played</div>
+                        </div>
+                        <div class="ps-card"><ion-icon name="time"></ion-icon>
+                            <div class="ps-val">120h</div>
+                            <div class="ps-label">Play Time</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div id="screen-settings" class="screen"><button class="back-btn-text"
-                style="position:absolute;top:3vh;left:4vw;z-index:50"
-                onclick="triggerFadeTransition('screen-main-menu')"><ion-icon name="chevron-back"></ion-icon>
-                Hub</button>
-            <div class="glass-window">
-                <h3 class="gw-title">Settings</h3>
+
+        <!-- ======= SCREEN: SETTINGS ======= -->
+        <div id="screen-settings" class="screen overlay-screen">
+            <div class="roster-top-nav">
+                <div class="roster-brand"><ion-icon name="settings"></ion-icon> SETTINGS</div>
+                <button class="back-btn-text" onclick="triggerFadeTransition('screen-main-menu')"><ion-icon
+                        name="chevron-back"></ion-icon> Hub</button>
+            </div>
+            <div class="overlay-body">
+                <div class="settings-panel">
+                    <div class="settings-group">
+                        <h4 class="sg-title">Audio</h4>
+                        <div class="setting-row"><span>Master Volume</span>
+                            <div class="slider-track">
+                                <div class="slider-fill" style="width:75%"></div>
+                                <div class="slider-thumb" style="left:75%"></div>
+                            </div>
+                        </div>
+                        <div class="setting-row"><span>Music</span>
+                            <div class="slider-track">
+                                <div class="slider-fill" style="width:60%"></div>
+                                <div class="slider-thumb" style="left:60%"></div>
+                            </div>
+                        </div>
+                        <div class="setting-row"><span>Sound Effects</span>
+                            <div class="slider-track">
+                                <div class="slider-fill" style="width:90%"></div>
+                                <div class="slider-thumb" style="left:90%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <h4 class="sg-title">Display</h4>
+                        <div class="setting-row"><span>Particles</span>
+                            <div class="toggle on">
+                                <div class="toggle-knob"></div>
+                            </div>
+                        </div>
+                        <div class="setting-row"><span>Film Grain</span>
+                            <div class="toggle on">
+                                <div class="toggle-knob"></div>
+                            </div>
+                        </div>
+                        <div class="setting-row"><span>Subtitles</span>
+                            <div class="toggle">
+                                <div class="toggle-knob"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <h4 class="sg-title">Account</h4>
+                        <div class="setting-row"><span>Language</span><span class="setting-val">English</span></div>
+                        <div class="setting-row"><span>Region</span><span class="setting-val">West Africa</span></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -190,4 +190,31 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentScreenId === 'screen-studio-intro') {
         playIntro();
     }
+
+    // Settings toggles
+    document.querySelectorAll('.toggle').forEach(toggle => {
+        toggle.addEventListener('click', () => toggle.classList.toggle('on'));
+    });
+
+    // Leaderboard tabs
+    document.querySelectorAll('.lb-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+        });
+    });
+
+    // Side nav active states
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+
+    // Profile avatar click
+    const profileImg = document.querySelector('.nav-profile img');
+    if (profileImg) {
+        profileImg.addEventListener('click', () => triggerFadeTransition('screen-profile'));
+    }
 });
