@@ -3,32 +3,42 @@
 // ============================================
 let curScr = 'boot';
 let isTrns = false;
+const screenToTab = {
+    lobby: 'tab-lobby',
+    heroes: 'tab-heroes',
+    games: 'tab-games',
+    community: 'tab-community',
+    leaderboard: 'tab-leaderboard'
+};
 
-function go(toScr) {
-    if (isTrns || curScr === toScr) return;
-    isTrns = true;
-
-    // Update navigation active states
+function updateNavUI(toScr) {
     const tabs = document.querySelectorAll('.nav-tab');
     const indicator = document.getElementById('nav-indicator');
+    if (tabs.length === 0) return;
 
-    if (tabs.length > 0) {
-        tabs.forEach(b => b.classList.remove('active'));
-        let targetTab;
-        if (toScr === 'lobby') targetTab = document.getElementById('tab-lobby');
-        if (toScr === 'heroes') targetTab = document.getElementById('tab-heroes');
-        if (toScr === 'games') targetTab = document.getElementById('tab-games');
-        if (toScr === 'community') targetTab = document.getElementById('tab-community');
-        if (toScr === 'leaderboard') targetTab = document.getElementById('tab-leaderboard');
+    tabs.forEach(b => b.classList.remove('active'));
+    const tabId = screenToTab[toScr];
+    const targetTab = tabId ? document.getElementById(tabId) : null;
 
-        if (targetTab) {
-            targetTab.classList.add('active');
-            if (indicator) {
-                indicator.style.left = `${targetTab.offsetLeft}px`;
-                indicator.style.width = `${targetTab.offsetWidth}px`;
-            }
+    if (targetTab) {
+        targetTab.classList.add('active');
+        if (indicator) {
+            indicator.style.left = `${targetTab.offsetLeft}px`;
+            indicator.style.width = `${targetTab.offsetWidth}px`;
         }
     }
+}
+
+function go(toScr) {
+    const targetScreen = document.getElementById(toScr);
+    if (!targetScreen) {
+        showToast('Navigator', `Unable to open "${toScr}" screen.`);
+        return;
+    }
+
+    if (isTrns || curScr === toScr) return;
+    isTrns = true;
+    updateNavUI(toScr);
 
     const curtain = document.getElementById('curtain');
     curtain.classList.add('go');
@@ -659,6 +669,21 @@ document.addEventListener('DOMContentLoaded', () => {
         heroBg.style.transform = `translate(${x}px, ${y}px) scale(1.06)`;
     });
 });
+
+
+function setRankTab(tab) {
+    const explorers = document.getElementById('rank-explorers');
+    const matches = document.getElementById('rank-matches');
+    const tabs = document.querySelectorAll('[data-rank-tab]');
+
+    tabs.forEach((t) => t.classList.remove('active'));
+    const activeTab = document.querySelector(`[data-rank-tab="${tab}"]`);
+    if (activeTab) activeTab.classList.add('active');
+
+    if (explorers) explorers.classList.toggle('rank-hidden', tab !== 'explorers');
+    if (matches) matches.classList.toggle('rank-hidden', tab !== 'matches');
+}
+window.setRankTab = setRankTab;
 
 function openBlog(slug) {
     const modal = document.getElementById('blog-modal');

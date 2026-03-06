@@ -100,6 +100,12 @@
                         <span class="hs-class" id="lobby-hero-class">Cavalry Commander & Warrior</span>
                     </div>
                 </div>
+                <div class="quick-nav-rail">
+                    <button class="qn-btn" data-screen="games"><ion-icon name="game-controller"></ion-icon> Jump to Games</button>
+                    <button class="qn-btn" data-screen="heroes"><ion-icon name="people-circle"></ion-icon> Switch Hero</button>
+                    <button class="qn-btn" data-screen="community"><ion-icon name="planet"></ion-icon> Open Hub</button>
+                    <button class="qn-btn" data-screen="leaderboard"><ion-icon name="trophy"></ion-icon> View Rankings</button>
+                </div>
             </div>
 
             <div class="lobby-left anim-stagger-2">
@@ -358,10 +364,10 @@
             <div class="os-layout" style="display:flex; justify-content:center; align-items:flex-start;">
                 <div class="tac-panel" style="width: 100%; max-width: 800px;">
                     <div class="tac-tabs">
-                        <button class="tac-tab active">Top Explorers</button>
-                        <button class="tac-tab">Recent Matches</button>
+                        <button class="tac-tab active" data-rank-tab="explorers" onclick="setRankTab('explorers')">Top Explorers</button>
+                        <button class="tac-tab" data-rank-tab="matches" onclick="setRankTab('matches')">Recent Matches</button>
                     </div>
-                    <div class="rank-list">
+                    <div class="rank-list" id="rank-explorers">
                         <div class="rank-row highlight">
                             <span class="rr-pos">01</span>
                             <img src="https://ui-avatars.com/api/?name=You&background=f5c842&color=000&size=100"
@@ -389,6 +395,26 @@
                                 class="rr-av">
                             <span class="rr-name">Priya</span>
                             <span class="rr-score">19,800 Pts</span>
+                        </div>
+                    </div>
+                    <div class="rank-list rank-hidden" id="rank-matches">
+                        <div class="rank-row">
+                            <span class="rr-pos">W</span>
+                            <img src="https://ui-avatars.com/api/?name=You&background=f5c842&color=000&size=100" class="rr-av">
+                            <span class="rr-name">You defeated Elder AI (Oware)</span>
+                            <span class="rr-score">+250 XP</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">L</span>
+                            <img src="https://ui-avatars.com/api/?name=Amina&background=ff3e5e&color=fff&size=100" class="rr-av">
+                            <span class="rr-name">Amina lost to Chen Xia (Go)</span>
+                            <span class="rr-score">-</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">W</span>
+                            <img src="https://ui-avatars.com/api/?name=Yara&background=00e5ff&color=000&size=100" class="rr-av">
+                            <span class="rr-name">Yara won against Priya (Ludo)</span>
+                            <span class="rr-score">+180 XP</span>
                         </div>
                     </div>
                 </div>
