@@ -668,15 +668,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const y = (e.clientY / window.innerHeight - 0.5) * 8;
         heroBg.style.transform = `translate(${x}px, ${y}px) scale(1.06)`;
     });
-
-    document.querySelectorAll('.qn-btn[data-screen]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-            const target = btn.dataset.screen;
-            if (target) go(target);
-        });
-    });
-
-    window.addEventListener('resize', () => updateNavUI(curScr));
 });
 
 
