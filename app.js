@@ -3,32 +3,42 @@
 // ============================================
 let curScr = 'boot';
 let isTrns = false;
+const screenToTab = {
+    lobby: 'tab-lobby',
+    heroes: 'tab-heroes',
+    games: 'tab-games',
+    community: 'tab-community',
+    leaderboard: 'tab-leaderboard'
+};
 
-function go(toScr) {
-    if (isTrns || curScr === toScr) return;
-    isTrns = true;
-
-    // Update navigation active states
+function updateNavUI(toScr) {
     const tabs = document.querySelectorAll('.nav-tab');
     const indicator = document.getElementById('nav-indicator');
+    if (tabs.length === 0) return;
 
-    if (tabs.length > 0) {
-        tabs.forEach(b => b.classList.remove('active'));
-        let targetTab;
-        if (toScr === 'lobby') targetTab = document.getElementById('tab-lobby');
-        if (toScr === 'heroes') targetTab = document.getElementById('tab-heroes');
-        if (toScr === 'games') targetTab = document.getElementById('tab-games');
-        if (toScr === 'community') targetTab = document.getElementById('tab-community');
-        if (toScr === 'leaderboard') targetTab = document.getElementById('tab-leaderboard');
+    tabs.forEach(b => b.classList.remove('active'));
+    const tabId = screenToTab[toScr];
+    const targetTab = tabId ? document.getElementById(tabId) : null;
 
-        if (targetTab) {
-            targetTab.classList.add('active');
-            if (indicator) {
-                indicator.style.left = `${targetTab.offsetLeft}px`;
-                indicator.style.width = `${targetTab.offsetWidth}px`;
-            }
+    if (targetTab) {
+        targetTab.classList.add('active');
+        if (indicator) {
+            indicator.style.left = `${targetTab.offsetLeft}px`;
+            indicator.style.width = `${targetTab.offsetWidth}px`;
         }
     }
+}
+
+function go(toScr) {
+    const targetScreen = document.getElementById(toScr);
+    if (!targetScreen) {
+        showToast('Navigator', `Unable to open "${toScr}" screen.`);
+        return;
+    }
+
+    if (isTrns || curScr === toScr) return;
+    isTrns = true;
+    updateNavUI(toScr);
 
     const curtain = document.getElementById('curtain');
     curtain.classList.add('go');
@@ -151,8 +161,44 @@ window.selectHero = selectHero;
 // ============================================
 let mState = [];
 let mTurn = 0; // 0 for P1 (bottom), 1 for P2 (top)
+let playerXP = 2400;
+let questProgress = 0;
+let questClaimed = false;
+
+function updateGamificationUI() {
+    const xpFill = document.getElementById('xp-fill');
+    const xpValue = document.getElementById('xp-value');
+    const questFill = document.getElementById('quest-fill');
+
+    const xpTarget = 3000;
+    const xpPct = Math.max(0, Math.min(100, (playerXP / xpTarget) * 100));
+
+    if (xpFill) xpFill.style.width = `${xpPct}%`;
+    if (xpValue) xpValue.innerText = `${playerXP} / ${xpTarget}`;
+    if (questFill) questFill.style.width = `${Math.min(100, questProgress)}%`;
+}
+window.updateGamificationUI = updateGamificationUI;
+
+function claimQuestReward() {
+    if (questClaimed) {
+        showToast('Quest Board', 'Daily quest already claimed. New quests refresh tomorrow.');
+        return;
+    }
+
+    if (questProgress < 100) {
+        showToast('Quest Board', 'Complete the daily quest by winning an Oware or Ayo match.');
+        return;
+    }
+
+    questClaimed = true;
+    playerXP += 250;
+    updateGamificationUI();
+    showToast('Quest Board', 'Quest complete! +250 XP and Bronze Baobab unlocked.');
+}
+window.claimQuestReward = claimQuestReward;
 
 function openMancala(variant) {
+    window.currentMancalaVariant = variant;
     document.getElementById('mancala-header-title').innerText = "Playing: " + variant;
     go('play-mancala');
     initMancala();
@@ -251,8 +297,15 @@ function mancalaClick(idx) {
         for (let i = 0; i < 6; i++) { mState[6] += mState[i]; mState[i] = 0; }
         for (let i = 7; i < 13; i++) { mState[13] += mState[i]; mState[i] = 0; }
         renderMancala();
-        const winText = mState[6] > mState[13] ? "You Won!" : (mState[13] > mState[6] ? "Elder AI Won!" : "It's a Draw!");
+        const playerWon = mState[6] > mState[13];
+        const winText = playerWon ? "You Won!" : (mState[13] > mState[6] ? "Elder AI Won!" : "It's a Draw!");
         document.getElementById('mancala-status').innerText = winText;
+
+        if (playerWon && !questClaimed && ['Oware', 'Ayo'].includes(window.currentMancalaVariant)) {
+            questProgress = 100;
+            updateGamificationUI();
+            showToast('Quest Board', 'Daily quest ready! Return to lobby and claim your reward.');
+        }
         return;
     }
 
@@ -311,6 +364,7 @@ function playAI() {
 let ludoTurn = 0;
 function openLudo() {
     go('play-ludo');
+    ludoTurn = 0;
     const stat = document.getElementById('ludo-status');
     if (stat) stat.innerText = "Match Start: Your Turn! Roll the dice.";
 }
@@ -319,7 +373,8 @@ window.openLudo = openLudo;
 function rollLudoDice() {
     if (ludoTurn !== 0) return;
 
-    const btn = document.querySelector('#play-ludo button');
+    const btn = document.getElementById('ludo-roll-btn');
+    if (!btn) return;
     const valSpan = document.getElementById('ludo-dice-val');
     btn.classList.add('dice-rolling');
     document.getElementById('ludo-status').innerText = "Rolling...";
@@ -587,6 +642,7 @@ document.addEventListener('DOMContentLoaded', () => {
     spawnEmbers();
     setTimeout(initBoot, 500);
     startChatSim();
+    updateGamificationUI();
 
     // Initial check for hero cards
     setTimeout(checkHeroScroll, 1000);
@@ -604,7 +660,39 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('chat-input')?.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendChat();
     });
+
+    const heroBg = document.querySelector('.bg-hero');
+    document.addEventListener('mousemove', (e) => {
+        if (!heroBg) return;
+        const x = (e.clientX / window.innerWidth - 0.5) * 8;
+        const y = (e.clientY / window.innerHeight - 0.5) * 8;
+        heroBg.style.transform = `translate(${x}px, ${y}px) scale(1.06)`;
+    });
+
+    document.querySelectorAll('.qn-btn[data-screen]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const target = btn.dataset.screen;
+            if (target) go(target);
+        });
+    });
+
+    window.addEventListener('resize', () => updateNavUI(curScr));
 });
+
+
+function setRankTab(tab) {
+    const explorers = document.getElementById('rank-explorers');
+    const matches = document.getElementById('rank-matches');
+    const tabs = document.querySelectorAll('[data-rank-tab]');
+
+    tabs.forEach((t) => t.classList.remove('active'));
+    const activeTab = document.querySelector(`[data-rank-tab="${tab}"]`);
+    if (activeTab) activeTab.classList.add('active');
+
+    if (explorers) explorers.classList.toggle('rank-hidden', tab !== 'explorers');
+    if (matches) matches.classList.toggle('rank-hidden', tab !== 'matches');
+}
+window.setRankTab = setRankTab;
 
 function openBlog(slug) {
     const modal = document.getElementById('blog-modal');

@@ -69,6 +69,16 @@
                     <div class="lh-currency"><ion-icon name="hardware-chip-outline"></ion-icon> 24,500</div>
                 </div>
                 <div class="lh-right">
+                    <div class="player-stats-pill">
+                        <div class="ps-head">
+                            <span>Season XP</span>
+                            <span id="xp-value">2400 / 3000</span>
+                        </div>
+                        <div class="xp-track">
+                            <div class="xp-fill" id="xp-fill"></div>
+                        </div>
+                        <div class="streak-chip"><ion-icon name="flame"></ion-icon> 7 Day Story Streak</div>
+                    </div>
                     <div class="lh-profile">
                         <div class="lhp-info">
                             <div class="lhp-name">Wanderer</div>
@@ -90,9 +100,25 @@
                         <span class="hs-class" id="lobby-hero-class">Cavalry Commander & Warrior</span>
                     </div>
                 </div>
+                <div class="quick-nav-rail">
+                    <button class="qn-btn" data-screen="games"><ion-icon name="game-controller"></ion-icon> Jump to Games</button>
+                    <button class="qn-btn" data-screen="heroes"><ion-icon name="people-circle"></ion-icon> Switch Hero</button>
+                    <button class="qn-btn" data-screen="community"><ion-icon name="planet"></ion-icon> Open Hub</button>
+                    <button class="qn-btn" data-screen="leaderboard"><ion-icon name="trophy"></ion-icon> View Rankings</button>
+                </div>
             </div>
 
             <div class="lobby-left anim-stagger-2">
+                <div class="hud-panel quest-panel" onclick="claimQuestReward()">
+                    <div class="hp-header">
+                        <div class="hp-icon"><ion-icon name="ribbon"></ion-icon></div>
+                        <h3 class="hp-title">Daily Quest</h3>
+                    </div>
+                    <p class="hp-desc">Win 1 Oware match to earn +250 XP and unlock the Bronze Baobab badge.</p>
+                    <div class="quest-progress">
+                        <div class="quest-fill" id="quest-fill"></div>
+                    </div>
+                </div>
                 <div class="hud-panel alert" onclick="go('games')">
                     <div class="hp-header">
                         <div class="hp-icon"><ion-icon name="star"></ion-icon></div>
@@ -125,6 +151,17 @@
                     </div>
                     <p class="hp-desc">Join the community, read stories, and meet other cultural explorers.</p>
                 </div>
+                <div class="hud-panel mini-achievements">
+                    <div class="hp-header">
+                        <div class="hp-icon"><ion-icon name="sparkles"></ion-icon></div>
+                        <h3 class="hp-title">Recent Unlocks</h3>
+                    </div>
+                    <div class="badge-row">
+                        <span class="badge-chip">Akan Scholar</span>
+                        <span class="badge-chip">Tactician I</span>
+                        <span class="badge-chip">Cultural Guide</span>
+                    </div>
+                </div>
             </div>
 
             <footer class="lobby-footer anim-stagger-1">
@@ -138,7 +175,7 @@
                     <button class="nav-tab" id="tab-community" onclick="go('community')"><ion-icon
                             name="planet"></ion-icon> Hub</button>
                     <button class="nav-tab" id="tab-leaderboard" onclick="go('leaderboard')"><ion-icon
-                            name="settings"></ion-icon> Config</button>
+                            name="podium"></ion-icon> Rank</button>
                 </div>
             </footer>
         </div>
@@ -327,10 +364,10 @@
             <div class="os-layout" style="display:flex; justify-content:center; align-items:flex-start;">
                 <div class="tac-panel" style="width: 100%; max-width: 800px;">
                     <div class="tac-tabs">
-                        <button class="tac-tab active">Top Explorers</button>
-                        <button class="tac-tab">Recent Matches</button>
+                        <button class="tac-tab active" data-rank-tab="explorers" onclick="setRankTab('explorers')">Top Explorers</button>
+                        <button class="tac-tab" data-rank-tab="matches" onclick="setRankTab('matches')">Recent Matches</button>
                     </div>
-                    <div class="rank-list">
+                    <div class="rank-list" id="rank-explorers">
                         <div class="rank-row highlight">
                             <span class="rr-pos">01</span>
                             <img src="https://ui-avatars.com/api/?name=You&background=f5c842&color=000&size=100"
@@ -358,6 +395,26 @@
                                 class="rr-av">
                             <span class="rr-name">Priya</span>
                             <span class="rr-score">19,800 Pts</span>
+                        </div>
+                    </div>
+                    <div class="rank-list rank-hidden" id="rank-matches">
+                        <div class="rank-row">
+                            <span class="rr-pos">W</span>
+                            <img src="https://ui-avatars.com/api/?name=You&background=f5c842&color=000&size=100" class="rr-av">
+                            <span class="rr-name">You defeated Elder AI (Oware)</span>
+                            <span class="rr-score">+250 XP</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">L</span>
+                            <img src="https://ui-avatars.com/api/?name=Amina&background=ff3e5e&color=fff&size=100" class="rr-av">
+                            <span class="rr-name">Amina lost to Chen Xia (Go)</span>
+                            <span class="rr-score">-</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">W</span>
+                            <img src="https://ui-avatars.com/api/?name=Yara&background=00e5ff&color=000&size=100" class="rr-av">
+                            <span class="rr-name">Yara won against Priya (Ludo)</span>
+                            <span class="rr-score">+180 XP</span>
                         </div>
                     </div>
                 </div>
@@ -471,7 +528,7 @@
                     </div>
                 </div>
                 <h2 id="ludo-status" style="margin-top:2vh; color:var(--gold);">Your Turn! Roll the dice.</h2>
-                <button onclick="rollLudoDice()"
+                <button id="ludo-roll-btn" onclick="rollLudoDice()"
                     style="margin-top: 2vh; padding: 15px 30px; background: var(--gold); color: black; font-weight: bold; border-radius: 8px; font-size: 20px;">🎲
                     ROLL DICE <span id="ludo-dice-val"></span></button>
             </div>
