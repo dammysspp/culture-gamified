@@ -381,16 +381,117 @@ button:active {
 #curtain {
   position: fixed;
   inset: 0;
-  background: #000;
-  z-index: 999;
-  opacity: 0;
+  z-index: 9999;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  background: transparent;
+  perspective: 1500px;
 }
 
-#curtain.go {
-  opacity: 1;
-  pointer-events: auto;
+#curtain.go-in {
+  background: rgba(0, 0, 0, 0.4);
+  transition: background 0.4s;
+}
+
+#curtain.go-out {
+  background: transparent;
+  transition: background 0.4s 0.4s;
+}
+
+.c-wipe {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200vw;
+  height: 200vh;
+  transform: translateX(-100%) rotate(-15deg);
+  will-change: transform;
+}
+
+/* Three Pillars of Culture: Gold, Cyan, Hot Red */
+.c-wipe.cw-1 {
+  background: linear-gradient(90deg, transparent, var(--gold), #000);
+  opacity: 0.9;
+}
+
+.c-wipe.cw-2 {
+  background: linear-gradient(90deg, transparent, var(--cyan), #000);
+  opacity: 0.8;
+}
+
+.c-wipe.cw-3 {
+  background: linear-gradient(90deg, transparent, var(--hot), #000);
+  opacity: 0.95;
+}
+
+/* Remove the others since we only need 3 high-impact ones */
+.c-wipe.cw-4,
+.c-wipe.cw-5,
+.c-wipe.cw-6,
+.c-wipe.cw-7,
+.c-wipe.cw-8,
+.c-wipe.cw-9,
+.c-wipe.cw-10 {
+  display: none;
+}
+
+#curtain.go-in .c-wipe {
+  animation: cinematicBeamIn 0.8s cubic-bezier(0.7, 0, 0.1, 1) forwards;
+}
+
+#curtain.go-out .c-wipe {
+  animation: cinematicBeamOut 0.8s cubic-bezier(0.7, 0, 0.1, 1) forwards;
+}
+
+#curtain.go-in .cw-1 {
+  animation-delay: 0s;
+}
+
+#curtain.go-in .cw-2 {
+  animation-delay: 0.1s;
+}
+
+#curtain.go-in .cw-3 {
+  animation-delay: 0.2s;
+}
+
+#curtain.go-out .cw-1 {
+  animation-delay: 0.2s;
+}
+
+#curtain.go-out .cw-2 {
+  animation-delay: 0.1s;
+}
+
+#curtain.go-out .cw-3 {
+  animation-delay: 0s;
+}
+
+@keyframes cinematicBeamIn {
+  0% {
+    transform: translateX(-100%) rotate(-15deg) scaleY(0.5);
+    filter: brightness(2) blur(10px);
+  }
+
+  50% {
+    filter: brightness(3) blur(0);
+  }
+
+  100% {
+    transform: translateX(50%) rotate(-15deg) scaleY(1.2);
+    filter: brightness(1) blur(0);
+  }
+}
+
+@keyframes cinematicBeamOut {
+  0% {
+    transform: translateX(50%) rotate(-15deg) scaleY(1.2);
+    filter: brightness(1);
+  }
+
+  100% {
+    transform: translateX(150%) rotate(-15deg) scaleY(0.5);
+    filter: brightness(2) blur(10px);
+  }
 }
 
 /* ═══════════════════════════════════
@@ -730,7 +831,7 @@ button:active {
 
 .hs-details {
   position: absolute;
-  bottom: 5vh;
+  bottom: 12vh;
   left: 0;
   right: 0;
   text-align: center;
@@ -765,9 +866,10 @@ button:active {
 .lobby-left,
 .lobby-right {
   position: absolute;
-  top: 50%;
+  top: 40%;
+  /* Moved up from 52% to keep clear of bottom nav */
   transform: translateY(-50%);
-  width: clamp(200px, 25vw, 400px);
+  width: clamp(220px, 25vw, 420px);
   display: flex;
   flex-direction: column;
   gap: 2dvh;
@@ -775,12 +877,12 @@ button:active {
 }
 
 .lobby-left {
-  left: 3vw;
+  left: 7.5vw;
 }
 
 .lobby-right {
   right: 3vw;
-  align-items: flex-end;
+  align-items: stretch;
 }
 
 .hud-panel {
@@ -789,7 +891,7 @@ button:active {
   background: rgba(20, 22, 35, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 1px 1px 0 rgba(255, 255, 255, 0.1);
-  padding: 2.5vh 2vw;
+  padding: 1.5vh 1.5vw;
   clip-path: var(--clip-angle);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -888,14 +990,16 @@ button:active {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 12vh;
+  height: 20vh;
+  /* Increased height to push nav further up */
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  background: linear-gradient(to top, rgba(10, 15, 30, 0.95), transparent);
-  backdrop-filter: blur(5px);
+  background: linear-gradient(to top, rgba(3, 4, 8, 1) 0%, rgba(3, 4, 8, 0.8) 50%, transparent 100%);
+  backdrop-filter: blur(10px);
   z-index: 20;
-  padding-bottom: 2vh;
+  padding-bottom: 8vh;
+  /* Pushing buttons up noticeably */
 }
 
 .nav-dock {
@@ -1144,22 +1248,20 @@ button:active {
 }
 
 .rc-era {
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 800;
   color: var(--gold);
-  letter-spacing: 0.2em;
   text-transform: uppercase;
+  letter-spacing: 0.2em;
   margin-bottom: 0.5vh;
 }
 
 .rc-name {
   font-family: var(--font-display);
-  font-size: 48px;
+  font-size: clamp(32px, 4vw, 48px);
   font-weight: 700;
-  color: #fff;
-  text-transform: uppercase;
   line-height: 0.9;
-  letter-spacing: 0.05em;
+  color: #fff;
   margin-bottom: 0.5vh;
 }
 
@@ -1169,6 +1271,58 @@ button:active {
   color: rgba(255, 255, 255, 0.6);
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  margin-bottom: 1.5vh;
+}
+
+.rc-story {
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 2vh;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s var(--ease-out), opacity 0.3s;
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0;
+  border-left: 0 solid var(--gold);
+}
+
+.rc-card.center.story-on .rc-story {
+  max-height: 200px;
+  opacity: 1;
+  padding: 1.5vh 1vw;
+  border-left-width: 3px;
+  margin-top: 1vh;
+}
+
+.rc-lore-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 0.8vh 1vw;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  width: fit-content;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 1vh;
+}
+
+.rc-lore-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+}
+
+.rc-card.center.story-on .rc-lore-btn {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #000;
 }
 
 .rc-action {
@@ -1557,6 +1711,24 @@ button:active {
   display: flex;
   flex-direction: column;
   gap: 1vh;
+  padding: 1vh;
+  max-height: 50dvh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) rgba(255, 255, 255, 0.05);
+}
+
+.rank-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.rank-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.rank-list::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 10px;
 }
 
 .rank-row {
@@ -2154,117 +2326,135 @@ button:active {
 .scr.on .anim-stagger-3 {
   animation: slideInUp 0.7s 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
 }
-/* ── PREMIUM GAMIFICATION LAYER ── */
-.player-stats-pill {
-  min-width: 240px;
-  padding: 0.8rem 0.9rem;
-  border-radius: 12px;
-  border: 1px solid rgba(245, 200, 66, 0.3);
-  background: linear-gradient(135deg, rgba(12, 15, 24, 0.88), rgba(20, 25, 40, 0.72));
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35), inset 0 0 15px rgba(245, 200, 66, 0.08);
-  margin-right: 1rem;
+
+/* ═══════════════════════════════════
+   GAMIFICATION & QUICK NAV 
+   ═══════════════════════════════════ */
+
+/* Gamification HUD (Top Right area floating) */
+.gamification-hud {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5vh;
+  z-index: 10;
+  pointer-events: auto;
 }
 
-.ps-head {
+.xp-module {
+  background: rgba(10, 12, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5vh 1.5vw;
+  border-radius: 8px;
+  width: 100%;
+  backdrop-filter: blur(10px);
+}
+
+.xp-label {
   display: flex;
   justify-content: space-between;
-  font-size: 0.82rem;
-  font-family: var(--font-body);
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 0.3rem;
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: 0.05em;
+  margin-bottom: 1vh;
 }
 
-.xp-track,
-.quest-progress {
+.xp-label span {
+  color: var(--gold);
+}
+
+.xp-bar {
   width: 100%;
-  height: 9px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
   overflow: hidden;
 }
 
-.xp-fill,
-.quest-fill {
+.xp-fill {
   height: 100%;
-  width: 0;
-  border-radius: inherit;
-  transition: width 0.5s var(--ease-out);
-  background: linear-gradient(90deg, #f5c842, #ffd973 45%, #ff8a00);
-  box-shadow: 0 0 12px rgba(245, 200, 66, 0.45);
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+  border-radius: 3px;
+  transition: width 1s var(--ease-spring);
 }
 
 .streak-chip {
-  margin-top: 0.45rem;
-  font-size: 0.78rem;
-  color: #ffe6ac;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-family: var(--font-body);
-}
-
-.quest-panel {
-  border-color: rgba(255, 138, 0, 0.4) !important;
-  background: linear-gradient(145deg, rgba(27, 16, 9, 0.68), rgba(18, 12, 8, 0.6));
-}
-
-.quest-progress {
-  margin-top: 0.6rem;
-}
-
-.mini-achievements .badge-row {
+  align-self: flex-start;
+  background: rgba(255, 62, 94, 0.1);
+  border: 1px solid var(--hot);
+  color: var(--hot);
+  padding: 0.5vh 1vw;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 14px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.65rem;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 0 15px rgba(255, 62, 94, 0.3);
 }
 
-.badge-chip {
-  font-size: 0.72rem;
-  font-family: var(--font-body);
-  padding: 0.28rem 0.55rem;
-  border-radius: 999px;
-  color: #f5e6bc;
-  border: 1px solid rgba(245, 200, 66, 0.25);
-  background: rgba(245, 200, 66, 0.09);
+/* Quick Navigation Rail */
+.quick-nav-rail {
+  position: absolute;
+  left: 1.5vw;
+  top: 40%;
+  /* Moved up from 50% */
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: rgba(10, 12, 20, 0.6);
+  padding: 15px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  z-index: 20;
 }
 
-.hud-panel,
-.gm-card,
-.story-card,
-.rank-row,
-.nav-tab,
-.t-press,
-.btn-back {
-  transition: transform 0.35s var(--ease-spring), box-shadow 0.35s ease, filter 0.3s ease;
+.qn-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s var(--ease-spring);
+  pointer-events: auto;
 }
 
-.hud-panel:hover,
-.gm-card:hover,
-.story-card:hover,
-.rank-row:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.4);
-  filter: saturate(1.15);
+.qn-btn:hover {
+  background: var(--gold);
+  color: #000;
+  transform: scale(1.15) translateX(5px);
+  box-shadow: 0 5px 15px var(--gold-glow);
 }
 
-.nav-tab:hover,
-.t-press:hover,
-.btn-back:hover {
-  transform: translateY(-2px);
+/* Quest Card specific styles */
+.quest-card {
+  border-color: #00ff88;
+  box-shadow: 0 8px 32px 0 rgba(0, 255, 136, 0.1);
 }
 
-.scr.on {
-  animation: screenFadeIn 0.55s var(--ease-out);
+.quest-claim-btn {
+  margin-top: 1.5vh;
+  width: 100%;
+  padding: 1vh;
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid #00ff88;
+  color: #00ff88;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  border-radius: 4px;
+  transition: all 0.3s;
 }
 
-@keyframes screenFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.quest-claim-btn:hover:not(:disabled) {
+  background: #00ff88;
+  color: #000;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
 }

@@ -16,7 +16,18 @@
         <ion-icon name="phone-landscape-outline"></ion-icon>
         <p>Please rotate your device to landscape mode to play.</p>
     </div>
-    <div id="curtain"></div>
+    <div id="curtain">
+        <div class="c-wipe cw-1"></div>
+        <div class="c-wipe cw-2"></div>
+        <div class="c-wipe cw-3"></div>
+        <div class="c-wipe cw-4"></div>
+        <div class="c-wipe cw-5"></div>
+        <div class="c-wipe cw-6"></div>
+        <div class="c-wipe cw-7"></div>
+        <div class="c-wipe cw-8"></div>
+        <div class="c-wipe cw-9"></div>
+        <div class="c-wipe cw-10"></div>
+    </div>
     <div id="app">
         <!-- Hero Background AI Generated -->
         <div class="bg-hero" style="background-image:url('assets/hero_bg.png')">
@@ -69,16 +80,6 @@
                     <div class="lh-currency"><ion-icon name="hardware-chip-outline"></ion-icon> 24,500</div>
                 </div>
                 <div class="lh-right">
-                    <div class="player-stats-pill">
-                        <div class="ps-head">
-                            <span>Season XP</span>
-                            <span id="xp-value">2400 / 3000</span>
-                        </div>
-                        <div class="xp-track">
-                            <div class="xp-fill" id="xp-fill"></div>
-                        </div>
-                        <div class="streak-chip"><ion-icon name="flame"></ion-icon> 7 Day Story Streak</div>
-                    </div>
                     <div class="lh-profile">
                         <div class="lhp-info">
                             <div class="lhp-name">Wanderer</div>
@@ -100,32 +101,21 @@
                         <span class="hs-class" id="lobby-hero-class">Cavalry Commander & Warrior</span>
                     </div>
                 </div>
-                <div class="quick-nav-rail">
-                    <button class="qn-btn" data-screen="games"><ion-icon name="game-controller"></ion-icon> Jump to Games</button>
-                    <button class="qn-btn" data-screen="heroes"><ion-icon name="people-circle"></ion-icon> Switch Hero</button>
-                    <button class="qn-btn" data-screen="community"><ion-icon name="planet"></ion-icon> Open Hub</button>
-                    <button class="qn-btn" data-screen="leaderboard"><ion-icon name="trophy"></ion-icon> View Rankings</button>
-                </div>
+            </div>
+
+            <!-- Quick Navigation Rail moved to edge -->
+            <div class="quick-nav-rail">
+                <button class="qn-btn" onclick="go('games')" data-screen="games"><ion-icon
+                        name="game-controller"></ion-icon></button>
+                <button class="qn-btn" onclick="go('heroes')" data-screen="heroes"><ion-icon
+                        name="people"></ion-icon></button>
+                <button class="qn-btn" onclick="go('community')" data-screen="community"><ion-icon
+                        name="planet"></ion-icon></button>
+                <button class="qn-btn" onclick="go('leaderboard')" data-screen="leaderboard"><ion-icon
+                        name="podium"></ion-icon></button>
             </div>
 
             <div class="lobby-left anim-stagger-2">
-                <div class="hud-panel quest-panel" onclick="claimQuestReward()">
-                    <div class="hp-header">
-                        <div class="hp-icon"><ion-icon name="ribbon"></ion-icon></div>
-                        <h3 class="hp-title">Daily Quest</h3>
-                    </div>
-                    <p class="hp-desc">Win 1 Oware match to earn +250 XP and unlock the Bronze Baobab badge.</p>
-                    <div class="quest-progress">
-                        <div class="quest-fill" id="quest-fill"></div>
-                    </div>
-                </div>
-                <div class="hud-panel alert" onclick="go('games')">
-                    <div class="hp-header">
-                        <div class="hp-icon"><ion-icon name="star"></ion-icon></div>
-                        <h3 class="hp-title">Featured Match</h3>
-                    </div>
-                    <p class="hp-desc">The Oware tournament is live! Play the Ghanaian seed game and learn.</p>
-                </div>
                 <div class="hud-panel" onclick="go('heroes')">
                     <div class="hp-header">
                         <div class="hp-icon"><ion-icon name="accessibility"></ion-icon></div>
@@ -134,9 +124,33 @@
                     <p class="hp-desc">Explore the stories of legendary cultural heroes and choose who you want to play
                         as.</p>
                 </div>
+
+                <!-- Daily Quest Card -->
+                <div class="hud-panel quest-card">
+                    <div class="hp-header">
+                        <div class="hp-icon" style="color:#00ff88;"><ion-icon name="calendar"></ion-icon></div>
+                        <h3 class="hp-title">Daily Quest</h3>
+                    </div>
+                    <p class="hp-desc">Win 1 Oware Match today to earn 200 Season XP.</p>
+                    <button class="quest-claim-btn" onclick="claimQuest(); event.stopPropagation();">CLAIM
+                        REWARD</button>
+                </div>
             </div>
 
             <div class="lobby-right anim-stagger-2">
+                <!-- Gamification: Season XP & Streak -->
+                <div class="gamification-hud">
+                    <div class="xp-module">
+                        <div class="xp-label">Season 1 XP <span>LVL 24</span></div>
+                        <div class="xp-bar">
+                            <div class="xp-fill" id="season-xp-fill" style="width: 45%;"></div>
+                        </div>
+                    </div>
+                    <div class="streak-chip">
+                        <ion-icon name="flame"></ion-icon> 5 Day Streak
+                    </div>
+                </div>
+
                 <div class="hud-panel" onclick="go('leaderboard')">
                     <div class="hp-header">
                         <div class="hp-icon"><ion-icon name="trophy"></ion-icon></div>
@@ -150,17 +164,6 @@
                         <h3 class="hp-title">Cultural Hub</h3>
                     </div>
                     <p class="hp-desc">Join the community, read stories, and meet other cultural explorers.</p>
-                </div>
-                <div class="hud-panel mini-achievements">
-                    <div class="hp-header">
-                        <div class="hp-icon"><ion-icon name="sparkles"></ion-icon></div>
-                        <h3 class="hp-title">Recent Unlocks</h3>
-                    </div>
-                    <div class="badge-row">
-                        <span class="badge-chip">Akan Scholar</span>
-                        <span class="badge-chip">Tactician I</span>
-                        <span class="badge-chip">Cultural Guide</span>
-                    </div>
                 </div>
             </div>
 
@@ -207,6 +210,10 @@
                                 <div class="rc-era">12th Century</div>
                                 <h3 class="rc-name">Moremi</h3>
                                 <div class="rc-class">Protector & Leader</div>
+                                <button class="rc-lore-btn" onclick="toggleStory(this.closest('.rc-card'))">
+                                    <ion-icon name="book-outline"></ion-icon> View Lore
+                                </button>
+                                <p class="rc-story">A legendary figure in Yoruba history, Queen Moremi Ajasoro of Ile-Ife sacrificed everything to liberate her people from oppression, becoming an eternal symbol of courage and selflessness.</p>
                                 <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Choose
                                     Hero</button>
                             </div>
@@ -223,6 +230,10 @@
                                 <div class="rc-era">16th Century</div>
                                 <h3 class="rc-name">Amina</h3>
                                 <div class="rc-class">Warrior Queen</div>
+                                <button class="rc-lore-btn" onclick="toggleStory(this.closest('.rc-card'))">
+                                    <ion-icon name="book-outline"></ion-icon> View Lore
+                                </button>
+                                <p class="rc-story">The legendary Queen of Zazzau, Amina was a master tactician who led massive armies to expand her kingdom, building great walls and fostering trans-Saharan trade.</p>
                                 <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Choose
                                     Hero</button>
                             </div>
@@ -240,6 +251,10 @@
                                 <div class="rc-era">19th Century</div>
                                 <h3 class="rc-name">Jaja</h3>
                                 <div class="rc-class">Merchant & Diplomat</div>
+                                <button class="rc-lore-btn" onclick="toggleStory(this.closest('.rc-card'))">
+                                    <ion-icon name="book-outline"></ion-icon> View Lore
+                                </button>
+                                <p class="rc-story">From a slave boy to the King of Opobo, Jaja of Opobo was a visionary merchant prince who defied colonial monopolies to build a powerful economic empire.</p>
                                 <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Choose
                                     Hero</button>
                             </div>
@@ -256,6 +271,10 @@
                                 <div class="rc-era">19th Century</div>
                                 <h3 class="rc-name">Shaka</h3>
                                 <div class="rc-class">Great General</div>
+                                <button class="rc-lore-btn" onclick="toggleStory(this.closest('.rc-card'))">
+                                    <ion-icon name="book-outline"></ion-icon> View Lore
+                                </button>
+                                <p class="rc-story">Founder of the Zulu Kingdom, Shaka Zulu revolutionized African warfare with the Iklwa spear and the Buffalo Horns formation, creating one of the continent's most disciplined armies.</p>
                                 <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Choose
                                     Hero</button>
                             </div>
@@ -273,6 +292,10 @@
                                 <div class="rc-era">14th Century</div>
                                 <h3 class="rc-name">Mansa Musa</h3>
                                 <div class="rc-class">Emperor & Scholar</div>
+                                <button class="rc-lore-btn" onclick="toggleStory(this.closest('.rc-card'))">
+                                    <ion-icon name="book-outline"></ion-icon> View Lore
+                                </button>
+                                <p class="rc-story">The richest man in history, Mansa Musa transformed Mali into a world-renowned center of learning and gold. His journey to Mecca remains the most extravagant hajj in history.</p>
                                 <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Choose
                                     Hero</button>
                             </div>
@@ -364,8 +387,8 @@
             <div class="os-layout" style="display:flex; justify-content:center; align-items:flex-start;">
                 <div class="tac-panel" style="width: 100%; max-width: 800px;">
                     <div class="tac-tabs">
-                        <button class="tac-tab active" data-rank-tab="explorers" onclick="setRankTab('explorers')">Top Explorers</button>
-                        <button class="tac-tab" data-rank-tab="matches" onclick="setRankTab('matches')">Recent Matches</button>
+                        <button class="tac-tab active" onclick="setRankTab(0)">Top Explorers</button>
+                        <button class="tac-tab" onclick="setRankTab(1)">Recent Matches</button>
                     </div>
                     <div class="rank-list" id="rank-explorers">
                         <div class="rank-row highlight">
@@ -396,25 +419,78 @@
                             <span class="rr-name">Priya</span>
                             <span class="rr-score">19,800 Pts</span>
                         </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">05</span>
+                            <img src="https://ui-avatars.com/api/?name=Mateo&background=00ff88&color=000&size=100"
+                                class="rr-av">
+                            <span class="rr-name">Mateo Garcia</span>
+                            <span class="rr-score">18,200 Pts</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">06</span>
+                            <img src="https://ui-avatars.com/api/?name=Malik&background=7a28ff&color=fff&size=100"
+                                class="rr-av">
+                            <span class="rr-name">Malik Jabar</span>
+                            <span class="rr-score">17,450 Pts</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">07</span>
+                            <img src="https://ui-avatars.com/api/?name=Zaid&background=ff7a28&color=000&size=100"
+                                class="rr-av">
+                            <span class="rr-name">Zaid Al-Fassan</span>
+                            <span class="rr-score">16,900 Pts</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">08</span>
+                            <img src="https://ui-avatars.com/api/?name=Jabari&background=28ffd1&color=000&size=100"
+                                class="rr-av">
+                            <span class="rr-name">Jabari the Brave</span>
+                            <span class="rr-score">15,100 Pts</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">09</span>
+                            <img src="https://ui-avatars.com/api/?name=Amara&background=ff28d1&color=fff&size=100"
+                                class="rr-av">
+                            <span class="rr-name">Amara the Kind</span>
+                            <span class="rr-score">14,200 Pts</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">10</span>
+                            <img src="https://ui-avatars.com/api/?name=Lindiwe&background=55ff00&color=000&size=100"
+                                class="rr-av">
+                            <span class="rr-name">Lindiwe the Great</span>
+                            <span class="rr-score">13,500 Pts</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">11</span>
+                            <img src="https://ui-avatars.com/api/?name=Keisha&background=0055ff&color=fff&size=100"
+                                class="rr-av">
+                            <span class="rr-name">Keisha Proud</span>
+                            <span class="rr-score">12,800 Pts</span>
+                        </div>
+                        <div class="rank-row">
+                            <span class="rr-pos">12</span>
+                            <img src="https://ui-avatars.com/api/?name=Samara&background=ff0055&color=fff&size=100"
+                                class="rr-av">
+                            <span class="rr-name">Samara Seeker</span>
+                            <span class="rr-score">11,900 Pts</span>
+                        </div>
                     </div>
-                    <div class="rank-list rank-hidden" id="rank-matches">
-                        <div class="rank-row">
-                            <span class="rr-pos">W</span>
-                            <img src="https://ui-avatars.com/api/?name=You&background=f5c842&color=000&size=100" class="rr-av">
-                            <span class="rr-name">You defeated Elder AI (Oware)</span>
-                            <span class="rr-score">+250 XP</span>
+                    <div class="rank-list" id="rank-matches" style="display:none;">
+                        <div class="rank-row highlight" style="justify-content:space-between;">
+                            <span>Oware</span>
+                            <span style="color:var(--gold);">Won against Elder Kwame</span>
+                            <span>Just now</span>
                         </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">L</span>
-                            <img src="https://ui-avatars.com/api/?name=Amina&background=ff3e5e&color=fff&size=100" class="rr-av">
-                            <span class="rr-name">Amina lost to Chen Xia (Go)</span>
-                            <span class="rr-score">-</span>
+                        <div class="rank-row" style="justify-content:space-between;">
+                            <span>Ludo</span>
+                            <span style="color:var(--muted);">Draw against Sita</span>
+                            <span>2 hours ago</span>
                         </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">W</span>
-                            <img src="https://ui-avatars.com/api/?name=Yara&background=00e5ff&color=000&size=100" class="rr-av">
-                            <span class="rr-name">Yara won against Priya (Ludo)</span>
-                            <span class="rr-score">+180 XP</span>
+                        <div class="rank-row" style="justify-content:space-between;">
+                            <span>Ayo</span>
+                            <span style="color:var(--hot);">Lost against Mateo</span>
+                            <span>Yesterday</span>
                         </div>
                     </div>
                 </div>

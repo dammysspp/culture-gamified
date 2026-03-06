@@ -3,45 +3,50 @@
 // ============================================
 let curScr = 'boot';
 let isTrns = false;
-const screenToTab = {
-    lobby: 'tab-lobby',
-    heroes: 'tab-heroes',
-    games: 'tab-games',
-    community: 'tab-community',
-    leaderboard: 'tab-leaderboard'
+let screenToTab = {
+    'lobby': 'tab-lobby',
+    'heroes': 'tab-heroes',
+    'games': 'tab-games',
+    'community': 'tab-community',
+    'leaderboard': 'tab-leaderboard'
 };
 
-function updateNavUI(toScr) {
+function updateNavUI(targetTabId) {
     const tabs = document.querySelectorAll('.nav-tab');
     const indicator = document.getElementById('nav-indicator');
-    if (tabs.length === 0) return;
 
-    tabs.forEach(b => b.classList.remove('active'));
-    const tabId = screenToTab[toScr];
-    const targetTab = tabId ? document.getElementById(tabId) : null;
-
-    if (targetTab) {
-        targetTab.classList.add('active');
-        if (indicator) {
-            indicator.style.left = `${targetTab.offsetLeft}px`;
-            indicator.style.width = `${targetTab.offsetWidth}px`;
+    if (tabs.length > 0) {
+        tabs.forEach(b => b.classList.remove('active'));
+        if (targetTabId) {
+            const targetTab = document.getElementById(targetTabId);
+            if (targetTab) {
+                targetTab.classList.add('active');
+                if (indicator) {
+                    indicator.style.left = `${targetTab.offsetLeft}px`;
+                    indicator.style.width = `${targetTab.offsetWidth}px`;
+                }
+            }
         }
     }
 }
 
 function go(toScr) {
-    const targetScreen = document.getElementById(toScr);
-    if (!targetScreen) {
-        showToast('Navigator', `Unable to open "${toScr}" screen.`);
+    if (isTrns || curScr === toScr) return;
+
+    // Defensive check
+    if (!document.getElementById(toScr)) {
+        if (typeof showToast === 'function') showToast("System", "Destination locked or invalid.");
         return;
     }
 
-    if (isTrns || curScr === toScr) return;
     isTrns = true;
-    updateNavUI(toScr);
+
+    // Update navigation active states centrally
+    updateNavUI(screenToTab[toScr]);
 
     const curtain = document.getElementById('curtain');
-    curtain.classList.add('go');
+    curtain.classList.remove('go-out');
+    curtain.classList.add('go-in');
 
     setTimeout(() => {
         document.getElementById(curScr)?.classList.remove('on');
@@ -54,14 +59,17 @@ function go(toScr) {
         if (toScr === 'community') {
             startChatSim();
         }
-    }, 450);
+
+        curtain.classList.remove('go-in');
+        curtain.classList.add('go-out');
+    }, 1100);
 
     setTimeout(() => {
-        curtain.classList.remove('go');
         isTrns = false;
-    }, 900);
+    }, 2000);
 }
 window.go = go;
+
 
 // ============================================
 // BOOT SEQUENCE
@@ -98,6 +106,7 @@ function scrollHeroes(dir) {
 window.scrollHeroes = scrollHeroes;
 
 function checkHeroScroll() {
+    closeAllStories();
     const scroll = document.getElementById('heroScroll');
     const cards = document.querySelectorAll('.rc-card');
     if (!scroll || cards.length === 0) return;
@@ -139,7 +148,20 @@ function checkHeroScroll() {
 }
 window.checkHeroScroll = checkHeroScroll;
 
+function toggleStory(card) {
+    if (!card.classList.contains('center')) return;
+    const isOpening = !card.classList.contains('story-on');
+    closeAllStories();
+    if (isOpening) card.classList.add('story-on');
+}
+window.toggleStory = toggleStory;
+
+function closeAllStories() {
+    document.querySelectorAll('.rc-card').forEach(c => c.classList.remove('story-on'));
+}
+
 function initHeroes() {
+    closeAllStories();
     checkHeroScroll();
 }
 
@@ -161,44 +183,8 @@ window.selectHero = selectHero;
 // ============================================
 let mState = [];
 let mTurn = 0; // 0 for P1 (bottom), 1 for P2 (top)
-let playerXP = 2400;
-let questProgress = 0;
-let questClaimed = false;
-
-function updateGamificationUI() {
-    const xpFill = document.getElementById('xp-fill');
-    const xpValue = document.getElementById('xp-value');
-    const questFill = document.getElementById('quest-fill');
-
-    const xpTarget = 3000;
-    const xpPct = Math.max(0, Math.min(100, (playerXP / xpTarget) * 100));
-
-    if (xpFill) xpFill.style.width = `${xpPct}%`;
-    if (xpValue) xpValue.innerText = `${playerXP} / ${xpTarget}`;
-    if (questFill) questFill.style.width = `${Math.min(100, questProgress)}%`;
-}
-window.updateGamificationUI = updateGamificationUI;
-
-function claimQuestReward() {
-    if (questClaimed) {
-        showToast('Quest Board', 'Daily quest already claimed. New quests refresh tomorrow.');
-        return;
-    }
-
-    if (questProgress < 100) {
-        showToast('Quest Board', 'Complete the daily quest by winning an Oware or Ayo match.');
-        return;
-    }
-
-    questClaimed = true;
-    playerXP += 250;
-    updateGamificationUI();
-    showToast('Quest Board', 'Quest complete! +250 XP and Bronze Baobab unlocked.');
-}
-window.claimQuestReward = claimQuestReward;
 
 function openMancala(variant) {
-    window.currentMancalaVariant = variant;
     document.getElementById('mancala-header-title').innerText = "Playing: " + variant;
     go('play-mancala');
     initMancala();
@@ -297,15 +283,19 @@ function mancalaClick(idx) {
         for (let i = 0; i < 6; i++) { mState[6] += mState[i]; mState[i] = 0; }
         for (let i = 7; i < 13; i++) { mState[13] += mState[i]; mState[i] = 0; }
         renderMancala();
-        const playerWon = mState[6] > mState[13];
-        const winText = playerWon ? "You Won!" : (mState[13] > mState[6] ? "Elder AI Won!" : "It's a Draw!");
-        document.getElementById('mancala-status').innerText = winText;
-
-        if (playerWon && !questClaimed && ['Oware', 'Ayo'].includes(window.currentMancalaVariant)) {
-            questProgress = 100;
-            updateGamificationUI();
-            showToast('Quest Board', 'Daily quest ready! Return to lobby and claim your reward.');
+        let winText = "";
+        if (mState[6] > mState[13]) {
+            winText = "You Won!";
+            // Gamification logic
+            showToast("Quest Complete", "+500 Season XP (Oware Mastery)");
+            let xpBar = document.getElementById('season-xp-fill');
+            if (xpBar) xpBar.style.width = '75%';
+        } else if (mState[13] > mState[6]) {
+            winText = "Elder AI Won!";
+        } else {
+            winText = "It's a Draw!";
         }
+        document.getElementById('mancala-status').innerText = winText;
         return;
     }
 
@@ -363,10 +353,12 @@ function playAI() {
 // ============================================
 let ludoTurn = 0;
 function openLudo() {
+    ludoTurn = 0; // Reset turn state on match open
     go('play-ludo');
-    ludoTurn = 0;
     const stat = document.getElementById('ludo-status');
     if (stat) stat.innerText = "Match Start: Your Turn! Roll the dice.";
+    const btn = document.getElementById('ludo-roll-btn');
+    if (btn) btn.classList.remove('dice-rolling');
 }
 window.openLudo = openLudo;
 
@@ -374,8 +366,8 @@ function rollLudoDice() {
     if (ludoTurn !== 0) return;
 
     const btn = document.getElementById('ludo-roll-btn');
-    if (!btn) return;
     const valSpan = document.getElementById('ludo-dice-val');
+    if (!btn) return;
     btn.classList.add('dice-rolling');
     document.getElementById('ludo-status').innerText = "Rolling...";
 
@@ -498,7 +490,15 @@ window.placeGoStone = placeGoStone;
 // ============================================
 // COMMUNITY CHAT Logic
 // ============================================
-const botNames = ["Kwame", "Prya", "Mateo", "Sita", "Ali", "Yara"];
+const botNames = [
+    "Elder Kwame", "Aunti Amina", "Prince Kayode", "Mama Zenzile", "Chief Okoro",
+    "Nuru the Wise", "Sita Devi", "Baba Tunde", "Zara Al-Fassan", "Malik Al-Jabar",
+    "Sundiata's Heir", "Queen Moremi's Shield", "Musa the Scholar", "Priya Sharma",
+    "Mateo Garcia", "Yara El-Masri", "Ali Hassan", "Chen Xia", "Oluwaseun",
+    "Zaid the Bold", "Amara the Kind", "Jabari the Brave", "Keisha the Proud",
+    "Lindiwe the Great", "Mustafa the Just", "Samara the Seeker", "Tariq the Wise"
+];
+
 const botMessages = [
     "Just finished a round of Oware. It's truly a test of patience!",
     "Ludo always brings back childhood memories. Anyone up for a match?",
@@ -515,12 +515,28 @@ const botMessages = [
 
 function startChatSim() {
     if (window.chatInterval) clearInterval(window.chatInterval);
-    window.chatInterval = setInterval(() => {
-        // Bots talk on their own
+    window.chatInterval = setInterval(async () => {
+        // Bots talk on their own - using AI for uniqueness
         const name = botNames[Math.floor(Math.random() * botNames.length)];
-        const msg = botMessages[Math.floor(Math.random() * botMessages.length)];
-        addChatPost(name, msg, true);
-    }, 12000);
+
+        try {
+            const topics = ["Oware", "Ludo", "African history", "ancient games", "cultural pride", "hero stories"];
+            const topic = topics[Math.floor(Math.random() * topics.length)];
+            const prompt = `Generate a very short chat message (max 15 words) for a cultural game called Echoes of Elders. The topic is ${topic}. Use a friendly, casual gamer tone. Act as a user named ${name}.`;
+            const encodedPrompt = encodeURIComponent(prompt) + '?seed=' + Math.floor(Math.random() * 9999);
+            const response = await fetch(`https://text.pollinations.ai/${encodedPrompt}`);
+            const text = await response.text();
+
+            if (text && text.length < 200) {
+                addChatPost(name, text.trim(), true);
+            } else {
+                addChatPost(name, botMessages[Math.floor(Math.random() * botMessages.length)], true);
+            }
+        } catch (e) {
+            const msg = botMessages[Math.floor(Math.random() * botMessages.length)];
+            addChatPost(name, msg, true);
+        }
+    }, 15000 + Math.random() * 5000); // Slightly randomized interval
 }
 
 function addChatPost(name, text, isBot) {
@@ -642,7 +658,6 @@ document.addEventListener('DOMContentLoaded', () => {
     spawnEmbers();
     setTimeout(initBoot, 500);
     startChatSim();
-    updateGamificationUI();
 
     // Initial check for hero cards
     setTimeout(checkHeroScroll, 1000);
@@ -661,29 +676,60 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') sendChat();
     });
 
-    const heroBg = document.querySelector('.bg-hero');
+    // Mouse Parallax for Lobby Hero
     document.addEventListener('mousemove', (e) => {
-        if (!heroBg) return;
-        const x = (e.clientX / window.innerWidth - 0.5) * 8;
-        const y = (e.clientY / window.innerHeight - 0.5) * 8;
-        heroBg.style.transform = `translate(${x}px, ${y}px) scale(1.06)`;
+        if (curScr !== 'lobby') return;
+        const hsBg = document.querySelector('.hs-bg-effect');
+        const hsImg = document.getElementById('lobby-hero-img');
+        if (hsBg && hsImg) {
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            hsBg.style.transform = `translate(${x}px, ${y}px)`;
+            hsImg.style.transform = `translateZ(50px) translate(${x * -0.5}px, ${y * -0.5}px)`;
+        }
+    });
+
+    // Window resize handler for Nav Indicator
+    window.addEventListener('resize', () => {
+        if (screenToTab[curScr]) {
+            updateNavUI(screenToTab[curScr]);
+        }
     });
 });
 
+// Leaderboard Tabs Logic
+function setRankTab(tabIndex) {
+    const tabs = document.querySelectorAll('.tac-tab');
+    const panel0 = document.getElementById('rank-explorers');
+    const panel1 = document.getElementById('rank-matches');
 
-function setRankTab(tab) {
-    const explorers = document.getElementById('rank-explorers');
-    const matches = document.getElementById('rank-matches');
-    const tabs = document.querySelectorAll('[data-rank-tab]');
+    tabs.forEach((t, i) => {
+        if (i === tabIndex) t.classList.add('active');
+        else t.classList.remove('active');
+    });
 
-    tabs.forEach((t) => t.classList.remove('active'));
-    const activeTab = document.querySelector(`[data-rank-tab="${tab}"]`);
-    if (activeTab) activeTab.classList.add('active');
-
-    if (explorers) explorers.classList.toggle('rank-hidden', tab !== 'explorers');
-    if (matches) matches.classList.toggle('rank-hidden', tab !== 'matches');
+    if (tabIndex === 0) {
+        if (panel0) panel0.style.display = 'block';
+        if (panel1) panel1.style.display = 'none';
+    } else {
+        if (panel0) panel0.style.display = 'none';
+        if (panel1) panel1.style.display = 'block';
+    }
 }
 window.setRankTab = setRankTab;
+
+// Gamification claims
+function claimQuest() {
+    showToast("Quest Claimed!", "+200 XP Added");
+    const btn = document.querySelector('.quest-claim-btn');
+    if (btn) {
+        btn.innerText = "CLAIMED!";
+        btn.disabled = true;
+        btn.style.background = "var(--muted)";
+        btn.style.color = "#000";
+    }
+}
+window.claimQuest = claimQuest;
 
 function openBlog(slug) {
     const modal = document.getElementById('blog-modal');
