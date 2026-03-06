@@ -2154,3 +2154,117 @@ button:active {
 .scr.on .anim-stagger-3 {
   animation: slideInUp 0.7s 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
 }
+/* ── PREMIUM GAMIFICATION LAYER ── */
+.player-stats-pill {
+  min-width: 240px;
+  padding: 0.8rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid rgba(245, 200, 66, 0.3);
+  background: linear-gradient(135deg, rgba(12, 15, 24, 0.88), rgba(20, 25, 40, 0.72));
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35), inset 0 0 15px rgba(245, 200, 66, 0.08);
+  margin-right: 1rem;
+}
+
+.ps-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.3rem;
+}
+
+.xp-track,
+.quest-progress {
+  width: 100%;
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.xp-fill,
+.quest-fill {
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  transition: width 0.5s var(--ease-out);
+  background: linear-gradient(90deg, #f5c842, #ffd973 45%, #ff8a00);
+  box-shadow: 0 0 12px rgba(245, 200, 66, 0.45);
+}
+
+.streak-chip {
+  margin-top: 0.45rem;
+  font-size: 0.78rem;
+  color: #ffe6ac;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-body);
+}
+
+.quest-panel {
+  border-color: rgba(255, 138, 0, 0.4) !important;
+  background: linear-gradient(145deg, rgba(27, 16, 9, 0.68), rgba(18, 12, 8, 0.6));
+}
+
+.quest-progress {
+  margin-top: 0.6rem;
+}
+
+.mini-achievements .badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+}
+
+.badge-chip {
+  font-size: 0.72rem;
+  font-family: var(--font-body);
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  color: #f5e6bc;
+  border: 1px solid rgba(245, 200, 66, 0.25);
+  background: rgba(245, 200, 66, 0.09);
+}
+
+.hud-panel,
+.gm-card,
+.story-card,
+.rank-row,
+.nav-tab,
+.t-press,
+.btn-back {
+  transition: transform 0.35s var(--ease-spring), box-shadow 0.35s ease, filter 0.3s ease;
+}
+
+.hud-panel:hover,
+.gm-card:hover,
+.story-card:hover,
+.rank-row:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.4);
+  filter: saturate(1.15);
+}
+
+.nav-tab:hover,
+.t-press:hover,
+.btn-back:hover {
+  transform: translateY(-2px);
+}
+
+.scr.on {
+  animation: screenFadeIn 0.55s var(--ease-out);
+}
+
+@keyframes screenFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

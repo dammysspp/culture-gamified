@@ -69,6 +69,16 @@
                     <div class="lh-currency"><ion-icon name="hardware-chip-outline"></ion-icon> 24,500</div>
                 </div>
                 <div class="lh-right">
+                    <div class="player-stats-pill">
+                        <div class="ps-head">
+                            <span>Season XP</span>
+                            <span id="xp-value">2400 / 3000</span>
+                        </div>
+                        <div class="xp-track">
+                            <div class="xp-fill" id="xp-fill"></div>
+                        </div>
+                        <div class="streak-chip"><ion-icon name="flame"></ion-icon> 7 Day Story Streak</div>
+                    </div>
                     <div class="lh-profile">
                         <div class="lhp-info">
                             <div class="lhp-name">Wanderer</div>
@@ -93,6 +103,16 @@
             </div>
 
             <div class="lobby-left anim-stagger-2">
+                <div class="hud-panel quest-panel" onclick="claimQuestReward()">
+                    <div class="hp-header">
+                        <div class="hp-icon"><ion-icon name="ribbon"></ion-icon></div>
+                        <h3 class="hp-title">Daily Quest</h3>
+                    </div>
+                    <p class="hp-desc">Win 1 Oware match to earn +250 XP and unlock the Bronze Baobab badge.</p>
+                    <div class="quest-progress">
+                        <div class="quest-fill" id="quest-fill"></div>
+                    </div>
+                </div>
                 <div class="hud-panel alert" onclick="go('games')">
                     <div class="hp-header">
                         <div class="hp-icon"><ion-icon name="star"></ion-icon></div>
@@ -125,6 +145,17 @@
                     </div>
                     <p class="hp-desc">Join the community, read stories, and meet other cultural explorers.</p>
                 </div>
+                <div class="hud-panel mini-achievements">
+                    <div class="hp-header">
+                        <div class="hp-icon"><ion-icon name="sparkles"></ion-icon></div>
+                        <h3 class="hp-title">Recent Unlocks</h3>
+                    </div>
+                    <div class="badge-row">
+                        <span class="badge-chip">Akan Scholar</span>
+                        <span class="badge-chip">Tactician I</span>
+                        <span class="badge-chip">Cultural Guide</span>
+                    </div>
+                </div>
             </div>
 
             <footer class="lobby-footer anim-stagger-1">
@@ -138,7 +169,7 @@
                     <button class="nav-tab" id="tab-community" onclick="go('community')"><ion-icon
                             name="planet"></ion-icon> Hub</button>
                     <button class="nav-tab" id="tab-leaderboard" onclick="go('leaderboard')"><ion-icon
-                            name="settings"></ion-icon> Config</button>
+                            name="podium"></ion-icon> Rank</button>
                 </div>
             </footer>
         </div>
@@ -471,7 +502,7 @@
                     </div>
                 </div>
                 <h2 id="ludo-status" style="margin-top:2vh; color:var(--gold);">Your Turn! Roll the dice.</h2>
-                <button onclick="rollLudoDice()"
+                <button id="ludo-roll-btn" onclick="rollLudoDice()"
                     style="margin-top: 2vh; padding: 15px 30px; background: var(--gold); color: black; font-weight: bold; border-radius: 8px; font-size: 20px;">🎲
                     ROLL DICE <span id="ludo-dice-val"></span></button>
             </div>
