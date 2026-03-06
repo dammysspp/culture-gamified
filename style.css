@@ -112,7 +112,11 @@ button:active {
 #app {
   position: relative;
   width: 100vw;
+  /* Fallback */
+  width: 100dvw;
   height: 100vh;
+  /* Fallback */
+  height: 100dvh;
   overflow: hidden;
   background: var(--bg);
   perspective: 1000px;
@@ -240,9 +244,24 @@ button:active {
   transform: translateX(-50%);
   width: 80vw;
   height: 40vh;
-  background: radial-gradient(ellipse at top, rgba(245, 200, 66, 0.1) 0%, transparent 60%);
+  background: radial-gradient(ellipse at top, rgba(245, 200, 66, 0.15) 0%, transparent 60%);
   z-index: 1;
   pointer-events: none;
+}
+
+.bg-grid {
+  position: absolute;
+  inset: -10%;
+  background-image:
+    linear-gradient(rgba(245, 200, 66, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 200, 66, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  z-index: 1;
+  pointer-events: none;
+  transform: perspective(1000px) rotateX(60deg);
+  mask-image: linear-gradient(to top, black, transparent);
+  -webkit-mask-image: linear-gradient(to top, black, transparent);
+  opacity: 0.5;
 }
 
 #embers {
@@ -282,6 +301,60 @@ button:active {
   }
 }
 
+@keyframes diceRoll {
+  0% {
+    transform: rotate(0) scale(1.2);
+    filter: brightness(1.5);
+  }
+
+  25% {
+    transform: rotate(90deg) scale(0.9);
+  }
+
+  50% {
+    transform: rotate(180deg) scale(1.2);
+  }
+
+  75% {
+    transform: rotate(270deg) scale(0.9);
+  }
+
+  100% {
+    transform: rotate(360deg) scale(1);
+    filter: brightness(1);
+  }
+}
+
+.dice-rolling {
+  animation: diceRoll 0.5s ease-in-out infinite;
+}
+
+@keyframes shakeUI {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(5px, -5px);
+  }
+
+  50% {
+    transform: translate(-5px, 5px);
+  }
+
+  75% {
+    transform: translate(5px, 5px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.shake {
+  animation: shakeUI 0.3s var(--ease-out);
+}
+
 /* ── SCREEN TRANSITIONS ── */
 .scr {
   position: absolute;
@@ -291,14 +364,18 @@ button:active {
   z-index: 10;
   display: flex;
   flex-direction: column;
-  transition: opacity 0.4s var(--ease-out), transform 0.6s var(--ease-out);
-  transform: scale(1.05);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: opacity 0.6s var(--ease-out), transform 0.8s var(--ease-spring), filter 0.6s var(--ease-out);
+  transform: translateZ(-200px) rotateX(10deg) scale(0.9);
+  filter: blur(20px) brightness(0.5);
 }
 
 .scr.on {
   opacity: 1;
   pointer-events: auto;
-  transform: scale(1);
+  transform: translateZ(0) rotateX(0deg) scale(1);
+  filter: blur(0px) brightness(1);
 }
 
 #curtain {
@@ -503,12 +580,13 @@ button:active {
   top: 0;
   left: 0;
   right: 0;
-  height: 10vh;
+  height: max(60px, 8dvh);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 4vw;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+  background: linear-gradient(to bottom, rgba(10, 15, 30, 0.8), transparent);
+  backdrop-filter: blur(8px);
   z-index: 20;
 }
 
@@ -612,8 +690,8 @@ button:active {
 
 .hero-showcase {
   position: relative;
-  width: 35vw;
-  height: 75vh;
+  width: clamp(280px, 35vw, 500px);
+  height: clamp(300px, 75dvh, 800px);
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -689,10 +767,10 @@ button:active {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 22vw;
+  width: clamp(200px, 25vw, 400px);
   display: flex;
   flex-direction: column;
-  gap: 2vh;
+  gap: 2dvh;
   z-index: 10;
 }
 
@@ -708,13 +786,15 @@ button:active {
 .hud-panel {
   position: relative;
   width: 100%;
-  background: var(--surface-dark);
+  background: rgba(20, 22, 35, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 1px 1px 0 rgba(255, 255, 255, 0.1);
   padding: 2.5vh 2vw;
   clip-path: var(--clip-angle);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   cursor: pointer;
-  transition: all 0.3s var(--ease-out);
+  transition: all 0.4s var(--ease-spring);
   overflow: hidden;
 }
 
@@ -812,7 +892,8 @@ button:active {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+  background: linear-gradient(to top, rgba(10, 15, 30, 0.95), transparent);
+  backdrop-filter: blur(5px);
   z-index: 20;
   padding-bottom: 2vh;
 }
@@ -820,6 +901,24 @@ button:active {
 .nav-dock {
   display: flex;
   gap: 0.5vw;
+  position: relative;
+}
+
+.nav-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 140px;
+  height: 50px;
+  background: rgba(245, 200, 66, 0.2);
+  border-bottom: 3px solid var(--gold);
+  clip-path: var(--clip-angle-btn);
+  transition:
+    left 0.6s var(--ease-spring),
+    width 0.6s var(--ease-spring);
+  pointer-events: none;
+  z-index: 0;
+  box-shadow: 0 10px 20px rgba(245, 200, 66, 0.1);
 }
 
 .nav-tab {
@@ -854,9 +953,7 @@ button:active {
 }
 
 .nav-tab.active {
-  background: rgba(245, 200, 66, 0.15);
   color: var(--gold);
-  border-bottom-color: var(--gold);
 }
 
 .nav-tab.active ion-icon {
@@ -963,20 +1060,21 @@ button:active {
 }
 
 .rc-card {
-  flex: 0 0 22vw;
-  height: 65vh;
+  flex: 0 0 clamp(280px, 30vw, 400px);
+  height: min(65vh, 600px);
   position: relative;
   scroll-snap-align: center;
   cursor: pointer;
-  transition: transform 0.6s var(--ease-spring), filter 0.4s;
-  filter: grayscale(0.8) brightness(0.4);
+  transition: transform 0.6s var(--ease-spring), filter 0.5s ease, box-shadow 0.6s ease;
+  filter: grayscale(0.8) brightness(0.3) blur(2px);
   transform: scale(0.85);
   user-select: none;
 }
 
 .rc-card.center {
-  filter: grayscale(0) brightness(1);
-  transform: scale(1.1);
+  filter: grayscale(0) brightness(1) blur(0);
+  transform: scale(1.05);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
   z-index: 10;
 }
 
@@ -987,8 +1085,9 @@ button:active {
   clip-path: var(--clip-angle);
   background: #111;
   overflow: hidden;
-  border: 2px solid transparent;
-  transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.4s ease;
 }
 
 .rc-card.center .rc-inner {
@@ -1191,12 +1290,15 @@ button:active {
 .gm-card {
   position: relative;
   height: 240px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(20, 25, 40, 0.4);
   clip-path: var(--clip-angle);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 1px 1px 0 rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.4s var(--ease-spring);
 }
 
 .gm-bg {
@@ -1324,19 +1426,57 @@ button:active {
   margin-bottom: 1vh;
 }
 
-.gm-desc {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
-  max-width: 80%;
-  line-height: 1.4;
+.go-cell {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.go-cell::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.3);
+  top: 50%;
+  left: 0;
+}
+
+.go-cell::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  top: 0;
+  left: 50%;
+}
+
+@keyframes stonePlacement {
+  0% {
+    transform: scale(3);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.go-stone {
+  animation: stonePlacement 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  z-index: 10;
 }
 
 /* ═══════════════════════════════════
    GENERIC OVERLAYS (Leaderboard, Profile)
    ═══════════════════════════════════ */
 .overlay-scr {
-  background: rgba(5, 6, 10, 0.95);
-  backdrop-filter: blur(20px);
+  background: rgba(10, 12, 20, 0.75);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
 }
 
 .os-layout {
@@ -1352,9 +1492,12 @@ button:active {
 
 /* Panel Style for inner content */
 .tac-panel {
-  background: rgba(20, 22, 30, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(20, 22, 35, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 1px 1px 0 rgba(255, 255, 255, 0.1);
   clip-path: var(--clip-angle);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   padding: 3vh 3vw;
   position: relative;
 }
@@ -1942,4 +2085,72 @@ button:active {
     width: 100%;
     height: 120px;
   }
+}
+
+@keyframes sweep {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+.hud-panel::after,
+.gm-card::after,
+.rc-inner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent);
+  transform: skewX(-20deg);
+  transition: 0.8s;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.hud-panel:hover::after,
+.gm-card:hover::after,
+.rc-card:hover .rc-inner::after {
+  left: 150%;
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+    filter: blur(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.anim-stagger-1,
+.anim-stagger-2,
+.anim-stagger-3 {
+  opacity: 0;
+  animation: none;
+}
+
+.scr.on .anim-stagger-1 {
+  animation: slideInUp 0.7s 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+}
+
+.scr.on .anim-stagger-2 {
+  animation: slideInUp 0.7s 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+}
+
+.scr.on .anim-stagger-3 {
+  animation: slideInUp 0.7s 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
 }

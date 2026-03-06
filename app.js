@@ -10,12 +10,24 @@ function go(toScr) {
 
     // Update navigation active states
     const tabs = document.querySelectorAll('.nav-tab');
+    const indicator = document.getElementById('nav-indicator');
+
     if (tabs.length > 0) {
         tabs.forEach(b => b.classList.remove('active'));
-        if (toScr === 'lobby') tabs[0]?.classList.add('active');
-        if (toScr === 'heroes') tabs[1]?.classList.add('active');
-        if (toScr === 'games') tabs[2]?.classList.add('active');
-        if (toScr === 'community') tabs[3]?.classList.add('active');
+        let targetTab;
+        if (toScr === 'lobby') targetTab = document.getElementById('tab-lobby');
+        if (toScr === 'heroes') targetTab = document.getElementById('tab-heroes');
+        if (toScr === 'games') targetTab = document.getElementById('tab-games');
+        if (toScr === 'community') targetTab = document.getElementById('tab-community');
+        if (toScr === 'leaderboard') targetTab = document.getElementById('tab-leaderboard');
+
+        if (targetTab) {
+            targetTab.classList.add('active');
+            if (indicator) {
+                indicator.style.left = `${targetTab.offsetLeft}px`;
+                indicator.style.width = `${targetTab.offsetWidth}px`;
+            }
+        }
     }
 
     const curtain = document.getElementById('curtain');
@@ -85,12 +97,31 @@ function checkHeroScroll() {
         const r = c.getBoundingClientRect();
         const cCenter = r.left + r.width / 2;
         const dist = Math.abs(cCenter - center);
+        const normDist = Math.min(1, dist / (window.innerWidth * 0.4));
 
-        // Thresh for "centering"
+        // Center check
         if (dist < r.width * 0.5) {
             c.classList.add('center');
         } else {
             c.classList.remove('center');
+        }
+
+        // Parallax depth effect for card background
+        const bg = c.querySelector('.rc-bg');
+        if (bg) {
+            const moveX = (cCenter - center) * -0.15;
+            bg.style.transform = `scale(1.2) translateX(${moveX}px)`;
+        }
+
+        // Deep Fluid scaling for focused element
+        if (!c.classList.contains('center')) {
+            c.style.opacity = 0.4 + (1 - normDist) * 0.6;
+            c.style.filter = `blur(${normDist * 5}px) grayscale(${normDist * 100}%)`;
+            c.style.transform = `scale(${0.85 + (1 - normDist) * 0.15}) rotateY(${(cCenter - center) * 0.05}deg)`;
+        } else {
+            c.style.opacity = 1;
+            c.style.filter = `blur(0) grayscale(0)`;
+            c.style.transform = `scale(1.1) rotateY(0deg)`;
         }
     });
 
@@ -147,7 +178,7 @@ function renderMancala() {
 
     const mStat = document.getElementById('mancala-status');
     if (mStat) {
-        mStat.innerText = mTurn === 0 ? "Your Turn" : "Opponent Turn";
+        mStat.innerText = mTurn === 0 ? "Your Turn" : "Elder AI Thinking...";
         mStat.style.color = mTurn === 0 ? "var(--cyan)" : "var(--hot)";
     }
 }
@@ -220,24 +251,194 @@ function mancalaClick(idx) {
         for (let i = 0; i < 6; i++) { mState[6] += mState[i]; mState[i] = 0; }
         for (let i = 7; i < 13; i++) { mState[13] += mState[i]; mState[i] = 0; }
         renderMancala();
-        const winText = mState[6] > mState[13] ? "You Won!" : (mState[13] > mState[6] ? "Opponent Won!" : "It's a Draw!");
+        const winText = mState[6] > mState[13] ? "You Won!" : (mState[13] > mState[6] ? "Elder AI Won!" : "It's a Draw!");
         document.getElementById('mancala-status').innerText = winText;
         return;
     }
 
     renderMancala();
+
+    // AI Turn Hook
+    if (mTurn === 1) {
+        // Disable board for player interaction by updating UI state
+        document.querySelector('.m-arena').style.pointerEvents = 'none';
+        setTimeout(playAI, 1200);
+    } else {
+        document.querySelector('.m-arena').style.pointerEvents = 'auto';
+    }
 }
 window.mancalaClick = mancalaClick;
 
+function playAI() {
+    if (mTurn !== 1) return;
+
+    // Simple AI Strategy
+    let validPits = [];
+    for (let i = 7; i <= 12; i++) {
+        if (mState[i] > 0) validPits.push(i);
+    }
+
+    if (validPits.length === 0) return;
+
+    let move = validPits[Math.floor(Math.random() * validPits.length)];
+
+    // Try to find a move that ends in store for an extra turn
+    for (let idx of validPits) {
+        if ((idx + mState[idx]) % 14 === 13) {
+            move = idx;
+            break;
+        }
+    }
+
+    // Animate AI pit selection visually
+    const pitElem = document.querySelector(`.m-pit[onclick="mancalaClick(${move})"]`);
+    if (pitElem) {
+        pitElem.style.transform = "scale(1.1)";
+        pitElem.style.background = "rgba(255, 62, 94, 0.4)";
+        setTimeout(() => {
+            pitElem.style.transform = "scale(1)";
+            pitElem.style.background = "";
+            mancalaClick(move);
+        }, 400);
+    } else {
+        mancalaClick(move);
+    }
+}
+
 // ============================================
-// LUDO MOCK Logic
+// LUDO Logic
 // ============================================
+let ludoTurn = 0;
 function openLudo() {
     go('play-ludo');
     const stat = document.getElementById('ludo-status');
-    if (stat) stat.innerText = "Match in Progress...";
+    if (stat) stat.innerText = "Match Start: Your Turn! Roll the dice.";
 }
 window.openLudo = openLudo;
+
+function rollLudoDice() {
+    if (ludoTurn !== 0) return;
+
+    const btn = document.querySelector('#play-ludo button');
+    const valSpan = document.getElementById('ludo-dice-val');
+    btn.classList.add('dice-rolling');
+    document.getElementById('ludo-status').innerText = "Rolling...";
+
+    setTimeout(() => {
+        btn.classList.remove('dice-rolling');
+        const diceVal = Math.floor(Math.random() * 6) + 1;
+        valSpan.innerText = ": " + diceVal;
+
+        // Simulate moving the red piece
+        const t1 = document.getElementById('ludo-token-1');
+        if (t1) {
+            let currentPos = parseInt(t1.style.left) || 20;
+            let newPos = currentPos + (diceVal * 10); // larger steps for fun
+            if (newPos > 85) newPos = 15; // reset
+            t1.style.left = newPos + '%';
+        }
+
+        document.getElementById('ludo-status').innerText = "Nice! Elder AI's turn...";
+        ludoTurn = 1;
+
+        setTimeout(() => {
+            const aiDice = Math.floor(Math.random() * 6) + 1;
+            valSpan.innerText = ": " + aiDice;
+            document.getElementById('ludo-status').innerText = "Elder AI rolled a " + aiDice;
+
+            const t2 = document.getElementById('ludo-token-2');
+            if (t2) {
+                let currentTop = parseInt(t2.style.top) || 20;
+                let newTop = currentTop + (aiDice * 10);
+                if (newTop > 85) newTop = 15; // reset
+                t2.style.top = newTop + '%';
+            }
+
+            setTimeout(() => {
+                document.getElementById('ludo-status').innerText = "Your Turn! Roll the dice.";
+                ludoTurn = 0;
+            }, 1000);
+        }, 1500);
+    }, 800);
+}
+window.rollLudoDice = rollLudoDice;
+
+// ============================================
+// GO Logic
+// ============================================
+let goTurn = 0; // 0 for Player (Black), 1 for AI (White)
+function openGo() {
+    go('play-go');
+    const board = document.getElementById('go-board-grid');
+    if (!board) return;
+    board.innerHTML = '';
+
+    // Create 9x9 grid
+    for (let i = 0; i < 81; i++) {
+        let cell = document.createElement('div');
+        cell.className = 'go-cell';
+        cell.style.width = '100%';
+        cell.style.height = '100%';
+        cell.style.borderRadius = '50%';
+        cell.style.cursor = 'pointer';
+        cell.style.transition = 'all 0.2s';
+        cell.dataset.idx = i;
+        cell.onclick = () => placeGoStone(cell);
+
+        // Add subtle hover effect
+        cell.onmouseover = function () {
+            if (!this.hasChildNodes() && goTurn === 0) {
+                this.style.background = 'rgba(0,0,0,0.3)';
+            }
+        };
+        cell.onmouseout = function () {
+            if (!this.hasChildNodes()) {
+                this.style.background = 'transparent';
+            }
+        };
+
+        board.appendChild(cell);
+    }
+    document.getElementById('go-status').innerText = "Your Turn (Black)";
+    goTurn = 0;
+}
+window.openGo = openGo;
+
+function placeGoStone(cell) {
+    if (goTurn !== 0 || cell.hasChildNodes()) return;
+
+    let stone = document.createElement('div');
+    stone.className = 'go-stone';
+    stone.style.width = '80%';
+    stone.style.height = '80%';
+    stone.style.borderRadius = '50%';
+    stone.style.background = 'radial-gradient(circle at 30% 30%, #444, #111)';
+    stone.style.boxShadow = '2px 4px 8px rgba(0,0,0,0.5)';
+
+    cell.appendChild(stone);
+
+    document.getElementById('go-status').innerText = "Elder AI is thinking...";
+    goTurn = 1;
+
+    setTimeout(() => {
+        const board = document.getElementById('go-board-grid');
+        const emptyCells = Array.from(board.children).filter(c => !c.hasChildNodes());
+        if (emptyCells.length > 0) {
+            let aiCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            let aiStone = document.createElement('div');
+            aiStone.className = 'go-stone';
+            aiStone.style.width = '80%';
+            aiStone.style.height = '80%';
+            aiStone.style.borderRadius = '50%';
+            aiStone.style.background = 'radial-gradient(circle at 30% 30%, #fff, #bbb)';
+            aiStone.style.boxShadow = '2px 4px 8px rgba(0,0,0,0.3)';
+            aiCell.appendChild(aiStone);
+        }
+        document.getElementById('go-status').innerText = "Your Turn (Black)";
+        goTurn = 0;
+    }, 1200);
+}
+window.placeGoStone = placeGoStone;
 
 // ============================================
 // COMMUNITY CHAT Logic
@@ -277,7 +478,7 @@ function addChatPost(name, text, isBot) {
     const likes = isBot ? Math.floor(Math.random() * 12) + 1 : 0;
 
     post.innerHTML = `
-        <img src="https://image.pollinations.ai/prompt/avatar%20portrait%20${avQuery}?width=100&nologo=true" class="cp-av">
+        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=f5c842&color=000&size=100" class="cp-av">
         <div class="cp-body">
             <div class="cp-head">
                 <span class="cp-name">${name}</span> 
@@ -313,7 +514,7 @@ function showToast(user, msg) {
 
     tUser.innerText = user;
     tMsg.innerText = msg;
-    tAv.src = `https://image.pollinations.ai/prompt/avatar%20portrait%20${encodeURIComponent(user.toLowerCase())}?width=100&nologo=true`;
+    tAv.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user)}&background=f5c842&color=000&size=100`;
 
     toast.classList.add('show');
 
@@ -336,16 +537,30 @@ async function sendChat() {
     const prompt = `You are ${responder}, a player in a cultural game called Echoes of Elders. A fellow player says: "${userMsg}". Reply in character as a friendly, culturally aware gamer. Keep it short (max 20 words).`;
 
     try {
-        const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
+        const encodedPrompt = encodeURIComponent(prompt) + '?seed=' + Math.floor(Math.random() * 1000);
+        const response = await fetch(`https://text.pollinations.ai/${encodedPrompt}`);
         const text = await response.text();
+
+        let finalText = text.trim();
+        if (finalText.length > 150) {
+            finalText = finalText.substring(0, 150) + "..."; // Keep it concise
+        }
+
         // Simulation of "typing..." delay
         setTimeout(() => {
-            addChatPost(responder, text.trim(), true);
-        }, 1500 + Math.random() * 2000);
+            addChatPost(responder, finalText, true);
+        }, 1500 + Math.random() * 1500);
     } catch (e) {
-        // Fallback if AI fails
+        // Fallback if AI fails (with variety)
+        const fallbacks = [
+            "That's a very fascinating insight! I'm learning a lot.",
+            "Wow, I never actually thought about it from that perspective.",
+            "Haha, exactly! We should definitely play a match later and discuss.",
+            "I agree completely. Cultural history is so rich and deep."
+        ];
         setTimeout(() => {
-            addChatPost(responder, "That's an interesting point! I never thought about it like that.", true);
+            const fb = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+            addChatPost(responder, fb, true);
         }, 2000);
     }
 }
@@ -390,3 +605,41 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') sendChat();
     });
 });
+
+function openBlog(slug) {
+    const modal = document.getElementById('blog-modal');
+    const title = document.getElementById('blog-title');
+    const img = document.getElementById('blog-img');
+    const body = document.getElementById('blog-body');
+
+    const posts = {
+        'oware': {
+            title: 'Origins of Oware',
+            img: 'assets/map_story.png',
+            content: `
+                <p>Oware is a strategy game belonging to the Mancala family of games, played in West Africa and throughout the world. It is considered the national game of Ghana.</p>
+                <p>The name Oware literally means "he marries" in Twi. Legend says that a man and a woman played the game endlessly and, in order to be able to stay together and continue playing, they got married.</p>
+                <p>Beyond being a simple pastime, Oware was historically used to teach children counting and social values, and was often played under the shade of a large tree where village elders would discuss community matters.</p>
+            `
+        },
+        'ludo': {
+            title: 'Ludo: Royal Journey',
+            img: 'assets/ludo_story.png',
+            content: `
+                <p>Ludo's roots trace back to the ancient Indian game of Parchisi, which was played by Mughal emperors on giant courtyard boards where live people were used as pieces!</p>
+                <p>The British modified the rules and registered it as "Ludo" in 1896. Since then, it has traveled across the globe, becoming especially beloved in Africa and the Caribbean.</p>
+                <p>In our game, Echoes of Elders, Ludo represents the journey of life - full of risks, strategic blocks, and the constant chance of being "sent home" before you reach your goal.</p>
+            `
+        }
+    };
+
+    const post = posts[slug];
+    if (post) {
+        title.innerText = post.title;
+        img.src = post.img;
+        body.innerHTML = post.content;
+        modal.classList.add('on');
+    }
+}
+window.openBlog = openBlog;
+
