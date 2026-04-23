@@ -1,770 +1,454 @@
-// ============================================
-// STATE & NAVIGATION
-// ============================================
-let curScr = 'boot';
-let isTrns = false;
-let screenToTab = {
-    'lobby': 'tab-lobby',
-    'heroes': 'tab-heroes',
-    'games': 'tab-games',
-    'community': 'tab-community',
-    'leaderboard': 'tab-leaderboard'
+const defaultHTML = `<!doctype html>
+<html>
+  <head><title>My HTML Quest</title></head>
+  <body>
+    <main>
+      <h1>Hello, Builder!</h1>
+      <p>Start editing to learn HTML.</p>
+    </main>
+  </body>
+</html>`;
+
+const lessons = [
+  { title: 'HTML Basics', explanation: 'Elements, tags, and nesting build the skeleton of every web page.', prompt: '<h1>Heading</h1><p>Paragraph</p>' },
+  { title: 'Semantic Structure', explanation: 'Use <header>, <main>, <section>, <article>, and <footer> for meaning.', prompt: '<main><section><h2>Topic</h2></section></main>' },
+  { title: 'Forms', explanation: 'Collect data using labels, inputs, and buttons.', prompt: '<form><label>Name<input /></label><button>Submit</button></form>' },
+  { title: 'Accessibility', explanation: 'Use alt text, labels, and landmarks so everyone can use your page.', prompt: '<img alt="Decorative icon" src="...">' },
+  { title: 'Layout Fundamentals', explanation: 'Group content and structure blocks clearly before CSS styling.', prompt: '<div class="card"><h3>Title</h3></div>' }
+];
+
+const practiceTargets = [
+  { name: 'Simple Card', html: '<section><h2>Profile</h2><p>Frontend Learner</p><button>Follow</button></section>' },
+  { name: 'Signup Form', html: '<form><label>Email<input type="email"></label><button>Join</button></form>' }
+];
+
+const quizQuestions = [
+  { type: 'mcq', q: 'Which tag is semantic?', choices: ['<section>', '<div>', '<span>'], answer: 0 },
+  { type: 'fill', q: 'Fill in the gap: <___> defines the most important heading.', answer: 'h1' },
+  { type: 'fix', q: 'Fix this broken HTML: <ul><li>One<li>Two</ul>', answerIncludes: '</li>' }
+];
+
+let state = {
+  projectName: 'My Project',
+  code: defaultHTML,
+  mode: 'learn',
+  xp: Number(localStorage.getItem('xql_xp') || 0),
+  streak: Number(localStorage.getItem('xql_streak') || 1),
+  accuracy: 0,
+  achievements: JSON.parse(localStorage.getItem('xql_achievements') || '[]'),
+  selectedPath: null,
+  practiceIndex: 0,
+  quizIndex: 0
 };
 
-function updateNavUI(targetTabId) {
-    const tabs = document.querySelectorAll('.nav-tab');
-    const indicator = document.getElementById('nav-indicator');
+const editor = document.getElementById('codeEditor');
+const preview = document.getElementById('livePreview');
+const feedbackList = document.getElementById('feedbackList');
+const syntaxPreview = document.getElementById('syntaxPreview');
 
-    if (tabs.length > 0) {
-        tabs.forEach(b => b.classList.remove('active'));
-        if (targetTabId) {
-            const targetTab = document.getElementById(targetTabId);
-            if (targetTab) {
-                targetTab.classList.add('active');
-                if (indicator) {
-                    indicator.style.left = `${targetTab.offsetLeft}px`;
-                    indicator.style.width = `${targetTab.offsetWidth}px`;
-                }
-            }
-        }
-    }
+function init() {
+  registerSW();
+  renderMode();
+  loadProjects();
+  editor.value = state.code;
+  renderPreview();
+  renderFeedback();
+  bindEvents();
+  updateStats(0);
+  renderOnlineEnhancements();
 }
 
-function go(toScr) {
-    if (isTrns || curScr === toScr) return;
-
-    // Defensive check
-    if (!document.getElementById(toScr)) {
-        if (typeof showToast === 'function') showToast("System", "Destination locked or invalid.");
-        return;
-    }
-
-    isTrns = true;
-
-    // Update navigation active states centrally
-    updateNavUI(screenToTab[toScr]);
-
-    const curtain = document.getElementById('curtain');
-    curtain.classList.remove('go-out');
-    curtain.classList.add('go-in');
-
-    setTimeout(() => {
-        document.getElementById(curScr)?.classList.remove('on');
-        document.getElementById(toScr)?.classList.add('on');
-        curScr = toScr;
-
-        if (toScr === 'heroes') {
-            setTimeout(initHeroes, 50);
-        }
-        if (toScr === 'community') {
-            startChatSim();
-        }
-
-        curtain.classList.remove('go-in');
-        curtain.classList.add('go-out');
-    }, 1100);
-
-    setTimeout(() => {
-        isTrns = false;
-    }, 2000);
-}
-window.go = go;
-
-
-// ============================================
-// BOOT SEQUENCE
-// ============================================
-function initBoot() {
-    const fill = document.getElementById('boot-fill');
-    const pct = document.getElementById('boot-pct');
-    if (!fill || !pct) return;
-    let p = 0;
-
-    const interval = setInterval(() => {
-        p += Math.floor(Math.random() * 8) + 1;
-        if (p > 100) p = 100;
-        fill.style.width = p + '%';
-        pct.innerText = p + '%';
-        if (p === 100) {
-            clearInterval(interval);
-            setTimeout(() => go('title'), 500);
-        }
-    }, 80);
-}
-
-// ============================================
-// HERO CAROUSEL LOGIC
-// ============================================
-function scrollHeroes(dir) {
-    const scroll = document.getElementById('heroScroll');
-    if (!scroll) return;
-    // Fluid movement based on card width
-    const card = scroll.querySelector('.rc-card');
-    const step = card ? card.offsetWidth + 32 : window.innerWidth * 0.3;
-    scroll.scrollBy({ left: dir * step, behavior: 'smooth' });
-}
-window.scrollHeroes = scrollHeroes;
-
-function checkHeroScroll() {
-    closeAllStories();
-    const scroll = document.getElementById('heroScroll');
-    const cards = document.querySelectorAll('.rc-card');
-    if (!scroll || cards.length === 0) return;
-
-    const center = scroll.getBoundingClientRect().left + scroll.offsetWidth / 2;
-    cards.forEach(c => {
-        const r = c.getBoundingClientRect();
-        const cCenter = r.left + r.width / 2;
-        const dist = Math.abs(cCenter - center);
-        const normDist = Math.min(1, dist / (window.innerWidth * 0.4));
-
-        // Center check
-        if (dist < r.width * 0.5) {
-            c.classList.add('center');
-        } else {
-            c.classList.remove('center');
-        }
-
-        // Parallax depth effect for card background
-        const bg = c.querySelector('.rc-bg');
-        if (bg) {
-            const moveX = (cCenter - center) * -0.15;
-            bg.style.transform = `scale(1.2) translateX(${moveX}px)`;
-        }
-
-        // Deep Fluid scaling for focused element
-        if (!c.classList.contains('center')) {
-            c.style.opacity = 0.4 + (1 - normDist) * 0.6;
-            c.style.filter = `blur(${normDist * 5}px) grayscale(${normDist * 100}%)`;
-            c.style.transform = `scale(${0.85 + (1 - normDist) * 0.15}) rotateY(${(cCenter - center) * 0.05}deg)`;
-        } else {
-            c.style.opacity = 1;
-            c.style.filter = `blur(0) grayscale(0)`;
-            c.style.transform = `scale(1.1) rotateY(0deg)`;
-        }
-    });
-
-    // Handle arrows visibility (optional polish)
-}
-window.checkHeroScroll = checkHeroScroll;
-
-function toggleStory(card) {
-    if (!card.classList.contains('center')) return;
-    const isOpening = !card.classList.contains('story-on');
-    closeAllStories();
-    if (isOpening) card.classList.add('story-on');
-}
-window.toggleStory = toggleStory;
-
-function closeAllStories() {
-    document.querySelectorAll('.rc-card').forEach(c => c.classList.remove('story-on'));
-}
-
-function initHeroes() {
-    closeAllStories();
-    checkHeroScroll();
-}
-
-function selectHero(card) {
-    const name = card.getAttribute('data-name');
-    const hClass = card.getAttribute('data-class');
-    const img = card.getAttribute('data-img');
-
-    document.getElementById('lobby-hero-name').innerText = name;
-    document.getElementById('lobby-hero-class').innerText = hClass;
-    document.getElementById('lobby-hero-img').src = img;
-
-    go('lobby');
-}
-window.selectHero = selectHero;
-
-// ============================================
-// MANCALA GAME ENGINE (Oware / Ayo)
-// ============================================
-let mState = [];
-let mTurn = 0; // 0 for P1 (bottom), 1 for P2 (top)
-
-function openMancala(variant) {
-    document.getElementById('mancala-header-title').innerText = "Playing: " + variant;
-    go('play-mancala');
-    initMancala();
-}
-window.openMancala = openMancala;
-
-function initMancala() {
-    // 0-5 P1 pits, 6 P1 store, 7-12 P2 pits, 13 P2 store
-    mState = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0];
-    mTurn = 0;
-    renderMancala();
-}
-window.initMancala = initMancala;
-
-function renderMancala() {
-    document.getElementById('m-store-0').innerText = mState[6];
-    document.getElementById('m-store-1').innerText = mState[13];
-
-    for (let i = 0; i < 14; i++) {
-        if (i === 6 || i === 13) continue;
-        renderPit(i, mState[i]);
-    }
-
-    const mStat = document.getElementById('mancala-status');
-    if (mStat) {
-        mStat.innerText = mTurn === 0 ? "Your Turn" : "Elder AI Thinking...";
-        mStat.style.color = mTurn === 0 ? "var(--cyan)" : "var(--hot)";
-    }
-}
-
-function renderPit(idx, count) {
-    const p = document.querySelector(`.m-pit[onclick="mancalaClick(${idx})"]`);
-    if (!p) return;
-    p.innerHTML = '';
-    for (let i = 0; i < count; i++) {
-        const s = document.createElement('div');
-        s.className = 'm-seed';
-        // Randomly scatter seeds slightly for realistic feel
-        s.style.transform = `translate(${Math.random() * 10 - 5}px, ${Math.random() * 10 - 5}px)`;
-        p.appendChild(s);
-    }
-}
-
-function mancalaClick(idx) {
-    if (isTrns) return;
-    // Restrict turns
-    if (mTurn === 0 && (idx < 0 || idx > 5)) return;
-    if (mTurn === 1 && (idx < 7 || idx > 12)) return;
-
-    let seeds = mState[idx];
-    if (seeds === 0) return;
-
-    mState[idx] = 0;
-    let curr = idx;
-
-    while (seeds > 0) {
-        curr = (curr + 1) % 14;
-        // Skip opponent's store
-        if (mTurn === 0 && curr === 13) continue;
-        if (mTurn === 1 && curr === 6) continue;
-
-        mState[curr]++;
-        seeds--;
-    }
-
-    // Capture logic
-    if (mState[curr] === 1) {
-        if (mTurn === 0 && curr >= 0 && curr <= 5) {
-            let opp = 12 - curr;
-            if (mState[opp] > 0) {
-                mState[6] += mState[curr] + mState[opp];
-                mState[curr] = 0;
-                mState[opp] = 0;
-            }
-        } else if (mTurn === 1 && curr >= 7 && curr <= 12) {
-            let opp = 12 - curr;
-            if (mState[opp] > 0) {
-                mState[13] += mState[curr] + mState[opp];
-                mState[curr] = 0;
-                mState[opp] = 0;
-            }
-        }
-    }
-
-    // Extra turn if ending in your store
-    if ((mTurn === 0 && curr !== 6) || (mTurn === 1 && curr !== 13)) {
-        mTurn = 1 - mTurn;
-    }
-
-    // Check game end
-    let p1Empty = mState.slice(0, 6).every(s => s === 0);
-    let p2Empty = mState.slice(7, 13).every(s => s === 0);
-
-    if (p1Empty || p2Empty) {
-        // Collect remaining
-        for (let i = 0; i < 6; i++) { mState[6] += mState[i]; mState[i] = 0; }
-        for (let i = 7; i < 13; i++) { mState[13] += mState[i]; mState[i] = 0; }
-        renderMancala();
-        let winText = "";
-        if (mState[6] > mState[13]) {
-            winText = "You Won!";
-            // Gamification logic
-            showToast("Quest Complete", "+500 Season XP (Oware Mastery)");
-            let xpBar = document.getElementById('season-xp-fill');
-            if (xpBar) xpBar.style.width = '75%';
-        } else if (mState[13] > mState[6]) {
-            winText = "Elder AI Won!";
-        } else {
-            winText = "It's a Draw!";
-        }
-        document.getElementById('mancala-status').innerText = winText;
-        return;
-    }
-
-    renderMancala();
-
-    // AI Turn Hook
-    if (mTurn === 1) {
-        // Disable board for player interaction by updating UI state
-        document.querySelector('.m-arena').style.pointerEvents = 'none';
-        setTimeout(playAI, 1200);
-    } else {
-        document.querySelector('.m-arena').style.pointerEvents = 'auto';
-    }
-}
-window.mancalaClick = mancalaClick;
-
-function playAI() {
-    if (mTurn !== 1) return;
-
-    // Simple AI Strategy
-    let validPits = [];
-    for (let i = 7; i <= 12; i++) {
-        if (mState[i] > 0) validPits.push(i);
-    }
-
-    if (validPits.length === 0) return;
-
-    let move = validPits[Math.floor(Math.random() * validPits.length)];
-
-    // Try to find a move that ends in store for an extra turn
-    for (let idx of validPits) {
-        if ((idx + mState[idx]) % 14 === 13) {
-            move = idx;
-            break;
-        }
-    }
-
-    // Animate AI pit selection visually
-    const pitElem = document.querySelector(`.m-pit[onclick="mancalaClick(${move})"]`);
-    if (pitElem) {
-        pitElem.style.transform = "scale(1.1)";
-        pitElem.style.background = "rgba(255, 62, 94, 0.4)";
-        setTimeout(() => {
-            pitElem.style.transform = "scale(1)";
-            pitElem.style.background = "";
-            mancalaClick(move);
-        }, 400);
-    } else {
-        mancalaClick(move);
-    }
-}
-
-// ============================================
-// LUDO Logic
-// ============================================
-let ludoTurn = 0;
-function openLudo() {
-    ludoTurn = 0; // Reset turn state on match open
-    go('play-ludo');
-    const stat = document.getElementById('ludo-status');
-    if (stat) stat.innerText = "Match Start: Your Turn! Roll the dice.";
-    const btn = document.getElementById('ludo-roll-btn');
-    if (btn) btn.classList.remove('dice-rolling');
-}
-window.openLudo = openLudo;
-
-function rollLudoDice() {
-    if (ludoTurn !== 0) return;
-
-    const btn = document.getElementById('ludo-roll-btn');
-    const valSpan = document.getElementById('ludo-dice-val');
+function bindEvents() {
+  document.getElementById('modeNav').addEventListener('click', (e) => {
+    const btn = e.target.closest('.mode-btn');
     if (!btn) return;
-    btn.classList.add('dice-rolling');
-    document.getElementById('ludo-status').innerText = "Rolling...";
+    state.mode = btn.dataset.mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b === btn));
+    renderMode();
+  });
 
-    setTimeout(() => {
-        btn.classList.remove('dice-rolling');
-        const diceVal = Math.floor(Math.random() * 6) + 1;
-        valSpan.innerText = ": " + diceVal;
+  let timer;
+  editor.addEventListener('input', () => {
+    state.code = editor.value;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      renderPreview();
+      renderFeedback();
+      saveAuto();
+    }, 120);
+  });
 
-        // Simulate moving the red piece
-        const t1 = document.getElementById('ludo-token-1');
-        if (t1) {
-            let currentPos = parseInt(t1.style.left) || 20;
-            let newPos = currentPos + (diceVal * 10); // larger steps for fun
-            if (newPos > 85) newPos = 15; // reset
-            t1.style.left = newPos + '%';
-        }
+  document.getElementById('saveBtn').addEventListener('click', () => saveProject(state.projectName));
+  document.getElementById('saveAsBtn').addEventListener('click', () => {
+    const name = prompt('Project name?', state.projectName);
+    if (name) saveProject(name);
+  });
+  document.getElementById('exportBtn').addEventListener('click', exportHTML);
+  document.getElementById('importInput').addEventListener('change', (e) => importFile(e.target.files[0]));
+  document.getElementById('projectPicker').addEventListener('change', (e) => loadProject(e.target.value));
 
-        document.getElementById('ludo-status').innerText = "Nice! Elder AI's turn...";
-        ludoTurn = 1;
+  const editorPanel = document.getElementById('editorPanel');
+  editorPanel.addEventListener('dragover', (e) => e.preventDefault());
+  editorPanel.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) importFile(file);
+  });
 
-        setTimeout(() => {
-            const aiDice = Math.floor(Math.random() * 6) + 1;
-            valSpan.innerText = ": " + aiDice;
-            document.getElementById('ludo-status').innerText = "Elder AI rolled a " + aiDice;
-
-            const t2 = document.getElementById('ludo-token-2');
-            if (t2) {
-                let currentTop = parseInt(t2.style.top) || 20;
-                let newTop = currentTop + (aiDice * 10);
-                if (newTop > 85) newTop = 15; // reset
-                t2.style.top = newTop + '%';
-            }
-
-            setTimeout(() => {
-                document.getElementById('ludo-status').innerText = "Your Turn! Roll the dice.";
-                ludoTurn = 0;
-            }, 1000);
-        }, 1500);
-    }, 800);
-}
-window.rollLudoDice = rollLudoDice;
-
-// ============================================
-// GO Logic
-// ============================================
-let goTurn = 0; // 0 for Player (Black), 1 for AI (White)
-function openGo() {
-    go('play-go');
-    const board = document.getElementById('go-board-grid');
-    if (!board) return;
-    board.innerHTML = '';
-
-    // Create 9x9 grid
-    for (let i = 0; i < 81; i++) {
-        let cell = document.createElement('div');
-        cell.className = 'go-cell';
-        cell.style.width = '100%';
-        cell.style.height = '100%';
-        cell.style.borderRadius = '50%';
-        cell.style.cursor = 'pointer';
-        cell.style.transition = 'all 0.2s';
-        cell.dataset.idx = i;
-        cell.onclick = () => placeGoStone(cell);
-
-        // Add subtle hover effect
-        cell.onmouseover = function () {
-            if (!this.hasChildNodes() && goTurn === 0) {
-                this.style.background = 'rgba(0,0,0,0.3)';
-            }
-        };
-        cell.onmouseout = function () {
-            if (!this.hasChildNodes()) {
-                this.style.background = 'transparent';
-            }
-        };
-
-        board.appendChild(cell);
+  window.addEventListener('message', (e) => {
+    if (e.data?.type === 'elementSelected') {
+      state.selectedPath = e.data.path;
+      document.getElementById('selectedElement').textContent = e.data.outer;
+      document.getElementById('inlineEditor').value = e.data.outer;
     }
-    document.getElementById('go-status').innerText = "Your Turn (Black)";
-    goTurn = 0;
+  });
+
+  document.getElementById('applyInlineBtn').addEventListener('click', applyInlineEdit);
+  document.getElementById('tourBtn').addEventListener('click', startTour);
+
+  window.addEventListener('online', renderOnlineEnhancements);
+  window.addEventListener('offline', renderOnlineEnhancements);
 }
-window.openGo = openGo;
 
-function placeGoStone(cell) {
-    if (goTurn !== 0 || cell.hasChildNodes()) return;
+function renderPreview() {
+  const doc = preview.contentDocument;
+  doc.open();
+  doc.write(`${state.code}
+<script>
+(function(){
+  const getPath = (el) => {
+    const path = [];
+    while (el && el.parentElement) {
+      path.unshift([...el.parentElement.children].indexOf(el));
+      el = el.parentElement;
+      if (el.tagName === 'HTML') break;
+    }
+    return path;
+  };
+  document.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    document.querySelectorAll('.highlighted').forEach(n => n.classList.remove('highlighted'));
+    ev.target.classList.add('highlighted');
+    parent.postMessage({ type:'elementSelected', path:getPath(ev.target), outer:ev.target.outerHTML.slice(0, 250) }, '*');
+  }, true);
+})();
+<\/script>`);
+  doc.close();
 
-    let stone = document.createElement('div');
-    stone.className = 'go-stone';
-    stone.style.width = '80%';
-    stone.style.height = '80%';
-    stone.style.borderRadius = '50%';
-    stone.style.background = 'radial-gradient(circle at 30% 30%, #444, #111)';
-    stone.style.boxShadow = '2px 4px 8px rgba(0,0,0,0.5)';
-
-    cell.appendChild(stone);
-
-    document.getElementById('go-status').innerText = "Elder AI is thinking...";
-    goTurn = 1;
-
-    setTimeout(() => {
-        const board = document.getElementById('go-board-grid');
-        const emptyCells = Array.from(board.children).filter(c => !c.hasChildNodes());
-        if (emptyCells.length > 0) {
-            let aiCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-            let aiStone = document.createElement('div');
-            aiStone.className = 'go-stone';
-            aiStone.style.width = '80%';
-            aiStone.style.height = '80%';
-            aiStone.style.borderRadius = '50%';
-            aiStone.style.background = 'radial-gradient(circle at 30% 30%, #fff, #bbb)';
-            aiStone.style.boxShadow = '2px 4px 8px rgba(0,0,0,0.3)';
-            aiCell.appendChild(aiStone);
-        }
-        document.getElementById('go-status').innerText = "Your Turn (Black)";
-        goTurn = 0;
-    }, 1200);
+  syntaxPreview.textContent = syntaxHints(state.code);
 }
-window.placeGoStone = placeGoStone;
 
-// ============================================
-// COMMUNITY CHAT Logic
-// ============================================
-const botNames = [
-    "Elder Kwame", "Aunti Amina", "Prince Kayode", "Mama Zenzile", "Chief Okoro",
-    "Nuru the Wise", "Sita Devi", "Baba Tunde", "Zara Al-Fassan", "Malik Al-Jabar",
-    "Sundiata's Heir", "Queen Moremi's Shield", "Musa the Scholar", "Priya Sharma",
-    "Mateo Garcia", "Yara El-Masri", "Ali Hassan", "Chen Xia", "Oluwaseun",
-    "Zaid the Bold", "Amara the Kind", "Jabari the Brave", "Keisha the Proud",
-    "Lindiwe the Great", "Mustafa the Just", "Samara the Seeker", "Tariq the Wise"
+function syntaxHints(code) {
+  const tagCount = (code.match(/<[^/!][^>]*>/g) || []).length;
+  return `tags detected: ${tagCount}\nTip: keep indentation consistent for readability.`;
+}
+
+function renderFeedback() {
+  const tips = analyzeCode(state.code);
+  feedbackList.innerHTML = tips.map(t => `<li class="${t.ok ? 'good' : 'warn'}">${t.msg}</li>`).join('');
+}
+
+function analyzeCode(code) {
+  const tips = [];
+  const stack = [];
+  const tagPattern = /<\/?([a-z1-6]+)(?:\s[^>]*)?>/gi;
+  let m;
+  while ((m = tagPattern.exec(code))) {
+    const raw = m[0];
+    const name = m[1].toLowerCase();
+    if (raw.startsWith('</')) {
+      const last = stack.pop();
+      if (last !== name) tips.push({ ok: false, msg: `Potential mismatch near </${name}>.` });
+    } else if (!raw.endsWith('/>') && !['img', 'input', 'br', 'hr', 'meta', 'link'].includes(name)) {
+      stack.push(name);
+    }
+  }
+  if (stack.length) tips.push({ ok: false, msg: `You may have unclosed tags: ${stack.join(', ')}.` });
+  if (/<div/.test(code) && !/<section|<article|<main|<nav/.test(code)) tips.push({ ok: false, msg: 'Consider semantic tags (<section>, <main>) over too many <div>.' });
+  if (!/<img[^>]+alt=/i.test(code) && /<img/i.test(code)) tips.push({ ok: false, msg: 'Add alt text to images for accessibility.' });
+  if (!tips.length) tips.push({ ok: true, msg: 'Great structure! No obvious HTML issues detected.' });
+  return tips;
+}
+
+function renderMode() {
+  const views = ['learnMode', 'practiceMode', 'builderMode', 'quizMode'];
+  views.forEach(id => document.getElementById(id).classList.add('hidden'));
+  if (state.mode === 'learn') renderLearnMode();
+  if (state.mode === 'practice') renderPracticeMode();
+  if (state.mode === 'builder') renderBuilderMode();
+  if (state.mode === 'quiz') renderQuizMode();
+}
+
+function renderLearnMode() {
+  const el = document.getElementById('learnMode');
+  el.classList.remove('hidden');
+  el.innerHTML = `<h3>Learn Mode</h3>${lessons.map((l, i) => `<details ${i===0?'open':''}><summary>${l.title}</summary><p>${l.explanation}</p><pre>${escapeHtml(l.prompt)}</pre><button onclick="insertLesson(${i})">Load in Sandbox</button></details>`).join('')}`;
+}
+window.insertLesson = (i) => {
+  state.code = `<!doctype html><html><body>${lessons[i].prompt}</body></html>`;
+  editor.value = state.code;
+  renderPreview();
+  renderFeedback();
+  updateStats(20);
+};
+
+function renderPracticeMode() {
+  const target = practiceTargets[state.practiceIndex];
+  const el = document.getElementById('practiceMode');
+  el.classList.remove('hidden');
+  el.innerHTML = `
+    <h3>Practice Mode: Replication Engine</h3>
+    <p>Target: <strong>${target.name}</strong></p>
+    <pre>${escapeHtml(target.html)}</pre>
+    <button onclick="loadPracticeTarget()">Load Target in Editor</button>
+    <button onclick="nextPractice()">Next Challenge</button>
+    <button onclick="comparePractice()">Compare Accuracy</button>
+    <div id="practiceResult"></div>
+  `;
+}
+window.loadPracticeTarget = () => {
+  state.code = `<!doctype html><html><body>${practiceTargets[state.practiceIndex].html}</body></html>`;
+  editor.value = state.code;
+  renderPreview();
+};
+window.nextPractice = () => { state.practiceIndex = (state.practiceIndex + 1) % practiceTargets.length; renderPracticeMode(); };
+window.comparePractice = () => {
+  const target = practiceTargets[state.practiceIndex].html;
+  const score = compareMarkup(target, state.code);
+  state.accuracy = score;
+  document.getElementById('accuracyValue').textContent = `${score}%`;
+  document.getElementById('practiceResult').innerHTML = `Accuracy: <strong>${score}%</strong> ${score > 80 ? '🎉 Great match!' : 'Try improving semantic structure.'}`;
+  updateStats(score > 80 ? 40 : 10);
+};
+
+function compareMarkup(target, current) {
+  const clean = (s) => s.replace(/\s+/g, ' ').trim();
+  const tags = ['header', 'main', 'section', 'h1', 'h2', 'p', 'button', 'form', 'label', 'input'];
+  let points = 0;
+  tags.forEach(t => {
+    if (clean(target).includes(`<${t}`) === clean(current).includes(`<${t}`)) points += 10;
+  });
+  return Math.min(100, points);
+}
+
+function renderBuilderMode() {
+  const el = document.getElementById('builderMode');
+  el.classList.remove('hidden');
+  const blocks = ['div', 'section', 'button', 'form', 'input', 'img', 'h1', 'p'];
+  el.innerHTML = `
+    <h3>Drag & Drop HTML Builder</h3>
+    <div class="builder-palette">${blocks.map(b => `<span class="draggable" draggable="true" data-tag="${b}">${b}</span>`).join('')}</div>
+    <div class="drop-canvas" id="dropCanvas">Drop elements here…</div>
+    <button onclick="appendCanvasToEditor()">Generate HTML Code</button>
+  `;
+
+  el.querySelectorAll('.draggable').forEach(item => {
+    item.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', item.dataset.tag));
+  });
+
+  const canvas = document.getElementById('dropCanvas');
+  canvas.addEventListener('dragover', e => e.preventDefault());
+  canvas.addEventListener('drop', e => {
+    e.preventDefault();
+    const tag = e.dataTransfer.getData('text/plain');
+    const node = document.createElement('div');
+    node.dataset.tag = tag;
+    node.textContent = `<${tag}>`;
+    node.className = 'draggable';
+    canvas.appendChild(node);
+    updateStats(5);
+  });
+}
+window.appendCanvasToEditor = () => {
+  const tags = [...document.querySelectorAll('#dropCanvas [data-tag]')].map(n => n.dataset.tag);
+  const html = tags.map(t => t === 'img' ? '<img src="https://picsum.photos/120" alt="placeholder" />' : t === 'input' ? '<input type="text" />' : `<${t}>${t}</${t}>`).join('\n');
+  state.code = `<!doctype html><html><body>${html}</body></html>`;
+  editor.value = state.code;
+  renderPreview();
+  renderFeedback();
+};
+
+function renderQuizMode() {
+  const q = quizQuestions[state.quizIndex];
+  const el = document.getElementById('quizMode');
+  el.classList.remove('hidden');
+  let body = `<h3>Quiz & Trivia</h3><p>${q.q}</p>`;
+  if (q.type === 'mcq') {
+    body += q.choices.map((c, i) => `<button onclick="submitQuiz('${i}')">${c}</button>`).join('');
+  } else {
+    body += `<input id="quizInput" placeholder="Your answer" /> <button onclick="submitQuiz(document.getElementById('quizInput').value)">Submit</button>`;
+  }
+  body += `<div id="quizResult"></div><button onclick="nextQuiz()">Next Quiz</button>`;
+  el.innerHTML = body;
+}
+window.submitQuiz = (val) => {
+  const q = quizQuestions[state.quizIndex];
+  let pass = false;
+  if (q.type === 'mcq') pass = Number(val) === q.answer;
+  if (q.type === 'fill') pass = String(val).trim().toLowerCase() === q.answer;
+  if (q.type === 'fix') pass = String(val).includes(q.answerIncludes);
+  document.getElementById('quizResult').textContent = pass ? '✅ Correct!' : '❌ Not quite—try again.';
+  updateStats(pass ? 30 : 2);
+};
+window.nextQuiz = () => { state.quizIndex = (state.quizIndex + 1) % quizQuestions.length; renderQuizMode(); };
+
+function applyInlineEdit() {
+  if (!state.selectedPath) return;
+  const html = document.getElementById('inlineEditor').value;
+  const doc = preview.contentDocument;
+  let node = doc.documentElement;
+  for (const idx of state.selectedPath) {
+    node = node.children[idx];
+    if (!node) return;
+  }
+  const temp = doc.createElement('div');
+  temp.innerHTML = html;
+  if (!temp.firstElementChild) return;
+  node.replaceWith(temp.firstElementChild);
+  state.code = '<!doctype html>\n' + doc.documentElement.outerHTML;
+  editor.value = state.code;
+  renderFeedback();
+  updateStats(15);
+}
+
+function updateStats(xpGain) {
+  state.xp += xpGain;
+  const level = Math.floor(state.xp / 120) + 1;
+  document.getElementById('xpValue').textContent = state.xp;
+  document.getElementById('levelValue').textContent = level;
+  document.getElementById('streakValue').textContent = state.streak;
+  localStorage.setItem('xql_xp', String(state.xp));
+  localStorage.setItem('xql_streak', String(state.streak));
+  unlockAchievements(level);
+}
+
+function unlockAchievements(level) {
+  const checks = [
+    { key: 'first-save', label: '💾 First Save', on: localStorage.getItem('xql_saved_once') === '1' },
+    { key: 'level-3', label: '🧠 Level 3 Reached', on: level >= 3 },
+    { key: 'quiz-master', label: '🏆 Quiz Explorer', on: state.quizIndex >= 2 }
+  ];
+  state.achievements = checks.filter(c => c.on).map(c => c.label);
+  localStorage.setItem('xql_achievements', JSON.stringify(state.achievements));
+  document.getElementById('achievements').innerHTML = `<small>${state.achievements.join('<br>') || 'No achievements yet.'}</small>`;
+}
+
+function saveProject(name) {
+  state.projectName = name;
+  const projects = JSON.parse(localStorage.getItem('xql_projects') || '{}');
+  projects[name] = state.code;
+  localStorage.setItem('xql_projects', JSON.stringify(projects));
+  localStorage.setItem('xql_saved_once', '1');
+  saveToIndexedDB(name, state.code);
+  loadProjects();
+  updateStats(25);
+  flashState('Saved locally (localStorage + IndexedDB)');
+}
+
+function saveAuto() {
+  const key = `xql_autosave_${state.projectName}`;
+  localStorage.setItem(key, state.code);
+  flashState('Autosaved offline');
+}
+
+function loadProjects() {
+  const projects = JSON.parse(localStorage.getItem('xql_projects') || '{}');
+  const picker = document.getElementById('projectPicker');
+  const names = Object.keys(projects);
+  picker.innerHTML = names.length ? names.map(n => `<option value="${n}">${n}</option>`).join('') : '<option value="">No saved projects</option>';
+}
+
+function loadProject(name) {
+  const projects = JSON.parse(localStorage.getItem('xql_projects') || '{}');
+  if (!projects[name]) return;
+  state.projectName = name;
+  state.code = projects[name];
+  editor.value = state.code;
+  renderPreview();
+  renderFeedback();
+}
+
+function exportHTML() {
+  const blob = new Blob([state.code], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${state.projectName.replace(/\s+/g, '-').toLowerCase()}.html`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    state.code = String(reader.result);
+    editor.value = state.code;
+    renderPreview();
+    renderFeedback();
+    updateStats(10);
+  };
+  reader.readAsText(file);
+}
+
+function renderOnlineEnhancements() {
+  const el = document.getElementById('onlineStatus');
+  if (navigator.onLine) {
+    el.innerHTML = '🟢 Online: cloud save, leaderboard, shared challenges, and templates available.';
+  } else {
+    el.innerHTML = '🟡 Offline: local storage + IndexedDB active. Online features resume automatically.';
+  }
+}
+
+function registerSW() {
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+
+function saveToIndexedDB(name, content) {
+  if (!('indexedDB' in window)) return;
+  const req = indexedDB.open('htmlQuestDB', 1);
+  req.onupgradeneeded = () => req.result.createObjectStore('projects');
+  req.onsuccess = () => {
+    const tx = req.result.transaction('projects', 'readwrite');
+    tx.objectStore('projects').put({ name, content, savedAt: Date.now() }, name);
+  };
+}
+
+const tourSteps = [
+  { title: 'Welcome!', text: 'This is your gamified HTML lab. Learn, practice, and build.' },
+  { title: 'Editor', text: 'Write HTML here. Changes render instantly in Live Preview.' },
+  { title: 'Preview', text: 'Click preview elements to inspect and edit them inline.' },
+  { title: 'Builder', text: 'Open Live Builder mode and drag tags into the canvas.' }
 ];
-
-const botMessages = [
-    "Just finished a round of Oware. It's truly a test of patience!",
-    "Ludo always brings back childhood memories. Anyone up for a match?",
-    "Did you know Senet was played in ancient Egypt to represent the journey of the soul?",
-    "I'm looking for a clan to join for cultural research. Any recommendations?",
-    "Anyone want to trade some cultural insights? I'm researching the Ife heads today. So cool!",
-    "The new hero designs are absolutely stunning! Moremi is my favorite. ❤️",
-    "I just learned about the Yoruba origin of Ayo. Fascinating how it connects us across centuries!",
-    "Ludo's layout is actually based on the ancient Indian game of Pachisi. History is wild!",
-    "Finally reached Hero Level 25! The journey through the Elders' stories is amazing.",
-    "Does anyone else think the lobby music is super relaxing? It's like a warm hug.",
-    "Just read the 'Origins of Oware' blog. I didn't know it was that old! Africa has so much history."
-];
-
-function startChatSim() {
-    if (window.chatInterval) clearInterval(window.chatInterval);
-    window.chatInterval = setInterval(async () => {
-        // Bots talk on their own - using AI for uniqueness
-        const name = botNames[Math.floor(Math.random() * botNames.length)];
-
-        try {
-            const topics = ["Oware", "Ludo", "African history", "ancient games", "cultural pride", "hero stories"];
-            const topic = topics[Math.floor(Math.random() * topics.length)];
-            const prompt = `Generate a very short chat message (max 15 words) for a cultural game called Echoes of Elders. The topic is ${topic}. Use a friendly, casual gamer tone. Act as a user named ${name}.`;
-            const encodedPrompt = encodeURIComponent(prompt) + '?seed=' + Math.floor(Math.random() * 9999);
-            const response = await fetch(`https://text.pollinations.ai/${encodedPrompt}`);
-            const text = await response.text();
-
-            if (text && text.length < 200) {
-                addChatPost(name, text.trim(), true);
-            } else {
-                addChatPost(name, botMessages[Math.floor(Math.random() * botMessages.length)], true);
-            }
-        } catch (e) {
-            const msg = botMessages[Math.floor(Math.random() * botMessages.length)];
-            addChatPost(name, msg, true);
-        }
-    }, 15000 + Math.random() * 5000); // Slightly randomized interval
+let tourIndex = 0;
+function startTour() {
+  tourIndex = 0;
+  document.getElementById('tourOverlay').classList.remove('hidden');
+  renderTourStep();
 }
-
-function addChatPost(name, text, isBot) {
-    const feed = document.getElementById('chat-feed');
-    if (!feed) return;
-
-    const post = document.createElement('div');
-    post.className = 'chat-post';
-    const avQuery = encodeURIComponent(name === "You" ? "young explorer" : name.toLowerCase());
-    const likes = isBot ? Math.floor(Math.random() * 12) + 1 : 0;
-
-    post.innerHTML = `
-        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=f5c842&color=000&size=100" class="cp-av">
-        <div class="cp-body">
-            <div class="cp-head">
-                <span class="cp-name">${name}</span> 
-                <span class="cp-time">Just now</span>
-            </div>
-            <div class="cp-text">${text}</div>
-            <div class="cp-actions" style="margin-top: 1vh; display: flex; gap: 15px; font-size: 11px; color: var(--muted); font-weight: 700;">
-                <span style="cursor:pointer; display:flex; align-items:center; gap:4px; transition: color 0.3s;" onmouseover="this.style.color='#f5c842'" onmouseout="this.style.color=''">
-                    <ion-icon name="heart-outline"></ion-icon> ${likes}
-                </span>
-                <span style="cursor:pointer; display:flex; align-items:center; gap:4px; transition: color 0.3s;" onmouseover="this.style.color='#f5c842'" onmouseout="this.style.color=''">
-                    <ion-icon name="chatbubble-outline"></ion-icon> REPLY
-                </span>
-            </div>
-        </div>
-    `;
-    feed.prepend(post);
-    if (feed.children.length > 25) feed.removeChild(feed.lastChild);
-
-    // Notification Logic: Show if NOT in community section
-    if (isBot && curScr !== 'community') {
-        showToast(name, text);
-    }
+function renderTourStep() {
+  const step = tourSteps[tourIndex];
+  document.getElementById('tourTitle').textContent = step.title;
+  document.getElementById('tourText').textContent = step.text;
 }
-
-function showToast(user, msg) {
-    const toast = document.getElementById('notif-toast');
-    const tUser = document.getElementById('nt-user');
-    const tMsg = document.getElementById('nt-msg');
-    const tAv = document.getElementById('nt-av');
-
-    if (!toast || !tUser || !tMsg || !tAv) return;
-
-    tUser.innerText = user;
-    tMsg.innerText = msg;
-    tAv.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user)}&background=f5c842&color=000&size=100`;
-
-    toast.classList.add('show');
-
-    if (window.toastTimeout) clearTimeout(window.toastTimeout);
-    window.toastTimeout = setTimeout(() => {
-        toast.classList.remove('show');
-    }, 5000);
-}
-
-async function sendChat() {
-    const input = document.getElementById('chat-input');
-    if (!input || !input.value.trim()) return;
-
-    const userMsg = input.value;
-    addChatPost("You", userMsg, false);
-    input.value = '';
-
-    // Trigger AI Reply
-    const responder = botNames[Math.floor(Math.random() * botNames.length)];
-    const prompt = `You are ${responder}, a player in a cultural game called Echoes of Elders. A fellow player says: "${userMsg}". Reply in character as a friendly, culturally aware gamer. Keep it short (max 20 words).`;
-
-    try {
-        const encodedPrompt = encodeURIComponent(prompt) + '?seed=' + Math.floor(Math.random() * 1000);
-        const response = await fetch(`https://text.pollinations.ai/${encodedPrompt}`);
-        const text = await response.text();
-
-        let finalText = text.trim();
-        if (finalText.length > 150) {
-            finalText = finalText.substring(0, 150) + "..."; // Keep it concise
-        }
-
-        // Simulation of "typing..." delay
-        setTimeout(() => {
-            addChatPost(responder, finalText, true);
-        }, 1500 + Math.random() * 1500);
-    } catch (e) {
-        // Fallback if AI fails (with variety)
-        const fallbacks = [
-            "That's a very fascinating insight! I'm learning a lot.",
-            "Wow, I never actually thought about it from that perspective.",
-            "Haha, exactly! We should definitely play a match later and discuss.",
-            "I agree completely. Cultural history is so rich and deep."
-        ];
-        setTimeout(() => {
-            const fb = fallbacks[Math.floor(Math.random() * fallbacks.length)];
-            addChatPost(responder, fb, true);
-        }, 2000);
-    }
-}
-window.sendChat = sendChat;
-
-// ============================================
-// PARTICLES & INITIALIZATION
-// ============================================
-function spawnEmbers() {
-    const c = document.getElementById('embers');
-    if (!c) return;
-    c.innerHTML = '';
-    for (let i = 0; i < 30; i++) {
-        const p = document.createElement('div');
-        p.className = 'ember';
-        p.style.left = Math.random() * 100 + 'vw';
-        p.style.setProperty('--d', (4 + Math.random() * 6) + 's');
-        p.style.setProperty('--del', (Math.random() * 5) + 's');
-        c.appendChild(p);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    spawnEmbers();
-    setTimeout(initBoot, 500);
-    startChatSim();
-
-    // Initial check for hero cards
-    setTimeout(checkHeroScroll, 1000);
-
-    // Keyboard support
-    document.addEventListener('keydown', (e) => {
-        if (curScr === 'title') go('lobby');
-        if (curScr === 'heroes') {
-            if (e.key === 'ArrowRight') scrollHeroes(1);
-            if (e.key === 'ArrowLeft') scrollHeroes(-1);
-        }
-    });
-
-    // Chat enter key
-    document.getElementById('chat-input')?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendChat();
-    });
-
-    // Mouse Parallax for Lobby Hero
-    document.addEventListener('mousemove', (e) => {
-        if (curScr !== 'lobby') return;
-        const hsBg = document.querySelector('.hs-bg-effect');
-        const hsImg = document.getElementById('lobby-hero-img');
-        if (hsBg && hsImg) {
-            const x = (e.clientX / window.innerWidth - 0.5) * 20;
-            const y = (e.clientY / window.innerHeight - 0.5) * 20;
-            hsBg.style.transform = `translate(${x}px, ${y}px)`;
-            hsImg.style.transform = `translateZ(50px) translate(${x * -0.5}px, ${y * -0.5}px)`;
-        }
-    });
-
-    // Window resize handler for Nav Indicator
-    window.addEventListener('resize', () => {
-        if (screenToTab[curScr]) {
-            updateNavUI(screenToTab[curScr]);
-        }
-    });
+document.getElementById('tourNextBtn').addEventListener('click', () => {
+  tourIndex += 1;
+  if (tourIndex >= tourSteps.length) {
+    document.getElementById('tourOverlay').classList.add('hidden');
+    updateStats(20);
+    return;
+  }
+  renderTourStep();
 });
 
-// Leaderboard Tabs Logic
-function setRankTab(tabIndex) {
-    const tabs = document.querySelectorAll('.tac-tab');
-    const panel0 = document.getElementById('rank-explorers');
-    const panel1 = document.getElementById('rank-matches');
-
-    tabs.forEach((t, i) => {
-        if (i === tabIndex) t.classList.add('active');
-        else t.classList.remove('active');
-    });
-
-    if (tabIndex === 0) {
-        if (panel0) panel0.style.display = 'block';
-        if (panel1) panel1.style.display = 'none';
-    } else {
-        if (panel0) panel0.style.display = 'none';
-        if (panel1) panel1.style.display = 'block';
-    }
+function flashState(text) {
+  const el = document.getElementById('autosaveState');
+  el.textContent = text;
+  setTimeout(() => (el.textContent = navigator.onLine ? 'online sync ready' : 'offline-first ready'), 1500);
 }
-window.setRankTab = setRankTab;
 
-// Gamification claims
-function claimQuest() {
-    showToast("Quest Claimed!", "+200 XP Added");
-    const btn = document.querySelector('.quest-claim-btn');
-    if (btn) {
-        btn.innerText = "CLAIMED!";
-        btn.disabled = true;
-        btn.style.background = "var(--muted)";
-        btn.style.color = "#000";
-    }
+function escapeHtml(str) {
+  return str.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 }
-window.claimQuest = claimQuest;
 
-function openBlog(slug) {
-    const modal = document.getElementById('blog-modal');
-    const title = document.getElementById('blog-title');
-    const img = document.getElementById('blog-img');
-    const body = document.getElementById('blog-body');
-
-    const posts = {
-        'oware': {
-            title: 'Origins of Oware',
-            img: 'assets/map_story.png',
-            content: `
-                <p>Oware is a strategy game belonging to the Mancala family of games, played in West Africa and throughout the world. It is considered the national game of Ghana.</p>
-                <p>The name Oware literally means "he marries" in Twi. Legend says that a man and a woman played the game endlessly and, in order to be able to stay together and continue playing, they got married.</p>
-                <p>Beyond being a simple pastime, Oware was historically used to teach children counting and social values, and was often played under the shade of a large tree where village elders would discuss community matters.</p>
-            `
-        },
-        'ludo': {
-            title: 'Ludo: Royal Journey',
-            img: 'assets/ludo_story.png',
-            content: `
-                <p>Ludo's roots trace back to the ancient Indian game of Parchisi, which was played by Mughal emperors on giant courtyard boards where live people were used as pieces!</p>
-                <p>The British modified the rules and registered it as "Ludo" in 1896. Since then, it has traveled across the globe, becoming especially beloved in Africa and the Caribbean.</p>
-                <p>In our game, Echoes of Elders, Ludo represents the journey of life - full of risks, strategic blocks, and the constant chance of being "sent home" before you reach your goal.</p>
-            `
-        }
-    };
-
-    const post = posts[slug];
-    if (post) {
-        title.innerText = post.title;
-        img.src = post.img;
-        body.innerHTML = post.content;
-        modal.classList.add('on');
-    }
-}
-window.openBlog = openBlog;
-
+init();
