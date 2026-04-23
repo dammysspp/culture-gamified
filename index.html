@@ -1,651 +1,94 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, orientation=landscape">
-    <title>Echoes of Elders v0.3</title>
-    <link rel="stylesheet" href="style.css">
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTML Quest Lab</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-    <div id="landscape-prompt">
-        <ion-icon name="phone-landscape-outline"></ion-icon>
-        <p>Please rotate your device to landscape mode to play.</p>
+  <div class="app-shell">
+    <aside class="sidebar glass">
+      <h1>HTML Quest Lab</h1>
+      <p class="muted">Learn • Build • Play</p>
+      <nav id="modeNav">
+        <button class="mode-btn active" data-mode="learn">Learn Mode</button>
+        <button class="mode-btn" data-mode="practice">Practice Mode</button>
+        <button class="mode-btn" data-mode="builder">Live Builder</button>
+        <button class="mode-btn" data-mode="quiz">Quiz & Trivia</button>
+      </nav>
+
+      <section class="stats">
+        <h3>Player Stats</h3>
+        <div>XP: <strong id="xpValue">0</strong></div>
+        <div>Level: <strong id="levelValue">1</strong></div>
+        <div>Streak: <strong id="streakValue">1</strong> day(s)</div>
+        <div>Accuracy: <strong id="accuracyValue">0%</strong></div>
+        <div id="achievements"></div>
+      </section>
+
+      <section class="online-card" id="onlineEnhancements">
+        <h3>Online Enhancements</h3>
+        <div id="onlineStatus">Checking connection…</div>
+      </section>
+
+      <button id="tourBtn" class="primary">Start Guided Tour</button>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar glass">
+        <div class="left-tools">
+          <select id="projectPicker"></select>
+          <button id="saveBtn">Save</button>
+          <button id="saveAsBtn">Save As</button>
+          <button id="exportBtn">Export .html</button>
+          <label class="file-btn">Import HTML<input type="file" id="importInput" accept=".html,text/html" hidden /></label>
+        </div>
+        <div class="right-tools">
+          <span id="autosaveState">offline-first ready</span>
+        </div>
+      </header>
+
+      <section class="main-grid">
+        <article class="panel editor-panel glass" id="editorPanel">
+          <h2>Editor</h2>
+          <p class="muted">Drag an .html file here to load instantly.</p>
+          <textarea id="codeEditor" spellcheck="false"></textarea>
+          <pre id="syntaxPreview" aria-label="syntax hints"></pre>
+        </article>
+
+        <article class="panel preview-panel glass" id="previewPanel">
+          <h2>Live Preview</h2>
+          <iframe id="livePreview" title="Live HTML Preview"></iframe>
+          <div class="inline-edit">
+            <h3>Interactive Inspect/Edit</h3>
+            <code id="selectedElement">Click an element in preview…</code>
+            <textarea id="inlineEditor" placeholder="Edit selected element HTML"></textarea>
+            <button id="applyInlineBtn">Apply Inline Edit</button>
+          </div>
+        </article>
+
+        <article class="panel feedback-panel glass" id="feedbackPanel">
+          <h2>Smart Feedback</h2>
+          <ul id="feedbackList"></ul>
+          <hr />
+          <section id="learnMode" class="mode-view"></section>
+          <section id="practiceMode" class="mode-view hidden"></section>
+          <section id="builderMode" class="mode-view hidden"></section>
+          <section id="quizMode" class="mode-view hidden"></section>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div id="tourOverlay" class="tour-overlay hidden">
+    <div class="tour-card glass">
+      <h3 id="tourTitle"></h3>
+      <p id="tourText"></p>
+      <button id="tourNextBtn" class="primary">Next</button>
     </div>
-    <div id="curtain">
-        <div class="c-wipe cw-1"></div>
-        <div class="c-wipe cw-2"></div>
-        <div class="c-wipe cw-3"></div>
-        <div class="c-wipe cw-4"></div>
-        <div class="c-wipe cw-5"></div>
-        <div class="c-wipe cw-6"></div>
-        <div class="c-wipe cw-7"></div>
-        <div class="c-wipe cw-8"></div>
-        <div class="c-wipe cw-9"></div>
-        <div class="c-wipe cw-10"></div>
-    </div>
-    <div id="app">
-        <!-- Hero Background AI Generated -->
-        <div class="bg-hero" style="background-image:url('assets/hero_bg.png')">
-        </div>
-        <div class="bg-vignette"></div>
-        <div class="bg-scanlines"></div>
-        <div class="bg-flare"></div>
-        <div class="bg-grid"></div>
-        <div id="embers"></div>
+  </div>
 
-        <!-- ═══ GLOBAL NOTIFICATIONS ═══ -->
-        <div id="notif-toast" class="notif-toast" onclick="go('community'); this.classList.remove('show');">
-            <div class="nt-av-wrap">
-                <img src="" id="nt-av" class="nt-av">
-                <div class="nt-status"></div>
-            </div>
-            <div class="nt-content">
-                <div class="nt-user" id="nt-user">Elder Kwame</div>
-                <div class="nt-msg" id="nt-msg">New cultural insight shared...</div>
-            </div>
-        </div>
-        <div id="boot" class="scr on">
-            <h1 class="boot-brand">CUCSA STUDIOS</h1>
-            <div class="boot-bar-container">
-                <div class="boot-metrics">
-                    <span>Loading Game World</span>
-                    <span id="boot-pct">0%</span>
-                </div>
-                <div class="boot-track">
-                    <div class="boot-fill" id="boot-fill"></div>
-                    <div class="boot-glitch"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══ TITLE ═══ -->
-        <div id="title" class="scr">
-            <div class="title-wrap">
-                <ion-icon name="leaf" class="t-logo-mark"></ion-icon>
-                <h1 class="t-logo-text">Echoes of<br>Elders</h1>
-                <button class="t-press" onclick="go('lobby')">Press to Start</button>
-            </div>
-        </div>
-
-        <!-- ═══ LOBBY (Home) ═══ -->
-        <div id="lobby" class="scr">
-            <header class="lobby-header anim-stagger-1">
-                <div class="lh-left">
-                    <div class="lh-brand"><ion-icon name="earth"></ion-icon> Echoes of Elders</div>
-                    <div class="lh-currency"><ion-icon name="hardware-chip-outline"></ion-icon> 24,500</div>
-                </div>
-                <div class="lh-right">
-                    <div class="lh-profile">
-                        <div class="lhp-info">
-                            <div class="lhp-name">Wanderer</div>
-                            <div class="lhp-level">LVL. 24</div>
-                        </div>
-                        <img src="https://ui-avatars.com/api/?name=Wanderer&background=f5c842&color=000&size=150"
-                            class="lhp-avatar">
-                    </div>
-                </div>
-            </header>
-
-            <div class="lobby-center anim-stagger-3">
-                <div class="hero-showcase">
-                    <div class="hs-bg-effect"></div>
-                    <img src="assets/amina_hero.png" class="hs-image" id="lobby-hero-img">
-                    <div class="hs-overlay"></div>
-                    <div class="hs-details">
-                        <h2 class="hs-name" id="lobby-hero-name">Amina</h2>
-                        <span class="hs-class" id="lobby-hero-class">Cavalry Commander & Warrior</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Navigation Rail moved to edge -->
-            <div class="quick-nav-rail">
-                <button class="qn-btn" onclick="go('games')" data-screen="games"><ion-icon
-                        name="game-controller"></ion-icon></button>
-                <button class="qn-btn" onclick="go('heroes')" data-screen="heroes"><ion-icon
-                        name="people"></ion-icon></button>
-                <button class="qn-btn" onclick="go('community')" data-screen="community"><ion-icon
-                        name="planet"></ion-icon></button>
-                <button class="qn-btn" onclick="go('leaderboard')" data-screen="leaderboard"><ion-icon
-                        name="podium"></ion-icon></button>
-            </div>
-
-            <div class="lobby-left anim-stagger-2">
-                <div class="hud-panel" onclick="go('heroes')">
-                    <div class="hp-header">
-                        <div class="hp-icon"><ion-icon name="accessibility"></ion-icon></div>
-                        <h3 class="hp-title">Hero Roster</h3>
-                    </div>
-                    <p class="hp-desc">Explore the stories of legendary cultural heroes and choose who you want to play
-                        as.</p>
-                </div>
-
-                <!-- Daily Quest Card -->
-                <div class="hud-panel quest-card">
-                    <div class="hp-header">
-                        <div class="hp-icon" style="color:#00ff88;"><ion-icon name="calendar"></ion-icon></div>
-                        <h3 class="hp-title">Daily Quest</h3>
-                    </div>
-                    <p class="hp-desc">Win 1 Oware Match today to earn 200 Season XP.</p>
-                    <button class="quest-claim-btn" onclick="claimQuest(); event.stopPropagation();">CLAIM
-                        REWARD</button>
-                </div>
-            </div>
-
-            <div class="lobby-right anim-stagger-2">
-                <!-- Gamification: Season XP & Streak -->
-                <div class="gamification-hud">
-                    <div class="xp-module">
-                        <div class="xp-label">Season 1 XP <span>LVL 24</span></div>
-                        <div class="xp-bar">
-                            <div class="xp-fill" id="season-xp-fill" style="width: 45%;"></div>
-                        </div>
-                    </div>
-                    <div class="streak-chip">
-                        <ion-icon name="flame"></ion-icon> 5 Day Streak
-                    </div>
-                </div>
-
-                <div class="hud-panel" onclick="go('leaderboard')">
-                    <div class="hp-header">
-                        <div class="hp-icon"><ion-icon name="trophy"></ion-icon></div>
-                        <h3 class="hp-title">Leaderboard</h3>
-                    </div>
-                    <p class="hp-desc">Global rankings updated daily. Master the games and join the elite ranks.</p>
-                </div>
-                <div class="hud-panel" onclick="go('community')">
-                    <div class="hp-header">
-                        <div class="hp-icon"><ion-icon name="chatbubbles"></ion-icon></div>
-                        <h3 class="hp-title">Cultural Hub</h3>
-                    </div>
-                    <p class="hp-desc">Join the community, read stories, and meet other cultural explorers.</p>
-                </div>
-            </div>
-
-            <footer class="lobby-footer anim-stagger-1">
-                <div class="nav-dock">
-                    <div class="nav-indicator" id="nav-indicator"></div>
-                    <button class="nav-tab active" id="tab-lobby" onclick="go('lobby')"><ion-icon
-                            name="home"></ion-icon> Home</button>
-                    <button class="nav-tab" id="tab-heroes" onclick="go('heroes')"><ion-icon name="people"></ion-icon>
-                        Heroes</button>
-                    <button class="nav-tab play-tab" id="tab-games" onclick="go('games')">PLAY</button>
-                    <button class="nav-tab" id="tab-community" onclick="go('community')"><ion-icon
-                            name="planet"></ion-icon> Hub</button>
-                    <button class="nav-tab" id="tab-leaderboard" onclick="go('leaderboard')"><ion-icon
-                            name="podium"></ion-icon> Rank</button>
-                </div>
-            </footer>
-        </div>
-
-        <!-- ═══ HERO ROSTER ═══ -->
-        <div id="heroes" class="scr">
-            <header class="scr-header anim-stagger-1">
-                <h1 class="sh-title"><ion-icon name="accessibility"></ion-icon> Choose Your Hero</h1>
-                <button class="btn-back" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Go
-                    Back</button>
-            </header>
-
-            <div class="roster-view anim-stagger-2">
-                <button class="nav-arrow left" id="hero-arrow-left" onclick="scrollHeroes(-1)"><ion-icon
-                        name="chevron-back"></ion-icon></button>
-                <button class="nav-arrow right" id="hero-arrow-right" onclick="scrollHeroes(1)"><ion-icon
-                        name="chevron-forward"></ion-icon></button>
-
-                <div class="roster-track" id="heroScroll" onscroll="checkHeroScroll()">
-                    <div class="rc-card center" data-name="Moremi" data-class="Protector & Leader"
-                        data-img="assets/moremi_hero.png">
-                        <div class="rc-inner">
-                            <div class="rc-bg"
-                                style="background-image:url('assets/moremi_hero.png'); background-size: cover; background-position: center;">
-                            </div>
-                            <div class="rc-overlay"></div>
-                            <div class="rc-num">01</div>
-                            <div class="rc-content">
-                                <div class="rc-era">12th Century</div>
-                                <h3 class="rc-name">Moremi</h3>
-                                <div class="rc-class">Protector & Leader</div>
-                                <button class="rc-lore-btn" onclick="toggleStory(this.closest('.rc-card'))">
-                                    <ion-icon name="book-outline"></ion-icon> View Lore
-                                </button>
-                                <p class="rc-story">A legendary figure in Yoruba history, Queen Moremi Ajasoro of Ile-Ife sacrificed everything to liberate her people from oppression, becoming an eternal symbol of courage and selflessness.</p>
-                                <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Choose
-                                    Hero</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rc-card" data-name="Amina" data-class="Warrior Queen" data-img="assets/amina_hero.png">
-                        <div class="rc-inner">
-                            <div class="rc-bg"
-                                style="background-image:url('assets/amina_hero.png'); background-size: cover; background-position: center;">
-                            </div>
-                            <div class="rc-overlay"></div>
-                            <div class="rc-num">02</div>
-                            <div class="rc-content">
-                                <div class="rc-era">16th Century</div>
-                                <h3 class="rc-name">Amina</h3>
-                                <div class="rc-class">Warrior Queen</div>
-                                <button class="rc-lore-btn" onclick="toggleStory(this.closest('.rc-card'))">
-                                    <ion-icon name="book-outline"></ion-icon> View Lore
-                                </button>
-                                <p class="rc-story">The legendary Queen of Zazzau, Amina was a master tactician who led massive armies to expand her kingdom, building great walls and fostering trans-Saharan trade.</p>
-                                <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Choose
-                                    Hero</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rc-card" data-name="Jaja" data-class="Merchant & Diplomat"
-                        data-img="assets/jaja_hero.png">
-                        <div class="rc-inner">
-                            <div class="rc-bg"
-                                style="background-image:url('assets/jaja_hero.png'); background-size: cover; background-position: center;">
-                            </div>
-                            <div class="rc-overlay"></div>
-                            <div class="rc-num">03</div>
-                            <div class="rc-content">
-                                <div class="rc-era">19th Century</div>
-                                <h3 class="rc-name">Jaja</h3>
-                                <div class="rc-class">Merchant & Diplomat</div>
-                                <button class="rc-lore-btn" onclick="toggleStory(this.closest('.rc-card'))">
-                                    <ion-icon name="book-outline"></ion-icon> View Lore
-                                </button>
-                                <p class="rc-story">From a slave boy to the King of Opobo, Jaja of Opobo was a visionary merchant prince who defied colonial monopolies to build a powerful economic empire.</p>
-                                <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Choose
-                                    Hero</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rc-card" data-name="Shaka" data-class="Great General" data-img="assets/shaka_hero.png">
-                        <div class="rc-inner">
-                            <div class="rc-bg"
-                                style="background-image:url('assets/shaka_hero.png'); background-size: cover; background-position: center;">
-                            </div>
-                            <div class="rc-overlay"></div>
-                            <div class="rc-num">04</div>
-                            <div class="rc-content">
-                                <div class="rc-era">19th Century</div>
-                                <h3 class="rc-name">Shaka</h3>
-                                <div class="rc-class">Great General</div>
-                                <button class="rc-lore-btn" onclick="toggleStory(this.closest('.rc-card'))">
-                                    <ion-icon name="book-outline"></ion-icon> View Lore
-                                </button>
-                                <p class="rc-story">Founder of the Zulu Kingdom, Shaka Zulu revolutionized African warfare with the Iklwa spear and the Buffalo Horns formation, creating one of the continent's most disciplined armies.</p>
-                                <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Choose
-                                    Hero</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rc-card" data-name="Mansa Musa" data-class="Emperor & Scholar"
-                        data-img="assets/mansa_musa.png">
-                        <div class="rc-inner">
-                            <div class="rc-bg"
-                                style="background-image:url('assets/mansa_musa.png'); background-size: cover; background-position: center;">
-                            </div>
-                            <div class="rc-overlay"></div>
-                            <div class="rc-num">05</div>
-                            <div class="rc-content">
-                                <div class="rc-era">14th Century</div>
-                                <h3 class="rc-name">Mansa Musa</h3>
-                                <div class="rc-class">Emperor & Scholar</div>
-                                <button class="rc-lore-btn" onclick="toggleStory(this.closest('.rc-card'))">
-                                    <ion-icon name="book-outline"></ion-icon> View Lore
-                                </button>
-                                <p class="rc-story">The richest man in history, Mansa Musa transformed Mali into a world-renowned center of learning and gold. His journey to Mecca remains the most extravagant hajj in history.</p>
-                                <button class="rc-action" onclick="selectHero(this.closest('.rc-card'))">Choose
-                                    Hero</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══ GAME MODES (Deployment) ═══ -->
-        <div id="games" class="scr">
-            <header class="scr-header anim-stagger-1">
-                <h1 class="sh-title"><ion-icon name="game-controller"></ion-icon> Game Grounds</h1>
-                <button class="btn-back" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Go
-                    Back</button>
-            </header>
-
-            <div class="gm-layout anim-stagger-2">
-                <div class="gm-section">
-                    <h2 class="gm-stitle">Active Board Games</h2>
-                    <div class="gm-grid">
-                        <div class="gm-card" onclick="openMancala('Oware')">
-                            <div class="gm-bg"
-                                style="background-image:url('assets/oware_board.png'); background-size:cover; background-position:center;">
-                            </div>
-                            <div class="gm-overlay"></div>
-                            <div class="gm-badge-wrap"><span class="gm-badge pop">PLAY NOW</span></div>
-                            <div class="gm-players"><ion-icon name="people"></ion-icon> 2</div>
-                            <div class="gm-content">
-                                <h3 class="gm-name">Oware</h3>
-                                <span class="gm-origin">Ghana // West Africa</span>
-                                <p class="gm-desc">The royal seed-sowing game of ancient strategy.</p>
-                            </div>
-                        </div>
-
-                        <div class="gm-card" onclick="openLudo()">
-                            <div class="gm-bg"
-                                style="background-image:url('assets/ludo_board.png'); background-size: cover; background-position: center;">
-                            </div>
-                            <div class="gm-overlay"></div>
-                            <div class="gm-badge-wrap"><span class="gm-badge pop">PLAY NOW</span></div>
-                            <div class="gm-players"><ion-icon name="people"></ion-icon> 2-4</div>
-                            <div class="gm-content">
-                                <h3 class="gm-name">Ludo</h3>
-                                <span class="gm-origin">India // Global Heritage</span>
-                                <p class="gm-desc">The race to the finish! A worldwide family favorite.</p>
-                            </div>
-                        </div>
-
-                        <div class="gm-card" onclick="openMancala('Ayo')">
-                            <div class="gm-bg"
-                                style="background-image:url('assets/ayo_board.png'); background-size:cover; background-position:center;">
-                            </div>
-                            <div class="gm-overlay"></div>
-                            <div class="gm-badge-wrap"><span class="gm-badge pop">PLAY NOW</span></div>
-                            <div class="gm-players"><ion-icon name="people"></ion-icon> 2</div>
-                            <div class="gm-content">
-                                <h3 class="gm-name">Ayo</h3>
-                                <span class="gm-origin">Nigeria // Cultural Classic</span>
-                                <p class="gm-desc">Fast-paced strategy from the heart of Nigeria.</p>
-                            </div>
-                        </div>
-
-                        <div class="gm-card" onclick="openGo()">
-                            <div class="gm-bg"
-                                style="background-image:url('assets/go_board.png'); background-size: cover; background-position: center;">
-                            </div>
-                            <div class="gm-overlay"></div>
-                            <div class="gm-badge-wrap"><span class="gm-badge pop">PLAY NOW</span></div>
-                            <div class="gm-players"><ion-icon name="people"></ion-icon> 2</div>
-                            <div class="gm-content">
-                                <h3 class="gm-name">Go</h3>
-                                <span class="gm-origin">China // East Asia</span>
-                                <p class="gm-desc">The ancient game of surrounding territory and stones.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══ LEADERBOARD ═══ -->
-        <div id="leaderboard" class="scr overlay-scr">
-            <header class="scr-header">
-                <h1 class="sh-title"><ion-icon name="trophy"></ion-icon> Legends Table</h1>
-                <button class="btn-back" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Go
-                    Back</button>
-            </header>
-            <div class="os-layout" style="display:flex; justify-content:center; align-items:flex-start;">
-                <div class="tac-panel" style="width: 100%; max-width: 800px;">
-                    <div class="tac-tabs">
-                        <button class="tac-tab active" onclick="setRankTab(0)">Top Explorers</button>
-                        <button class="tac-tab" onclick="setRankTab(1)">Recent Matches</button>
-                    </div>
-                    <div class="rank-list" id="rank-explorers">
-                        <div class="rank-row highlight">
-                            <span class="rr-pos">01</span>
-                            <img src="https://ui-avatars.com/api/?name=You&background=f5c842&color=000&size=100"
-                                class="rr-av">
-                            <span class="rr-name">You</span>
-                            <span class="rr-score">24,500 Pts</span>
-                        </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">02</span>
-                            <img src="https://ui-avatars.com/api/?name=Oluwaseun&background=00e5ff&color=000&size=100"
-                                class="rr-av">
-                            <span class="rr-name">Oluwaseun</span>
-                            <span class="rr-score">22,340 Pts</span>
-                        </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">03</span>
-                            <img src="https://ui-avatars.com/api/?name=Chen&background=ff3e5e&color=fff&size=100"
-                                class="rr-av">
-                            <span class="rr-name">Chen Xia</span>
-                            <span class="rr-score">21,150 Pts</span>
-                        </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">04</span>
-                            <img src="https://ui-avatars.com/api/?name=Priya&background=947a28&color=fff&size=100"
-                                class="rr-av">
-                            <span class="rr-name">Priya</span>
-                            <span class="rr-score">19,800 Pts</span>
-                        </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">05</span>
-                            <img src="https://ui-avatars.com/api/?name=Mateo&background=00ff88&color=000&size=100"
-                                class="rr-av">
-                            <span class="rr-name">Mateo Garcia</span>
-                            <span class="rr-score">18,200 Pts</span>
-                        </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">06</span>
-                            <img src="https://ui-avatars.com/api/?name=Malik&background=7a28ff&color=fff&size=100"
-                                class="rr-av">
-                            <span class="rr-name">Malik Jabar</span>
-                            <span class="rr-score">17,450 Pts</span>
-                        </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">07</span>
-                            <img src="https://ui-avatars.com/api/?name=Zaid&background=ff7a28&color=000&size=100"
-                                class="rr-av">
-                            <span class="rr-name">Zaid Al-Fassan</span>
-                            <span class="rr-score">16,900 Pts</span>
-                        </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">08</span>
-                            <img src="https://ui-avatars.com/api/?name=Jabari&background=28ffd1&color=000&size=100"
-                                class="rr-av">
-                            <span class="rr-name">Jabari the Brave</span>
-                            <span class="rr-score">15,100 Pts</span>
-                        </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">09</span>
-                            <img src="https://ui-avatars.com/api/?name=Amara&background=ff28d1&color=fff&size=100"
-                                class="rr-av">
-                            <span class="rr-name">Amara the Kind</span>
-                            <span class="rr-score">14,200 Pts</span>
-                        </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">10</span>
-                            <img src="https://ui-avatars.com/api/?name=Lindiwe&background=55ff00&color=000&size=100"
-                                class="rr-av">
-                            <span class="rr-name">Lindiwe the Great</span>
-                            <span class="rr-score">13,500 Pts</span>
-                        </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">11</span>
-                            <img src="https://ui-avatars.com/api/?name=Keisha&background=0055ff&color=fff&size=100"
-                                class="rr-av">
-                            <span class="rr-name">Keisha Proud</span>
-                            <span class="rr-score">12,800 Pts</span>
-                        </div>
-                        <div class="rank-row">
-                            <span class="rr-pos">12</span>
-                            <img src="https://ui-avatars.com/api/?name=Samara&background=ff0055&color=fff&size=100"
-                                class="rr-av">
-                            <span class="rr-name">Samara Seeker</span>
-                            <span class="rr-score">11,900 Pts</span>
-                        </div>
-                    </div>
-                    <div class="rank-list" id="rank-matches" style="display:none;">
-                        <div class="rank-row highlight" style="justify-content:space-between;">
-                            <span>Oware</span>
-                            <span style="color:var(--gold);">Won against Elder Kwame</span>
-                            <span>Just now</span>
-                        </div>
-                        <div class="rank-row" style="justify-content:space-between;">
-                            <span>Ludo</span>
-                            <span style="color:var(--muted);">Draw against Sita</span>
-                            <span>2 hours ago</span>
-                        </div>
-                        <div class="rank-row" style="justify-content:space-between;">
-                            <span>Ayo</span>
-                            <span style="color:var(--hot);">Lost against Mateo</span>
-                            <span>Yesterday</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══ CULTURAL HUB ═══ -->
-        <div id="community" class="scr overlay-scr">
-            <header class="scr-header">
-                <h1 class="sh-title"><ion-icon name="planet"></ion-icon> Cultural Hub</h1>
-                <button class="btn-back" onclick="go('lobby')"><ion-icon name="chevron-back"></ion-icon> Go
-                    Back</button>
-            </header>
-            <div class="os-layout comm-layout">
-                <div class="comm-left">
-                    <h2 class="comm-section-title">Cultural Lore</h2>
-                    <div class="stories-grid">
-                        <div class="story-card">
-                            <div class="sc-img"
-                                style="background-image:url('assets/map_story.png'); background-size: cover; background-position: center;">
-                            </div>
-                            <div class="sc-content">
-                                <span class="sc-tag">History</span>
-                                <h3 class="sc-title">Origins of Oware</h3>
-                                <p class="sc-excerpt">Discover how this math wonder spread from the Akan people.</p>
-                                <div class="sc-footer">
-                                    <button class="sc-btn" onclick="openBlog('oware')">Read More</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="story-card">
-                            <div class="sc-img"
-                                style="background-image:url('assets/ludo_story.png'); background-size: cover; background-position: center;">
-                            </div>
-                            <div class="sc-content">
-                                <span class="sc-tag">Global</span>
-                                <h3 class="sc-title">Ludo: Royal Journey</h3>
-                                <p class="sc-excerpt">Evolution of Ludo from India to homes everywhere.</p>
-                                <div class="sc-footer">
-                                    <button class="sc-btn" onclick="openBlog('ludo')">Read More</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="comm-right">
-                    <h2 class="comm-section-title">Live Chat</h2>
-                    <div class="chat-container">
-                        <div class="chat-feed" id="chat-feed"></div>
-                        <div class="chat-input-area">
-                            <input type="text" id="chat-input" placeholder="Talk to the world...">
-                            <button class="btn-send" onclick="sendChat()"><ion-icon name="send"></ion-icon></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══ MATCH: MANCALA ═══ -->
-        <div id="play-mancala" class="scr" style="background:#0a0c12;">
-            <header class="scr-header">
-                <h1 class="sh-title" id="mancala-header-title">Oware Match</h1>
-                <button class="btn-back" onclick="go('games')"><ion-icon name="exit"></ion-icon> Leave</button>
-            </header>
-            <div class="m-arena">
-                <div class="m-status-bar">
-                    <div class="m-player-tag">Player 1</div>
-                    <h2 id="mancala-status">Initializing...</h2>
-                    <div class="m-player-tag">Player 2</div>
-                </div>
-                <div class="m-board">
-                    <div class="m-store" id="m-store-1">0</div>
-                    <div class="m-pits-col">
-                        <div class="m-row" id="m-row-1">
-                            <div class="m-pit" onclick="mancalaClick(12)"></div>
-                            <div class="m-pit" onclick="mancalaClick(11)"></div>
-                            <div class="m-pit" onclick="mancalaClick(10)"></div>
-                            <div class="m-pit" onclick="mancalaClick(9)"></div>
-                            <div class="m-pit" onclick="mancalaClick(8)"></div>
-                            <div class="m-pit" onclick="mancalaClick(7)"></div>
-                        </div>
-                        <div class="m-row" id="m-row-0">
-                            <div class="m-pit" onclick="mancalaClick(0)"></div>
-                            <div class="m-pit" onclick="mancalaClick(1)"></div>
-                            <div class="m-pit" onclick="mancalaClick(2)"></div>
-                            <div class="m-pit" onclick="mancalaClick(3)"></div>
-                            <div class="m-pit" onclick="mancalaClick(4)"></div>
-                            <div class="m-pit" onclick="mancalaClick(5)"></div>
-                        </div>
-                    </div>
-                    <div class="m-store" id="m-store-0">0</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- LUDO MODAL -->
-        <div id="play-ludo" class="scr" style="background:#111;">
-            <header class="scr-header">
-                <h1 class="sh-title">Ludo Match</h1>
-                <button class="btn-back" onclick="go('games')">Exit</button>
-            </header>
-            <div class="m-arena" style="flex-direction:column; align-items: center; justify-content: center;">
-                <div
-                    style="width:70vw; max-width:400px; height: 400px; border-radius:20px; background-image:url('assets/ludo_board.png'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; position: relative;">
-                    <!-- Ludo tokens simulation -->
-                    <div id="ludo-token-1"
-                        style="width: 30px; height: 30px; background: red; border-radius: 50%; border: 3px solid white; position: absolute; bottom: 20%; left: 20%; transition: all 0.5s;">
-                    </div>
-                    <div id="ludo-token-2"
-                        style="width: 30px; height: 30px; background: yellow; border-radius: 50%; border: 3px solid white; position: absolute; top: 20%; right: 20%; transition: all 0.5s;">
-                    </div>
-                </div>
-                <h2 id="ludo-status" style="margin-top:2vh; color:var(--gold);">Your Turn! Roll the dice.</h2>
-                <button id="ludo-roll-btn" onclick="rollLudoDice()"
-                    style="margin-top: 2vh; padding: 15px 30px; background: var(--gold); color: black; font-weight: bold; border-radius: 8px; font-size: 20px;">🎲
-                    ROLL DICE <span id="ludo-dice-val"></span></button>
-            </div>
-        </div>
-
-        <!-- GO MODAL -->
-        <div id="play-go" class="scr" style="background:#111;">
-            <header class="scr-header">
-                <h1 class="sh-title">Go Match</h1>
-                <button class="btn-back" onclick="go('games')">Exit</button>
-            </header>
-            <div class="m-arena" style="flex-direction:column; align-items: center; justify-content: center;">
-                <div id="go-board-grid"
-                    style="width:70vw; max-width:400px; height: 400px; background-image:url('assets/go_board.png'); background-size: cover; background-position: center; border-radius: 10px; display: grid; grid-template-columns: repeat(9, 1fr); grid-template-rows: repeat(9, 1fr); gap: 2%; padding: 2%;">
-                    <!-- Javascript will populate go board slots -->
-                </div>
-                <h2 id="go-status" style="margin-top:2vh; color:var(--text);">Place your black stone.</h2>
-            </div>
-        </div>
-    </div>
-
-    <!-- BLOG MODAL -->
-    <div id="blog-modal" class="scr overlay-scr" style="z-index: 2000;">
-        <header class="scr-header">
-            <h1 id="blog-title" class="sh-title">Story Title</h1>
-            <button class="btn-back" onclick="document.getElementById('blog-modal').classList.remove('on');"><ion-icon
-                    name="close"></ion-icon> Close</button>
-        </header>
-        <div class="os-layout" style="display: block;">
-            <div class="tac-panel" style="max-width: 800px; margin: 4vh auto; padding: 4vh;">
-                <img id="blog-img" src=""
-                    style="width: 100%; height: 350px; object-fit: cover; border-radius: 12px; margin-bottom: 4vh; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                <div id="blog-body"
-                    style="font-size: clamp(16px, 1.2vw, 20px); line-height: 1.8; color: rgba(255,255,255,0.85); font-family: var(--font-body);">
-                    <!-- Blog content will be injected -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
-
 </html>
